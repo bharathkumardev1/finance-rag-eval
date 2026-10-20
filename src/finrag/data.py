@@ -124,21 +124,15 @@ def load_doc_meta(data_dir: Path) -> dict[str, DocMeta]:
 
 
 def extract_pages(pdf_path: Path) -> list[str]:
-    """Return one string per PDF page, keeping page order so evidence pages line up.
+    """One string per PDF page, in page order, so evidence page numbers line up.
 
-    Uses PyMuPDF when it is installed (much faster; AGPL-licensed, so it is optional) and
-    falls back to pypdf.
+    PyMuPDF only, and pinned in pyproject.toml: the extracted text is the corpus, so a
+    different extractor or version would quietly change every number downstream.
     """
-    try:
-        import pymupdf  # type: ignore[import-not-found]
+    import pymupdf
 
-        with pymupdf.open(pdf_path) as doc:
-            return [page.get_text() for page in doc]
-    except ImportError:
-        from pypdf import PdfReader
-
-        reader = PdfReader(str(pdf_path))
-        return [page.extract_text() or "" for page in reader.pages]
+    with pymupdf.open(pdf_path) as doc:
+        return [page.get_text() for page in doc]
 
 
 def build_page_cache(data_dir: Path, workers: int = 2) -> dict[str, int]:

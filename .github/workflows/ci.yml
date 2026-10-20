@@ -5,25 +5,77 @@ on:
   pull_request:
 
 jobs:
-  test:
+  python:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.12"]
+        python-version: ["3.11", "3.13"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - name: Install
-        run: pip install -e ".[dev]"
+      - run: pip install -e ".[dev]"
       - name: Lint
-        run: ruff check src tests
-      - name: Unit and pipeline tests
+        run: ruff check src tests scripts
+      - name: Tests
         run: pytest -q
-      - name: Fixture benchmark
-        run: finrag bench --config configs/ci.yaml --out ci-results
-      - name: Retrieval quality gate
-        run: finrag gate --results ci-results/benchmark.json --baseline configs/gate.json
+      - name: Fixture evaluation
+        run: finrag eval --data-dir tests/fixtures/mini --split tests/fixtures/mini/split.json --aliases none --out ci-results --no-dense
+      - name: Quality gate
+        run: finrag gate --results ci-results/eval.json --baseline configs/gate.json
+
+  web:
+    # The browser port must rank pages exactly like Python. Export the fixture with the
+    # current Python code, then run the JS tests against that export.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: pip install -e .
+      - run: finrag export-demo --data-dir tests/fixtures/mini --aliases none --out web/test/data --results none
+      - run: npm test
+        working-directory: web
+
+  model:
+    # Downloads the real MiniLM from Hugging Face, checks its SHA-256, and compares finrag's
+    # ONNX embeddings with sentence-transformers on the same texts.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - uses: actions/cache@v4
+        with:
+          path: models
+          key: minilm-6fd5d72fe4589f189f8ebc006442dbb529bb7ce38f8082112682524616046452
+      - run: pip install -e ".[dev]"
+      - run: finrag model
+      - run: pytest -q tests/test_data_and_dense.py
+      - run: pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install sentence-transformers
+      - run: python scripts/check_minilm_reference.py
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t finrag .
+      - name: Smoke test on the fixture corpus
+        run: |
+          cp -r tests/fixtures/mini /tmp/data && chmod -R a+rwX /tmp/data
+          docker run -d --name finrag -p 8000:8000 -v /tmp/data:/data finrag
+          for i in $(seq 1 60); do curl -fs localhost:8000/healthz && break; sleep 1; done
+          curl -fs "localhost:8000/search?q=Globex+wildfire+mitigation+spending+FY2022&method=bm25&k=3" \
+            | python -c "import json,sys; r=json.load(sys.stdin); assert r['hits'][0]['doc']=='GLOBEX_2022_10K', r; print(r['hits'][0])"
+          curl -fs localhost:8000/metrics | grep finrag_requests_total
+          docker logs finrag

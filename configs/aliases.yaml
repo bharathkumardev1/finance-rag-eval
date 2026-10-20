@@ -1,0 +1,6 @@
+# Company nicknames the filing metadata doesn't cover. Each one is here because a dev-split
+# question the metadata-only filter missed uses it; the ids are those questions.
+American Express: [AMEX]   # financebench_id_00723
+Johnson & Johnson: [JnJ]   # financebench_id_00956, financebench_id_01487
+JPMorgan: [JPM]            # financebench_id_00206, financebench_id_00299, financebench_id_00394, financebench_id_02049
+MGM Resorts: [MGM]         # financebench_id_00382

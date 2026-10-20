@@ -1,12 +1,12 @@
 {
-  "description": "Minimums for the synthetic CI fixture (configs/ci.yaml). A change that drops any value by more than the tolerance fails CI.",
-  "tolerance": 0.02,
+  "description": "Minimums on the synthetic CI fixture (tests/fixtures/mini, 12 questions). One question is worth 0.083 Hit@1, so these are set just under the current values: any change that loses a question in a gated configuration fails CI.",
+  "tolerance": 0.0,
   "rules": [
-    {"match": {"chunk_size": 40, "overlap": 0, "method": "bm25", "filter": "company_year"},
-     "min": {"hit@1": 0.88, "mrr@10": 0.94}},
-    {"match": {"chunk_size": 40, "overlap": 0, "method": "hybrid", "filter": "none"},
-     "min": {"hit@5": 1.0, "mrr@10": 0.77}},
-    {"match": {"chunk_size": 80, "overlap": 20, "method": "dense", "filter": "company_year"},
-     "min": {"hit@1": 0.77, "mrr@10": 0.88}}
+    {"match": {"config": "bm25/company_year+quarter+drop+route", "split": "all"},
+     "min": {"hit@1": 0.91, "mrr@10": 0.94, "hit@5": 1.0}},
+    {"match": {"config": "bm25/company_year+quarter", "split": "all"},
+     "min": {"hit@1": 0.83, "mrr@10": 0.89}},
+    {"match": {"config": "bm25/none", "split": "all"},
+     "min": {"hit@5": 0.91, "mrr@10": 0.73}}
   ]
 }
