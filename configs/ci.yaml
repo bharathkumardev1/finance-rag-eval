@@ -1,0 +1,9 @@
+# Synthetic fixture benchmark that CI runs on every push. See tests/fixtures/make_mini.py.
+data_dir: tests/fixtures/mini
+embedder: hashing-512
+chunkings: [[40, 0], [80, 20]]
+methods: [bm25, dense, hybrid]
+filters: [none, company_year]
+ks: [1, 5, 10]
+hybrid_depth: 20
+min_doc_chars: 100

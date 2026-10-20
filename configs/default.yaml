@@ -1,0 +1,41 @@
+# Full FinanceBench run. `finrag download && finrag pages` first.
+data_dir: data
+# lsa-256 runs offline. For a transformer embedder use st:BAAI/bge-small-en-v1.5
+# (pip install -e ".[st]") or openai:text-embedding-3-small (pip install -e ".[openai]").
+embedder: lsa-256
+chunkings: [[256, 0], [512, 0], [512, 128], [1024, 0]]
+methods: [bm25, dense, hybrid]
+filters: [none, company, company_year]
+ks: [1, 5, 10]
+hybrid_depth: 100
+min_doc_chars: 500
+# Tickers and common short names. Written by hand; the nicknames (AMEX, JnJ, JPM, MGM) were
+# added after seeing which FinanceBench questions use them, which the README discloses.
+company_aliases:
+  American Express: [AMEX, AXP]
+  Johnson & Johnson: [JnJ, J&J, JNJ]
+  JPMorgan: [JPM, JP Morgan, JPMorgan Chase]
+  MGM Resorts: [MGM]
+  McDonalds: [McDonald's, MCD]
+  Activision Blizzard: [Activision, ATVI]
+  American Water Works: [AWK]
+  Lockheed Martin: [Lockheed, LMT]
+  Kraft Heinz: [KHC]
+  General Mills: [GIS]
+  Coca-Cola: [Coca Cola, Coke]
+  Microsoft: [MSFT]
+  Amazon: [AMZN]
+  Apple: [AAPL]
+  Netflix: [NFLX]
+  Salesforce: [CRM]
+  Walmart: [WMT]
+  PepsiCo: [Pepsi, PEP]
+  Pfizer: [PFE]
+  Verizon: [VZ]
+ann:
+  chunking: [512, 0]
+  k: 10
+  hnsw_M: 32
+  hnsw_ef_construction: 200
+  hnsw_ef_search: [16, 64, 256]
+  ivf_nprobe: [1, 4, 16, 64]

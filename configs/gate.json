@@ -1,0 +1,12 @@
+{
+  "description": "Minimums for the synthetic CI fixture (configs/ci.yaml). A change that drops any value by more than the tolerance fails CI.",
+  "tolerance": 0.02,
+  "rules": [
+    {"match": {"chunk_size": 40, "overlap": 0, "method": "bm25", "filter": "company_year"},
+     "min": {"hit@1": 0.88, "mrr@10": 0.94}},
+    {"match": {"chunk_size": 40, "overlap": 0, "method": "hybrid", "filter": "none"},
+     "min": {"hit@5": 1.0, "mrr@10": 0.77}},
+    {"match": {"chunk_size": 80, "overlap": 20, "method": "dense", "filter": "company_year"},
+     "min": {"hit@1": 0.77, "mrr@10": 0.88}}
+  ]
+}
