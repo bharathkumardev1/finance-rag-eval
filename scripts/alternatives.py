@@ -144,7 +144,9 @@ def main() -> None:
                               DATA / "emb" / "minilm")
     questions = load_questions(DATA)
     split = json.loads(Path("configs/split.json").read_text())
-    out = {"int8_query_encoder": int8_encoder(questions, searcher, split)}
+    from finrag.loadtest import machine
+
+    out = {"meta": machine(), "int8_query_encoder": int8_encoder(questions, searcher, split)}
     try:
         out["ann"] = ann(questions, searcher)
     except ImportError:

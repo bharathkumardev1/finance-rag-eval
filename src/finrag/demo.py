@@ -130,7 +130,31 @@ def summary(res: dict, parity: list[dict], results_path: Path) -> dict:
         "comparisons": res["comparisons"],
         "parity": {"cases": len(parity), "questions": len({p["id"] for p in parity})},
     }
-    lt = Path(results_path).with_name("loadtest.json")
-    if lt.exists():
-        out["loadtest"] = json.loads(lt.read_text())
+    out["loadtest"] = loadtest_summary(Path(results_path).parent)
+    alt = Path(results_path).with_name("alternatives.json")
+    if alt.exists():
+        out["alternatives"] = json.loads(alt.read_text())
     return out
+
+
+# c5.large, us-east-1, on-demand Linux, October 2026: $0.085/hour for 2 vCPUs. Three price
+# trackers agreed (calculator.holori.com, aws-pricing.com, devzero.io).
+PRICE_PER_VCPU_HOUR = 0.085 / 2
+
+
+def loadtest_summary(results_dir: Path) -> dict | None:
+    """Merge results/loadtest-<method>.json and price each at its best throughput per vCPU."""
+    runs = {}
+    for path in sorted(Path(results_dir).glob("loadtest-*.json")):
+        data = json.loads(path.read_text())
+        levels = data["levels"]
+        best = max(levels, key=lambda r: r["throughput_rps"])
+        runs[data["meta"]["method"]] = {
+            "levels": levels,
+            "peak_rps": best["throughput_rps"],
+            "usd_per_million_at_peak": PRICE_PER_VCPU_HOUR / (best["throughput_rps"] * 3600) * 1e6,
+        }
+    if not runs:
+        return None
+    return {"price_per_vcpu_hour": PRICE_PER_VCPU_HOUR, "price_source": "c5.large us-east-1 on-demand",
+            "runs": runs}

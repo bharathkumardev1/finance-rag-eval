@@ -150,8 +150,8 @@ def main(argv: list[str] | None = None) -> int:
         questions = [q.text for q in data.load_questions(Path(args.data_dir))]
         levels = tuple(int(c) for c in args.levels.split(","))
         rows = loadtest.run(args.url, questions, args.method, levels, args.seconds)
-        loadtest.save(rows, {"url": args.url, "method": args.method, "seconds": args.seconds},
-                      Path(args.out))
+        loadtest.save(rows, {"url": args.url, "method": args.method, "seconds": args.seconds,
+                             **loadtest.machine()}, Path(args.out))
         return 0
     if args.cmd == "export-demo":
         from .demo import export

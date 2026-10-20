@@ -1,0 +1,92 @@
+{
+ "meta": {
+  "url": "http://127.0.0.1:8000",
+  "method": "bm25",
+  "seconds": 20.0,
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpus": 2,
+  "git_sha": "f04dd24",
+  "date": "2026-10-20",
+  "server": "1 uvicorn worker pinned to one CPU; load generator on the other"
+ },
+ "levels": [
+  {
+   "concurrency": 1,
+   "seconds": 20.0,
+   "requests": 2920,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 146.0,
+   "p50_ms": 6.54,
+   "p95_ms": 10.13,
+   "p99_ms": 12.9,
+   "server_rss_mb": 947.5,
+   "method": "bm25"
+  },
+  {
+   "concurrency": 2,
+   "seconds": 20.01,
+   "requests": 3078,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 153.8,
+   "p50_ms": 12.45,
+   "p95_ms": 19.06,
+   "p99_ms": 24.07,
+   "server_rss_mb": 948.8,
+   "method": "bm25"
+  },
+  {
+   "concurrency": 4,
+   "seconds": 20.02,
+   "requests": 3197,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 159.7,
+   "p50_ms": 23.69,
+   "p95_ms": 41.32,
+   "p99_ms": 53.21,
+   "server_rss_mb": 951.7,
+   "method": "bm25"
+  },
+  {
+   "concurrency": 8,
+   "seconds": 20.02,
+   "requests": 3453,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 172.5,
+   "p50_ms": 44.39,
+   "p95_ms": 76.86,
+   "p99_ms": 98.12,
+   "server_rss_mb": 957.3,
+   "method": "bm25"
+  },
+  {
+   "concurrency": 16,
+   "seconds": 20.05,
+   "requests": 3367,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 167.9,
+   "p50_ms": 89.53,
+   "p95_ms": 161.97,
+   "p99_ms": 208.25,
+   "server_rss_mb": 965.7,
+   "method": "bm25"
+  },
+  {
+   "concurrency": 32,
+   "seconds": 20.12,
+   "requests": 3428,
+   "errors": 0,
+   "error_rate": 0.0,
+   "throughput_rps": 170.4,
+   "p50_ms": 180.11,
+   "p95_ms": 302.12,
+   "p99_ms": 363.97,
+   "server_rss_mb": 974.7,
+   "method": "bm25"
+  }
+ ]
+}

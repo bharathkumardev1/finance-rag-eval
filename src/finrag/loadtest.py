@@ -87,6 +87,26 @@ def run(base: str, questions: list[str], method: str, levels=(1, 2, 4, 8, 16, 32
     return rows
 
 
+def machine() -> dict:
+    """CPU, commit and date, so a load test result says what it ran on."""
+    import os
+    import subprocess
+
+    cpu = None
+    try:
+        cpu = next(line.split(":", 1)[1].strip() for line in open("/proc/cpuinfo")
+                   if line.startswith("model name"))
+    except (OSError, StopIteration):
+        pass
+    try:
+        sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], text=True,
+                                      stderr=subprocess.DEVNULL).strip()
+    except Exception:
+        sha = None
+    return {"cpu": cpu, "cpus": os.cpu_count(), "git_sha": sha, "date": time.strftime("%Y-%m-%d"),
+            "server": "1 uvicorn worker pinned to one CPU; load generator on the other"}
+
+
 def save(rows: list[dict], meta: dict, path: Path) -> None:
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(json.dumps({"meta": meta, "levels": rows}, indent=1) + "\n")
