@@ -12,8 +12,8 @@ jobs:
       matrix:
         python-version: ["3.11", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
@@ -32,12 +32,12 @@ jobs:
     # current Python code, then run the JS tests against that export.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version: "22"
       - run: pip install -e .
@@ -50,12 +50,12 @@ jobs:
     # ONNX embeddings with sentence-transformers on the same texts.
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: models
           key: minilm-6fd5d72fe4589f189f8ebc006442dbb529bb7ce38f8082112682524616046452
@@ -68,7 +68,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - run: docker build -t finrag .
       - name: Smoke test on the fixture corpus
         run: |

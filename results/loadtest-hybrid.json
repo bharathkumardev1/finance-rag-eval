@@ -5,7 +5,7 @@
   "seconds": 20.0,
   "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
   "cpus": 2,
-  "git_sha": "f04dd24",
+  "git_sha": "3f9ae62",
   "date": "2026-10-20",
   "server": "1 uvicorn worker pinned to one CPU; load generator on the other"
  },
