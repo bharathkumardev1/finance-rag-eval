@@ -24,7 +24,7 @@ from .data import load_questions
 from .evaluate import gold_pages
 from .filters import _DOC_QUARTER
 from .search import FULL, Options, Searcher
-from .statements import KINDS
+from .statements import KINDS, question_kinds
 
 full_bm25 = "bm25/company_year+quarter+drop+route"
 
@@ -110,20 +110,30 @@ def export(searcher: Searcher, data_dir: Path, out: Path, docs: list[str] | None
     (out / "questions.json").write_text(json.dumps(qs_out, ensure_ascii=False, separators=(",", ":")))
     (out / "parity.json").write_text(json.dumps(parity, separators=(",", ":")))
     if res is not None:
-        (out / "summary.json").write_text(json.dumps(summary(res, parity, results_path), indent=1))
+        gold = sorted({(d, p) for q in questions for d, p in gold_pages(q)})
+        test_ids = {qid for qid, name in split.items() if name == "test"}
+        corpus_stats = {
+            "evidence_pages": len(gold),
+            "statement_evidence_pages": sum(1 for d, p in gold if searcher.kinds[c.offsets[d][0] + p]),
+            "test_questions_routed": sum(
+                1 for q in questions if q.qid in test_ids and question_kinds(q.text)),
+        }
+        (out / "summary.json").write_text(
+            json.dumps(summary(res, parity, results_path) | {"corpus": corpus_stats}, indent=1))
     return {"filings": len(docs), "gz_mb": round(sum(sizes.values()) / 2**20, 2),
             "parity_cases": len(parity)}
 
 
 def summary(res: dict, parity: list[dict], results_path: Path) -> dict:
     """The numbers the portfolio page prints, taken straight from eval.json."""
-    test = {r["config"]: r for r in res["table"] if r["split"] == "test"}
     keys = ("hit@1", "hit@5", "hit@10", "hit@10_ci95", "mrr@10", "recall@10", "doc_hit@10",
             "p50_ms", "p95_ms", "n")
+    rows = {split: {r["config"]: {m: r[m] for m in keys} for r in res["table"] if r["split"] == split}
+            for split in ("dev", "test")}
     out = {
         "source": str(results_path), "git_sha": res["meta"]["git_sha"], "date": res["meta"]["date"],
         "meta": res["meta"], "headline": res["headline"],
-        "test": {k: {m: v[m] for m in keys} for k, v in test.items()},
+        "test": rows["test"], "dev": rows["dev"],
         "filter": res["filter"], "taxonomy": {k: v["counts"] | {"misses": v["misses"],
                                                             "questions": v["questions"]}
                                               for k, v in res["taxonomy"].items()},

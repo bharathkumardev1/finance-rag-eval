@@ -139,13 +139,18 @@ def latency_summary(seconds: list[float]) -> dict[str, float]:
 
 
 def ladder(methods: tuple[str, ...]) -> list[tuple[str, Options]]:
-    """Each configuration adds one piece to the one before it, per retriever."""
+    """Each configuration adds one piece to the one before it, per retriever.
+
+    Routing goes before dropping the company's name: the drop only helps once routing is
+    in place (on its own it hurts), so the other order would credit routing with the
+    damage the drop does without it.
+    """
     steps = [
         Options("none", False, False, False),
         Options("company", False, False, False),
         Options("company_year", False, False, False),
         Options("company_year", True, False, False),
-        Options("company_year", True, True, False),
+        Options("company_year", True, False, True),
         Options("company_year", True, True, True),
     ]
     out = []

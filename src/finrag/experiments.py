@@ -54,11 +54,16 @@ def run_all(searcher: Searcher, data_dir: Path, split_path: Path, out_dir: Path)
     head_method = headline.split("/", 1)[0]
     head_opts = Options(drop_company_terms=head_method != "dense")
 
+    filtered = "bm25/company_year+quarter"
     comparisons = [
         (headline, "bm25/none"),
-        ("bm25/company_year+quarter", "bm25/none"),
-        (full_key("bm25"), ev.config_key("bm25", Options(route_statements=False))),
+        # Each step of the ladder on top of the one before it...
+        (filtered, "bm25/none"),
+        (ev.config_key("bm25", Options(drop_company_terms=False)), filtered),
         (full_key("bm25"), ev.config_key("bm25", Options(drop_company_terms=False))),
+        # ...and routing taken out of the full pipeline, which also undoes what the drop
+        # needs it for.
+        (full_key("bm25"), ev.config_key("bm25", Options(route_statements=False))),
     ]
     if "dense" in methods:
         comparisons += [

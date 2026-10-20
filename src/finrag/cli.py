@@ -27,7 +27,12 @@ def _searcher(args, dense: bool = True):
 
     model = Path(getattr(args, "model_dir", "") or "missing")
     emb = Path(getattr(args, "emb_dir", "") or "missing")
-    use_dense = dense and not getattr(args, "no_dense", False) and model.exists() and emb.exists()
+    wanted = dense and not getattr(args, "no_dense", False)
+    use_dense = wanted and model.exists() and emb.exists()
+    if wanted and not use_dense:
+        missing = " and ".join(str(p) for p in (model, emb) if not p.exists())
+        print(f"finrag: {missing} not found, so MiniLM and the hybrid are skipped "
+              "(run `make embed`, or pass --no-dense to silence this)", file=sys.stderr)
     aliases = load_aliases(Path(args.aliases)) if Path(args.aliases).exists() else {}
     return Searcher.build(Path(args.data_dir), aliases, model if use_dense else None,
                           emb if use_dense else None)
