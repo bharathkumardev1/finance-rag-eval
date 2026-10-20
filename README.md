@@ -217,6 +217,14 @@ pinned in `pyproject.toml`, because a different extractor changes every number d
   from Hugging Face and compares against sentence-transformers, and builds the Docker
   image and queries it.
 
+```bash
+make test    # ruff, pytest, and the JS parity tests on a fresh export of the fixture
+make gate    # the full evaluation on the fixture corpus, checked against configs/gate.json
+```
+
+On a fresh clone one pytest test skips: the MiniLM check needs `finrag model` to have
+downloaded the model first.
+
 ## What's still rough
 
 - 100 test questions. One question is 0.01 Hit@10, and the intervals above are about ±0.09.
