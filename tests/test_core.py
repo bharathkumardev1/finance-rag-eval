@@ -144,6 +144,26 @@ def test_ann_indexes_agree_with_exact_on_small_data():
 
 # data -------------------------------------------------------------------------------------
 
+def test_verify_evidence_pages_flags_misaligned_pages(tmp_path):
+    from finrag.data import verify_evidence_pages
+
+    page_text = "Consolidated Statement of Cash Flows " + "purchases of property plant " * 12
+    (tmp_path / "pages").mkdir()
+    (tmp_path / "pages" / "D.json").write_text(json.dumps(["cover", page_text, "notes"]))
+    rows = [
+        {"evidence": [{"doc_name": "D", "evidence_page_num": 1,
+                       "evidence_text_full_page": page_text}]},
+        {"evidence": [{"doc_name": "D", "evidence_page_num": 2,
+                       "evidence_text_full_page": page_text}]},
+        {"evidence": [{"doc_name": "X", "evidence_page_num": 0,
+                       "evidence_text_full_page": page_text}]},
+    ]
+    (tmp_path / "financebench_open_source.jsonl").write_text(
+        "\n".join(json.dumps(r) for r in rows), encoding="utf8")
+    counts = verify_evidence_pages(tmp_path)
+    assert counts["match"] == 1 and counts["off_by_one"] == 1 and counts["missing_doc"] == 1
+
+
 def test_load_questions_accepts_both_evidence_key_names(tmp_path):
     rows = [
         {"financebench_id": "a", "question": "q", "answer": "x", "company": "C",

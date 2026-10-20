@@ -1,4 +1,4 @@
-"""Command line: ``finrag download | pages | bench | ann | report | gate``."""
+"""Command line: ``finrag download | pages | verify | bench | ann | report | gate``."""
 
 from __future__ import annotations
 
@@ -23,6 +23,9 @@ def main(argv: list[str] | None = None) -> int:
     pg = sub.add_parser("pages", help="extract page text from downloaded PDFs")
     pg.add_argument("--data-dir", default="data")
     pg.add_argument("--workers", type=int, default=2)
+
+    v = sub.add_parser("verify", help="check evidence page numbers against extracted text")
+    v.add_argument("--data-dir", default="data")
 
     for name, help_text in (("bench", "run the retrieval grid"),
                             ("ann", "compare exact and approximate FAISS indexes")):
@@ -49,6 +52,11 @@ def main(argv: list[str] | None = None) -> int:
         failed = [k for k, v in counts.items() if v < 0]
         print(f"parsed {len(counts) - len(failed)} filings, "
               f"{sum(v for v in counts.values() if v > 0):,} pages, {len(failed)} failed")
+    elif args.cmd == "verify":
+        counts = data.verify_evidence_pages(Path(args.data_dir))
+        print(", ".join(f"{k}={v}" for k, v in counts.items()))
+        if counts["off_by_one"] or counts["not_found"]:
+            return 1
     elif args.cmd == "bench":
         bench.run_benchmark(bench.load_config(args.config), args.out)
     elif args.cmd == "ann":

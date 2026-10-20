@@ -163,6 +163,46 @@ def build_page_cache(data_dir: Path, workers: int = 2) -> dict[str, int]:
         return dict(pool.map(work, pdfs))
 
 
+def verify_evidence_pages(data_dir: Path) -> dict[str, int]:
+    """Check that each labeled evidence page matches our extracted text for that page.
+
+    FinanceBench ships the full text of every evidence page. A slice of it should appear on
+    the extracted page with the same zero-indexed number; if it shows up one page off, the
+    labels and the extraction disagree about page numbering.
+    """
+    import re
+
+    def norm(s: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", s.lower())
+
+    pages = load_pages(data_dir)
+    counts = {"match": 0, "off_by_one": 0, "not_found": 0, "no_reference": 0, "missing_doc": 0}
+    for line in open(Path(data_dir) / QUESTIONS_FILE, encoding="utf8"):
+        for e in json.loads(line)["evidence"]:
+            doc = e.get("evidence_doc_name") or e["doc_name"]
+            page = int(e["evidence_page_num"])
+            ref = norm(e.get("evidence_text_full_page") or "")
+            if doc not in pages:
+                counts["missing_doc"] += 1
+                continue
+            if len(ref) < 40:
+                counts["no_reference"] += 1
+                continue
+            probe = ref[100:180] if len(ref) > 180 else ref[:80]
+            doc_pages = pages[doc]
+
+            def on(i: int, probe: str = probe, doc_pages: list[str] = doc_pages) -> bool:
+                return 0 <= i < len(doc_pages) and probe in norm(doc_pages[i])
+
+            if on(page):
+                counts["match"] += 1
+            elif on(page - 1) or on(page + 1):
+                counts["off_by_one"] += 1
+            else:
+                counts["not_found"] += 1
+    return counts
+
+
 def load_pages(data_dir: Path) -> dict[str, list[str]]:
     pages_dir = Path(data_dir) / "pages"
     return {
