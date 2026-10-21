@@ -71,6 +71,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
     from . import experiments as ex
     from .data import FINANCEBENCH_COMMIT, load_questions
     from .evaluate import DEPTH, run, run_meta, save
+    from .failures import taxonomy
     from .filters import load_aliases
     from .report import write_markdown
     from .search import Searcher
@@ -94,6 +95,10 @@ def cmd_eval(args: argparse.Namespace) -> int:
     results["filter"] = {name: ex.filter_report(searcher, [q for q in questions if q.qid in set(ids)])
                          for name, ids in split.items()}
     results["by_type"] = ex.by_type(results, headline)
+    head_method = headline.split("/", 1)[0]
+    results["taxonomy"] = {part: taxonomy(searcher, questions, results, headline,
+                                          ex.full_for(head_method), part if part != "all" else None)
+                           for part in ("test", "all")}
     extra = {}
     if dense:
         import onnxruntime
