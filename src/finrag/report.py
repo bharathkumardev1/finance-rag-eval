@@ -83,7 +83,84 @@ def misses(results: dict) -> str:
             "| Category | Count | Examples |\n|---|---|---|\n" + body + "\n")
 
 
-def write_markdown(results: dict, path: Path) -> None:
+def _source(res: dict) -> str:
+    m = res["meta"]
+    dirty = " with uncommitted changes" if m.get("git_dirty") else ""
+    return f"From `{m['command']}` at commit `{(m['git_sha'] or 'unknown')[:7]}`{dirty} on {m['date']}."
+
+
+def incremental(res: dict) -> str:
+    adds = ", ".join(f"{s:.2f}" for s in res["add_batch_seconds"])
+    return (f"## Incremental index\n\n{_source(res)} Every tenth filing ({res['held_out_filings']} "
+            f"filings, {res['held_out_pages']:,} pages) was held out, then added in batches of "
+            f"{res['batch']} with a save and reload after each, leaving {res['segments']} segments. Against "
+            f"a one-pass "
+            f"build, over {res['queries']} queries (every question as asked and with the company's name "
+            f"dropped): largest score difference {res['max_abs_score_diff']:.1e} (tolerance "
+            f"{res['tolerance']:.0e}), identical top 100 for {res['same_top100']} of {res['queries']}. "
+            f"Building all {res['filings']} filings took {res['full_build_seconds']:.1f} s; each added "
+            f"batch took {adds} s including the reload and save.\n")
+
+
+def chunk_study(res: dict) -> str:
+    units = "\n".join(f"| {name} | {u['documents']:,} |" for name, u in res["units"].items())
+    lines = ["## Chunk size (BM25)\n", f"{_source(res)} BM25 over chunks that never cross a page, a "
+             "page scoring as its best chunk, against BM25 over whole pages.\n",
+             "| Unit | Documents indexed |\n|---|---|\n" + units + "\n",
+             "Test:\n", COLUMNS + "\n".join(
+                 f"| `{r['config']}` | {r['hit@1']:.2f} | {r['hit@5']:.2f} | {r['hit@10']:.2f} "
+                 f"({_ci(r['hit@10_ci95'])}) | {r['mrr@10']:.3f} | {r['recall@10']:.2f} | "
+                 f"{r['doc_hit@10']:.2f} | {r['p50_ms']:.1f} | {r['p95_ms']:.1f} |"
+                 for r in res["table"] if r["split"] == "test") + "\n",
+             comparisons(res).replace("## Paired comparisons on test\n\n", "")]
+    return "\n".join(lines)
+
+
+def load_test(res: dict) -> str:
+    rows = "\n".join(
+        f"| {r['method']} | {r['concurrency']} | {r['throughput_rps']:.1f} | {r['p50_ms']:.1f} | "
+        f"{r['p95_ms']:.1f} | {r['p99_ms']:.1f} | {r['errors']} | {r['server_rss_mb']:.0f} | "
+        f"{r['usd_per_million']:.2f} |" for r in res["levels"])
+    return (f"## Load test\n\n{_source(res)} {res['meta'].get('server', '')}. Closed-loop clients, "
+            "30 s per level, cycling through the 150 questions with the full pipeline. Cost per million "
+            f"queries prices one vCPU at ${res['meta']['usd_per_vcpu_hour']:.4f} an hour (half a c7i.large "
+            "on demand in us-east-1).\n\n| Method | Clients | Queries/s | p50 ms | p95 ms | p99 ms | "
+            "Errors | Server RSS MB | $ per million |\n|---|---|---|---|---|---|---|---|---|\n" + rows + "\n")
+
+
+def rerank(res: dict) -> str:
+    rows = "\n".join(f"| {r['split']} | `{r['config']}` | {r['hit@1']:.2f} | {r['hit@10']:.2f} | "
+                     f"{r['mrr@10']:.3f} |" for r in res["table"])
+    return (f"## Reranker\n\n{_source(res)} {res['meta'].get('model', '')} over the top {res['top']} of "
+            f"`{res['base']}`.\n\n| Split | Config | Hit@1 | Hit@10 | MRR@10 |\n|---|---|---|---|---|\n"
+            + rows + "\n\n" + comparisons(res).replace("## Paired comparisons on test\n\n", ""))
+
+
+def generation(res: dict) -> str:
+    rows = "\n".join(
+        f"| {name} | {v['n']} | {v['accuracy']:.2f} ({_ci(v['accuracy_ci95'])}) | {v['declined']} | "
+        f"{v['incorrect']} | ${v['cost_usd']:.2f} | {v['answer_p50_s']:.1f} | {v['answer_p95_s']:.1f} |"
+        for name, v in res["summary"]["settings"].items())
+    out = (f"## Generation\n\n{_source(res)} {res['generator']} answers from five pages, judged by "
+           f"{res['judge']} against FinanceBench's reference answers. Retrieval: `{res['retrieval']}`.\n\n"
+           "| Pages | Questions | Correct (95% CI) | Declined | Incorrect | Cost | p50 s | p95 s |\n"
+           "|---|---|---|---|---|---|---|---|\n" + rows + "\n")
+    if "gold_minus_retrieved" in res["summary"]:
+        d = res["summary"]["gold_minus_retrieved"]
+        out += (f"\nGold pages minus retrieved pages: {d['diff']:+.3f} ({_ci(d['ci95'], '+.3f')}), "
+                f"{d['a_better']} questions better with gold pages, {d['b_better']} worse.\n")
+    if res.get("judge_check", {}).get("labeled"):
+        j = res["judge_check"]
+        out += (f"\nJudge against hand labels: {j['agree']} of {j['labeled']} agree, Cohen's kappa "
+                f"{j['cohens_kappa']:.2f}.\n")
+    return out
+
+
+EXTRAS = (("incremental", incremental), ("chunks", chunk_study), ("load", load_test),
+          ("rerank", rerank), ("generation", generation))
+
+
+def write_markdown(results: dict, path: Path, results_dir: Path | None = None) -> None:
     m = results["meta"]
     sha = (m["git_sha"] or "unknown")[:7]
     windows = f", {m['dense_windows']:,} MiniLM windows" if m.get("dense_windows") else ""
@@ -112,5 +189,12 @@ def write_markdown(results: dict, path: Path) -> None:
         f"## Dev ({m['dev']} questions)\n",
         table(results, "dev"),
     ]
+    if results_dir is not None:
+        import json
+
+        for name, section in EXTRAS:
+            extra = Path(results_dir) / f"{name}.json"
+            if extra.exists():
+                parts.append(section(json.loads(extra.read_text())))
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text("\n".join(p for p in parts if p), encoding="utf8")

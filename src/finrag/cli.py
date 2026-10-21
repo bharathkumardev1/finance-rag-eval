@@ -113,7 +113,7 @@ def cmd_eval(args: argparse.Namespace) -> int:
                     depth=DEPTH, aliases=args.aliases, **extra)
     results = {"meta": meta, **results}
     save(results, Path(args.out))
-    write_markdown(results, Path(args.markdown))
+    write_markdown(results, Path(args.markdown), Path(args.out).parent)
     for r in results["table"]:
         if r["split"] == "test":
             print(f"{r['config']:<48} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}  "
@@ -301,6 +301,16 @@ def cmd_export_demo(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_report(args: argparse.Namespace) -> int:
+    from .report import write_markdown
+
+    results_dir = Path(args.results)
+    results = json.loads((results_dir / "eval.json").read_text())
+    write_markdown(results, results_dir / "RESULTS.md", results_dir)
+    print(results_dir / "RESULTS.md")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -433,6 +443,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--results", default="results", help="directory of results/*.json for summary.json")
     p.add_argument("--out", default="build/demo")
     p.set_defaults(func=cmd_export_demo)
+
+    p = sub.add_parser("report", help="rewrite results/RESULTS.md from every results/*.json")
+    p.add_argument("--results", default="results")
+    p.set_defaults(func=cmd_report)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
