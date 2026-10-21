@@ -179,6 +179,70 @@ def cmd_chunk_study(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_generate(args: argparse.Namespace) -> int:
+    from .data import load_pages, load_questions
+    from .evaluate import run_meta, save
+    from .generate import Budget, Recorder, openai_client, run
+    from .split import load_split
+
+    data_dir = Path(args.data_dir)
+    evaluation = json.loads(Path(args.eval).read_text())
+    config = args.config or evaluation["headline"]
+    wanted = set(load_split(Path(args.split))[args.on])
+    questions = [q for q in load_questions(data_dir) if q.qid in wanted]
+    retrieved = {qid: x["runs"][config]["top10"] for qid, x in evaluation["questions"].items()}
+    pages = load_pages(data_dir)
+    recorder = Recorder(Path(args.record), None if args.replay else openai_client(), Budget(args.cap))
+    res = run(questions, retrieved, lambda d, p: pages[d][p], recorder, args.generator, args.judge)
+    res = {"meta": run_meta(args.command_line), "retrieval": config, "split": args.on, **res}
+    old = Path(args.out)
+    if old.exists() and "judge_check" in (prev := json.loads(old.read_text())):
+        res["judge_check"] = prev["judge_check"]
+    save(res, old)
+    for setting, v in res["summary"]["settings"].items():
+        print(f"{setting:<10} accuracy {v['accuracy']:.2f} ({v['n']} questions, "
+              f"{v['declined']} declined)  ${v['cost_usd']:.4f}")
+    print(f"calls made {res['calls']['made']}, replayed {res['calls']['replayed']}; "
+          f"recorded spend ${res['recorded_spend_usd']:.4f} of ${res['cap_usd']:.2f}")
+    if res["stopped"]:
+        print(f"stopped early: {res['stopped']}", file=sys.stderr)
+        return 2
+    return 0
+
+
+def cmd_label_judge(args: argparse.Namespace) -> int:
+    import csv
+
+    from .data import load_questions
+    from .generate import label_sheet
+
+    results = json.loads(Path(args.results).read_text())
+    questions = {q.qid: q for q in load_questions(Path(args.data_dir))}
+    rows = label_sheet(results, questions, args.n)
+    with open(args.out, "w", newline="", encoding="utf8") as fh:
+        writer = csv.DictWriter(fh, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+    print(f"{len(rows)} answers to label in {args.out}: fill your_verdict with correct or incorrect")
+    return 0
+
+
+def cmd_judge_agreement(args: argparse.Namespace) -> int:
+    import csv
+
+    from .evaluate import save
+    from .generate import agreement
+
+    path = Path(args.results)
+    results = json.loads(path.read_text())
+    with open(args.labels, newline="", encoding="utf8") as fh:
+        check = agreement(results, list(csv.DictReader(fh)))
+    results["judge_check"] = {"labels": args.labels, **check}
+    save(results, path)
+    print(json.dumps(check))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -254,6 +318,32 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--split", default="configs/split.json")
     p.add_argument("--out", default="results/chunks.json")
     p.set_defaults(func=cmd_chunk_study)
+
+    p = sub.add_parser("generate", help="answer test questions from retrieved and gold pages, then judge")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--eval", default="results/eval.json", help="retrieval results to take pages from")
+    p.add_argument("--config", default=None, help="retrieval system (default: the headline)")
+    p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--on", default="test", choices=("dev", "test"))
+    p.add_argument("--generator", default="gpt-6-luna")
+    p.add_argument("--judge", default="gpt-6.1-sol")
+    p.add_argument("--cap", type=float, default=25.0, help="USD, over everything in the recording")
+    p.add_argument("--record", default="results/generation/calls.jsonl")
+    p.add_argument("--replay", action="store_true", help="use recorded replies only; no API key needed")
+    p.add_argument("--out", default="results/generation.json")
+    p.set_defaults(func=cmd_generate)
+
+    p = sub.add_parser("label-judge", help="sample judged answers for a person to label")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--results", default="results/generation.json")
+    p.add_argument("--n", type=int, default=40)
+    p.add_argument("--out", default="results/generation/labels.csv")
+    p.set_defaults(func=cmd_label_judge)
+
+    p = sub.add_parser("judge-agreement", help="how often the judge agrees with your labels")
+    p.add_argument("--results", default="results/generation.json")
+    p.add_argument("--labels", default="results/generation/labels.csv")
+    p.set_defaults(func=cmd_judge_agreement)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
