@@ -51,3 +51,28 @@ jobs:
         run: finrag pages --data-dir gate-data
       - name: Gate
         run: finrag gate --data-dir gate-data
+
+  image:
+    # Build the service image and query it, BM25 only, on the synthetic fixture corpus.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - run: docker build -t finrag .
+      - name: Smoke test
+        run: |
+          cp -r tests/fixtures/mini /tmp/mini && chmod -R a+w /tmp/mini
+          docker run -d --name finrag -p 8000:8000 -v /tmp/mini:/data finrag
+          for i in $(seq 60); do curl -sf http://127.0.0.1:8000/healthz && break; sleep 1; done
+          curl -sf "http://127.0.0.1:8000/search?method=bm25&q=What+is+Acme%27s+FY2021+working+capital%3F" \
+            | python3 -c "import json,sys; h=json.load(sys.stdin)['hits'][0]; assert (h['doc'], h['page']) == ('ACME_2021_10K', 4), h"
+          docker logs finrag
+
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
