@@ -68,30 +68,32 @@ def cmd_embed(args: argparse.Namespace) -> int:
 
 
 def cmd_eval(args: argparse.Namespace) -> int:
+    from . import experiments as ex
     from .data import FINANCEBENCH_COMMIT, load_questions
-    from .evaluate import DEPTH, compare, run, run_meta, save
+    from .evaluate import DEPTH, run, run_meta, save
+    from .filters import load_aliases
     from .report import write_markdown
     from .search import Searcher
     from .split import load_split
 
     data_dir = Path(args.data_dir)
     methods = tuple(args.methods.split(","))
-    dense = methods != ("bm25",)
-    searcher = Searcher.build(data_dir, model_dir=Path(args.model_dir) if dense else None,
+    if methods[0] != "bm25":
+        raise SystemExit("--methods must start with bm25; every comparison is against it")
+    dense = len(methods) > 1
+    aliases = load_aliases(Path(args.aliases)) if args.aliases else {}
+    searcher = Searcher.build(data_dir, aliases, model_dir=Path(args.model_dir) if dense else None,
                               emb_dir=Path(args.emb_dir) if dense else None)
     questions = load_questions(data_dir)
     split = load_split(Path(args.split))
-
-    def system(method: str):
-        return lambda text: searcher.ranked_pages(text, DEPTH, method)
-
-    systems = {f"{m}/all-pages": system(m) for m in methods}
     for m in methods:  # the first call pays for page faults; keep it out of p95
         searcher.ranked_pages("warm up", 1, m)
-    results = run(systems, questions, split)
-    results["comparisons"] = [compare(results, f"{m}/all-pages", "bm25/all-pages", "test", metric)
-                              for m in methods if m != "bm25" and "bm25" in methods
-                              for metric in ("hit@10", "mrr@10")]
+    results = run(ex.systems(searcher, methods), questions, split)
+    results["headline"] = headline = ex.pick_headline(results, methods)
+    results["comparisons"] = ex.comparisons(results, methods, headline)
+    results["filter"] = {name: ex.filter_report(searcher, [q for q in questions if q.qid in set(ids)])
+                         for name, ids in split.items()}
+    results["by_type"] = ex.by_type(results, headline)
     extra = {}
     if dense:
         import onnxruntime
@@ -102,14 +104,15 @@ def cmd_eval(args: argparse.Namespace) -> int:
     meta = run_meta(args.command_line, financebench_commit=FINANCEBENCH_COMMIT,
                     filings=len(searcher.corpus.docs), pages=len(searcher.corpus),
                     questions=len(questions), dev=len(split["dev"]), test=len(split["test"]),
-                    depth=DEPTH, **extra)
+                    depth=DEPTH, aliases=args.aliases, **extra)
     results = {"meta": meta, **results}
     save(results, Path(args.out))
     write_markdown(results, Path(args.markdown))
     for r in results["table"]:
         if r["split"] == "test":
-            print(f"{r['config']:<24} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}  "
+            print(f"{r['config']:<48} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}  "
                   f"p95 {r['p95_ms']:.1f} ms")
+    print(f"headline (picked on dev): {headline}")
     return 0
 
 
@@ -156,6 +159,7 @@ def main(argv: list[str] | None = None) -> int:
                    help="comma-separated; dense and hybrid need `finrag embed` first")
     p.add_argument("--model-dir", default="models/all-MiniLM-L6-v2")
     p.add_argument("--emb-dir", default="data/embeddings")
+    p.add_argument("--aliases", default=None, help="YAML file of extra company names")
     p.add_argument("--out", default="results/eval.json")
     p.add_argument("--markdown", default="results/RESULTS.md")
     p.set_defaults(func=cmd_eval)

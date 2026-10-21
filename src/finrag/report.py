@@ -34,10 +34,10 @@ def multi_page(results: dict, split: str) -> str:
             f"those alone:\n\n| Config | Recall@10, multi-page |\n|---|---|\n{body}\n")
 
 
-def by_type(results: dict, split: str) -> str:
+def by_type(results: dict, split: str, configs: list[str] | None = None) -> str:
     per_q = [x for x in results["questions"].values() if x["split"] == split]
     types = sorted({x["type"] for x in per_q})
-    configs = [r["config"] for r in results["table"] if r["split"] == split]
+    configs = configs or [r["config"] for r in results["table"] if r["split"] == split]
     head = "| Config | " + " | ".join(f"{t} Hit@10" for t in types) + " |\n"
     head += "|---|" + "---|" * len(types) + "\n"
     lines = []
@@ -62,26 +62,53 @@ def comparisons(results: dict) -> str:
             "B better |\n|---|---|---|---|---|---|---|\n" + body + "\n")
 
 
+def filter_table(results: dict) -> str:
+    f = results.get("filter")
+    if not f:
+        return ""
+    body = "\n".join(
+        f"| {name} | {x['n']} | {x['company_found']} | {x['filtered']} | {x['gold_filing_kept']} | "
+        f"{x['mean_filings_after']:.1f} |" for name, x in f.items())
+    return ("## Filter\n\n| Split | Questions | Company recognized | Filtered | Right filing kept | "
+            "Filings left (mean) |\n|---|---|---|---|---|---|\n" + body + "\n")
+
+
+def misses(results: dict) -> str:
+    tax = (results.get("taxonomy") or {}).get("test")
+    if not tax:
+        return ""
+    body = "\n".join(f"| {k} | {v} | {', '.join(tax['examples'][k][:3])} |"
+                     for k, v in tax["counts"].items())
+    return (f"## Misses of `{tax['config']}` on test ({tax['misses']} of {tax['questions']})\n\n"
+            "| Category | Count | Examples |\n|---|---|---|\n" + body + "\n")
+
+
 def write_markdown(results: dict, path: Path) -> None:
     m = results["meta"]
     sha = (m["git_sha"] or "unknown")[:7]
     windows = f", {m['dense_windows']:,} MiniLM windows" if m.get("dense_windows") else ""
-    encoding = (f" Dense and hybrid times include encoding the question with MiniLM (onnxruntime "
-                f"{m['onnxruntime']}, one thread).") if m.get("dense_windows") else ""
     parts = [
         "# Results\n",
         f"Produced by `{m['command']}` at commit `{sha}`"
         f"{' with uncommitted changes' if m['git_dirty'] else ''} on {m['date']}. "
         f"FinanceBench at `{m['financebench_commit'][:7]}`: {m['filings']} filings, "
-        f"{m['pages']:,} pages{windows}, {m['questions']} questions ({m['dev']} dev, {m['test']} "
-        f"test). {m['cpu']}, {m['cpus']} CPUs, Python {m['python']}, numpy {m['numpy']}. Latency "
-        f"is in-process wall time per query, one query at a time.{encoding}\n",
+        f"{m['pages']:,} pages{windows}, {m['questions']} questions ({m['dev']} dev, {m['test']} test). "
+        f"{m['cpu']}, {m['cpus']} CPUs, Python {m['python']}, numpy {m['numpy']}. Latency is "
+        f"in-process wall time per query, one query at a time, including MiniLM query encoding "
+        f"for dense and hybrid.\n",
+    ]
+    if results.get("headline"):
+        parts.append(f"Headline system, picked on dev: `{results['headline']}`.\n")
+    parts += [
         f"## Test ({m['test']} questions)\n",
         table(results, "test"),
         multi_page(results, "test"),
-        "By question type:\n",
-        by_type(results, "test"),
         comparisons(results),
+        filter_table(results),
+        misses(results),
+        "## Hit@10 by question type on test\n",
+        by_type(results, "test", [c for c in (results.get("headline"), "bm25/all-pages") if c]
+                if results.get("headline") else None),
         f"## Dev ({m['dev']} questions)\n",
         table(results, "dev"),
     ]
