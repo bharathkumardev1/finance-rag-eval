@@ -177,10 +177,19 @@ class Searcher:
     def methods(self) -> tuple[str, ...]:
         return METHODS if self.dense is not None else ("bm25",)
 
-    def filtered(self, question: str, opts: Options) -> tuple[set[str] | None, np.ndarray | None]:
-        """Filings the filter keeps and their page rows; (None, None) means every page."""
+    def filtered(self, question: str, opts: Options, within: set[str] | None = None
+                 ) -> tuple[set[str] | None, np.ndarray | None]:
+        """Filings the filter keeps and their page rows; (None, None) means every page.
+
+        ``within`` limits a filtered search to those filings, the way the browser demo can
+        only search the filings it ships.
+        """
         docs = self.filter.allowed_docs(question, opts.filter, opts.quarters)
-        return (None, None) if docs is None else (docs, self.corpus.rows_for(docs))
+        if docs is None:
+            return None, None
+        if within is not None:
+            docs = docs & within
+        return docs, self.corpus.rows_for(docs)
 
     def query_tokens(self, question: str, filtered: bool, opts: Options) -> list[str]:
         tokens = tokenize(question)
@@ -199,12 +208,12 @@ class Searcher:
             qvec = self.encoder.encode([question])[0]
         return self.dense.scores(qvec, rows)
 
-    def rank(self, question: str, k: int, method: str = "bm25", opts: Options = ALL_PAGES
-             ) -> tuple[np.ndarray, np.ndarray]:
+    def rank(self, question: str, k: int, method: str = "bm25", opts: Options = ALL_PAGES,
+             within: set[str] | None = None) -> tuple[np.ndarray, np.ndarray]:
         """Top-k page rows and their scores, best first."""
         if method not in METHODS:
             raise ValueError(f"unknown method {method!r}; expected one of {METHODS}")
-        _, rows = self.filtered(question, opts)
+        _, rows = self.filtered(question, opts, within)
         # With a filter the candidates are a few hundred pages, so rank all of them; that way
         # statement routing can promote a page however low the retriever put it.
         depth = k if rows is None else len(rows)

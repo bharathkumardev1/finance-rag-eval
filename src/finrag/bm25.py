@@ -129,6 +129,18 @@ class BM25:
                 parts.append(np.arange(start, end, dtype=np.int64))
             seg.rows = np.concatenate(parts) if parts else np.empty(0, dtype=np.int64)
 
+    def idf(self, j: int) -> float:
+        """Lucene idf of term id ``j``. The browser export reads the same value, not a recomputation."""
+        df = self.df[j]
+        return np.log1p((self.n_docs - df + 0.5) / (df + 0.5))
+
+    def page_lengths(self) -> np.ndarray:
+        """Tokens per page in corpus row order."""
+        out = np.zeros(self.n_docs, dtype=np.int64)
+        for seg in self.segments:
+            out[seg.rows] = seg.lengths
+        return out
+
     def scores(self, tokens: list[str], rows: np.ndarray | None = None) -> np.ndarray:
         """Score of every page in corpus row order, or of ``rows`` only if given."""
         out = np.zeros(self.n_docs, dtype=np.float64)
@@ -137,8 +149,7 @@ class BM25:
             j = self.vocab.get(t)
             if j is None:
                 continue
-            df = self.df[j]
-            idf = np.log1p((self.n_docs - df + 0.5) / (df + 0.5))
+            idf = self.idf(j)
             for seg in self.segments:
                 if j >= seg.n_terms:
                     continue

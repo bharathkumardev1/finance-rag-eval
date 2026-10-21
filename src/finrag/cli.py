@@ -285,6 +285,22 @@ def cmd_loadtest(args: argparse.Namespace) -> int:
     return 0 if all(r["errors"] == 0 for r in rows) else 1
 
 
+def cmd_export_demo(args: argparse.Namespace) -> int:
+    from .data import load_questions
+    from .demo import export
+    from .filters import load_aliases
+    from .search import Searcher
+    from .split import load_split
+
+    data_dir = Path(args.data_dir)
+    aliases = load_aliases(Path(args.aliases)) if args.aliases else {}
+    searcher = Searcher.build(data_dir, aliases)
+    info = export(searcher, load_questions(data_dir), load_split(Path(args.split)), Path(args.out),
+                  Path(args.results) if args.results else None)
+    print(json.dumps(info))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -409,6 +425,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--server-note", default="", help="how the server ran, saved with the results")
     p.add_argument("--out", default="results/load.json")
     p.set_defaults(func=cmd_loadtest)
+
+    p = sub.add_parser("export-demo", help="filings, metadata and parity cases for the browser demo")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--aliases", default="configs/aliases.yaml")
+    p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--results", default="results", help="directory of results/*.json for summary.json")
+    p.add_argument("--out", default="build/demo")
+    p.set_defaults(func=cmd_export_demo)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)

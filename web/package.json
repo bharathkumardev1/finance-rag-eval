@@ -1,0 +1,10 @@
+{
+  "name": "finrag-web",
+  "private": true,
+  "type": "module",
+  "description": "Browser port of the finrag BM25 pipeline, tested against the Python implementation",
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": { "node": ">=20" }
+}

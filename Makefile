@@ -1,4 +1,4 @@
-.PHONY: install data embed eval studies loadtest lock image test
+.PHONY: install data embed eval studies loadtest lock image test demo
 
 install:
 	pip install -e ".[dev]"
@@ -38,6 +38,14 @@ lock:
 image:
 	docker build -t finrag .
 
+# Lint, pytest, then the browser port against a fresh export of the fixture corpus.
 test:
 	ruff check src tests
 	pytest -q
+	finrag export-demo --data-dir tests/fixtures/mini --split tests/fixtures/mini/split.json \
+	  --aliases "" --results "" --out web/test/data
+	cd web && npm test
+
+# Filings, metadata, parity cases and summary.json for the site's search demo.
+demo:
+	finrag export-demo --out build/demo
