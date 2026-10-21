@@ -20,7 +20,8 @@ import numpy as np
 from .data import Question
 from .metrics import BOOTSTRAP, PageKey, bootstrap_ci, metrics, paired_diff, per_question, score_ranking
 
-DEPTH = 100  # pages kept per question; every metric looks at the top 10 or fewer
+DEPTH = 100  # pages ranked per question; every metric looks at the top 10 or fewer
+KEEP = 30    # pages saved per question, for the reranker and generation steps that read them
 System = Callable[[str], list[PageKey]]
 
 
@@ -41,7 +42,8 @@ def run(systems: dict[str, System], questions: list[Question], split: dict[str, 
             t0 = time.perf_counter()
             ranked = system(q.text)[:DEPTH]
             seconds[name][q.qid] = time.perf_counter() - t0
-            per_q[q.qid]["runs"][name] = {**score_ranking(ranked, q), "top10": [list(k) for k in ranked[:10]]}
+            per_q[q.qid]["runs"][name] = {**score_ranking(ranked, q),
+                                          "top": [list(k) for k in ranked[:KEEP]]}
 
     table = []
     for name in systems:
