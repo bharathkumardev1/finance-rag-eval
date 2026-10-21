@@ -270,6 +270,21 @@ def cmd_rerank_study(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_loadtest(args: argparse.Namespace) -> int:
+    from .data import load_questions
+    from .evaluate import run_meta, save
+    from .loadtest import USD_PER_VCPU_HOUR, run
+
+    questions = [q.text for q in load_questions(Path(args.data_dir))]
+    levels = tuple(int(c) for c in args.levels.split(","))
+    rows = []
+    for method in args.methods.split(","):
+        rows += run(args.base, questions, method, levels, args.seconds)
+    meta = run_meta(args.command_line, server=args.server_note, usd_per_vcpu_hour=USD_PER_VCPU_HOUR)
+    save({"meta": meta, "levels": rows}, Path(args.out))
+    return 0 if all(r["errors"] == 0 for r in rows) else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -384,6 +399,16 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--threads", type=int, default=4)
     p.add_argument("--out", default="results/rerank.json")
     p.set_defaults(func=cmd_rerank_study)
+
+    p = sub.add_parser("loadtest", help="closed-loop load test against a running service")
+    p.add_argument("--base", default="http://127.0.0.1:8000")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--methods", default="bm25,hybrid")
+    p.add_argument("--levels", default="1,2,4,8,16")
+    p.add_argument("--seconds", type=float, default=30.0)
+    p.add_argument("--server-note", default="", help="how the server ran, saved with the results")
+    p.add_argument("--out", default="results/load.json")
+    p.set_defaults(func=cmd_loadtest)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
