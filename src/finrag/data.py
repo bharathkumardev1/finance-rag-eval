@@ -1,4 +1,4 @@
-"""FinanceBench download and loaders.
+"""FinanceBench download, page text extraction and loaders.
 
 FinanceBench (Islam et al., 2023, arXiv:2311.11944) publishes 150 questions over real SEC
 filings. Each question names the filing and the zero-indexed page that answers it, which is
@@ -146,3 +146,76 @@ def load_doc_meta(data_dir: Path) -> dict[str, DocMeta]:
             sector=rs[0].get("gics_sector", ""),
         )
     return metas
+
+
+def extract_pages(pdf_path: Path) -> list[str]:
+    """One string per PDF page, in page order, so FinanceBench's page numbers line up."""
+    import pymupdf
+
+    with pymupdf.open(pdf_path) as doc:
+        return [page.get_text() for page in doc]
+
+
+def build_page_cache(data_dir: Path, workers: int = 2) -> dict[str, int]:
+    """Extract every downloaded PDF into ``pages/<filing>.json``; existing files are kept."""
+    data_dir = Path(data_dir)
+    out_dir = data_dir / "pages"
+    out_dir.mkdir(parents=True, exist_ok=True)
+
+    def work(pdf: Path) -> tuple[str, int]:
+        dest = out_dir / f"{pdf.stem}.json"
+        if dest.exists():
+            return pdf.stem, len(json.loads(dest.read_text(encoding="utf8")))
+        try:
+            pages = extract_pages(pdf)
+        except Exception:  # a PDF PyMuPDF can't open is reported, not fatal
+            return pdf.stem, -1
+        tmp = dest.with_name(dest.name + ".part")
+        tmp.write_text(json.dumps(pages), encoding="utf8")
+        tmp.replace(dest)
+        return pdf.stem, len(pages)
+
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        return dict(pool.map(work, sorted((data_dir / "pdfs").glob("*.pdf"))))
+
+
+def load_pages(data_dir: Path) -> dict[str, list[str]]:
+    pages_dir = Path(data_dir) / "pages"
+    return {p.stem: json.loads(p.read_text(encoding="utf8")) for p in sorted(pages_dir.glob("*.json"))}
+
+
+def verify_evidence_pages(data_dir: Path) -> dict[str, int]:
+    """Check each labeled evidence page against the text we extracted for that page number.
+
+    FinanceBench ships the full text of every evidence page. An 80-character slice of it
+    (letters and digits only) should appear on our page with the same number. If it shows up
+    one page away instead, the labels and the extraction disagree about numbering.
+    """
+    import re
+
+    def norm(s: str) -> str:
+        return re.sub(r"[^a-z0-9]", "", s.lower())
+
+    pages = load_pages(data_dir)
+    counts = {"match": 0, "off_by_one": 0, "not_found": 0, "no_reference": 0, "missing_doc": 0}
+    for line in open(Path(data_dir) / QUESTIONS_FILE, encoding="utf8"):
+        for e in json.loads(line)["evidence"]:
+            doc = e.get("evidence_doc_name") or e["doc_name"]
+            page = int(e["evidence_page_num"])
+            ref = norm(e.get("evidence_text_full_page") or "")
+            if doc not in pages:
+                counts["missing_doc"] += 1
+                continue
+            if len(ref) < 40:
+                counts["no_reference"] += 1
+                continue
+            probe = ref[100:180] if len(ref) > 180 else ref[:80]
+            text = [norm(t) for t in pages[doc][max(page - 1, 0):page + 2]]
+            here = page - max(page - 1, 0)
+            if here < len(text) and probe in text[here]:
+                counts["match"] += 1
+            elif any(probe in t for i, t in enumerate(text) if i != here):
+                counts["off_by_one"] += 1
+            else:
+                counts["not_found"] += 1
+    return counts
