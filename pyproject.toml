@@ -21,6 +21,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0", "ruff==0.17.1", "bm25s>=0.2.0"]
+generate = ["openai>=3.36,<4"]
 
 [project.scripts]
 finrag = "finrag.cli:main"

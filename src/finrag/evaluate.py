@@ -41,7 +41,7 @@ def run(systems: dict[str, System], questions: list[Question], split: dict[str, 
             t0 = time.perf_counter()
             ranked = system(q.text)[:DEPTH]
             seconds[name][q.qid] = time.perf_counter() - t0
-            per_q[q.qid]["runs"][name] = score_ranking(ranked, q)
+            per_q[q.qid]["runs"][name] = {**score_ranking(ranked, q), "top10": [list(k) for k in ranked[:10]]}
 
     table = []
     for name in systems:
