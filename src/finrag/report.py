@@ -65,14 +65,17 @@ def comparisons(results: dict) -> str:
 def write_markdown(results: dict, path: Path) -> None:
     m = results["meta"]
     sha = (m["git_sha"] or "unknown")[:7]
+    windows = f", {m['dense_windows']:,} MiniLM windows" if m.get("dense_windows") else ""
+    encoding = (f" Dense and hybrid times include encoding the question with MiniLM (onnxruntime "
+                f"{m['onnxruntime']}, one thread).") if m.get("dense_windows") else ""
     parts = [
         "# Results\n",
         f"Produced by `{m['command']}` at commit `{sha}`"
         f"{' with uncommitted changes' if m['git_dirty'] else ''} on {m['date']}. "
         f"FinanceBench at `{m['financebench_commit'][:7]}`: {m['filings']} filings, "
-        f"{m['pages']:,} pages, {m['questions']} questions ({m['dev']} dev, {m['test']} test). "
-        f"{m['cpu']}, {m['cpus']} CPUs, Python {m['python']}, numpy {m['numpy']}. Latency is "
-        f"in-process wall time per query, one query at a time.\n",
+        f"{m['pages']:,} pages{windows}, {m['questions']} questions ({m['dev']} dev, {m['test']} "
+        f"test). {m['cpu']}, {m['cpus']} CPUs, Python {m['python']}, numpy {m['numpy']}. Latency "
+        f"is in-process wall time per query, one query at a time.{encoding}\n",
         f"## Test ({m['test']} questions)\n",
         table(results, "test"),
         multi_page(results, "test"),

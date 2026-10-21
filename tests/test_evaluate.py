@@ -1,6 +1,7 @@
 import json
 
 import pytest
+from helpers import MODEL_DIR, needs_model
 
 from finrag.cli import main
 from finrag.data import load_questions
@@ -40,7 +41,7 @@ def test_systems_only_see_the_question_text(mini_dir, questions):
 def test_eval_command_writes_results_and_markdown(mini_dir, tmp_path):
     out, md = tmp_path / "eval.json", tmp_path / "RESULTS.md"
     code = main(["eval", "--data-dir", str(mini_dir), "--split", str(mini_dir / "split.json"),
-                 "--out", str(out), "--markdown", str(md)])
+                 "--methods", "bm25", "--out", str(out), "--markdown", str(md)])
     assert code == 0
     res = json.loads(out.read_text())
     meta = res["meta"]
@@ -63,3 +64,21 @@ def test_markdown_lists_comparisons_when_present(mini_dir, questions, tmp_path):
     write_markdown(res, tmp_path / "R.md")
     text = (tmp_path / "R.md").read_text()
     assert "| `a` | `b` | hit@10 | +1.000 |" in text and "commit `0000000`" in text
+
+
+@needs_model
+def test_eval_runs_minilm_and_the_hybrid_end_to_end(mini_dir, tmp_path):
+    emb = tmp_path / "emb"
+    assert main(["embed", "--data-dir", str(mini_dir), "--model-dir", str(MODEL_DIR),
+                 "--emb-dir", str(emb), "--threads", "1"]) == 0
+    out = tmp_path / "eval.json"
+    assert main(["eval", "--data-dir", str(mini_dir), "--split", str(mini_dir / "split.json"),
+                 "--model-dir", str(MODEL_DIR), "--emb-dir", str(emb), "--out", str(out),
+                 "--markdown", str(tmp_path / "R.md")]) == 0
+    res = json.loads(out.read_text())
+    configs = {r["config"] for r in res["table"]}
+    assert configs == {"bm25/all-pages", "dense/all-pages", "hybrid/all-pages"}
+    assert res["meta"]["dense_windows"] >= res["meta"]["pages"]
+    assert {(c["a"], c["metric"]) for c in res["comparisons"]} == {
+        ("dense/all-pages", "hit@10"), ("dense/all-pages", "mrr@10"),
+        ("hybrid/all-pages", "hit@10"), ("hybrid/all-pages", "mrr@10")}
