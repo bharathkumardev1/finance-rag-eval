@@ -54,7 +54,10 @@ class MetadataFilter:
             for alias in {full, core}:
                 if len(alias) >= 2:
                     aliases.setdefault(alias, company)
+        known = {m.company for m in metas.values()}
         for company, extra in (extra_aliases or {}).items():
+            if company not in known:  # an alias for a company with no filings would empty the filter
+                continue
             for alias in extra:
                 aliases.setdefault(_norm(alias), company)
         # Longest first, so "american water works" wins over "american".

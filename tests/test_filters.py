@@ -60,7 +60,27 @@ def test_quarter_narrowing_can_be_switched_off():
         "JOHNSON_JOHNSON_2022_10K", "JOHNSON_JOHNSON_2022Q4_EARNINGS"}
 
 
+def test_aliases_for_companies_without_filings_are_ignored():
+    f = MetadataFilter(METAS, {"JPMorgan": ["JPM"]})
+    assert f.allowed_docs("JPM net revenue in 2022", "company_year") is None
+
+
 def test_aliases_file(tmp_path):
     path = tmp_path / "aliases.yaml"
     path.write_text("Johnson & Johnson: [JnJ]  # a comment\nAmerican Express: [AMEX, Amex]\n")
     assert load_aliases(path) == {"Johnson & Johnson": ["JnJ"], "American Express": ["AMEX", "Amex"]}
+
+
+def test_shipped_aliases_cite_dev_questions_only():
+    import re
+    from pathlib import Path
+
+    from finrag.split import load_split
+
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "configs" / "aliases.yaml").read_text()
+    cited = set(re.findall(r"financebench_id_\d+", text))
+    dev = set(load_split(root / "configs" / "split.json")["dev"])
+    assert cited and cited <= dev
+    assert set(load_aliases(root / "configs" / "aliases.yaml")) == {
+        "American Express", "Johnson & Johnson", "JPMorgan", "MGM Resorts"}
