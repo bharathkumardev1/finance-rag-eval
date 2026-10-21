@@ -12,3 +12,5 @@ __pycache__/
 
 web/node_modules/
 web/test/data/
+tests/fixtures/mini/index/
+build/
