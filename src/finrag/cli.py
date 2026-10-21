@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shlex
 import sys
 from pathlib import Path
 
@@ -49,6 +50,34 @@ def cmd_split(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_eval(args: argparse.Namespace) -> int:
+    from .data import FINANCEBENCH_COMMIT, load_questions
+    from .evaluate import DEPTH, run, run_meta, save
+    from .report import write_markdown
+    from .search import Searcher
+    from .split import load_split
+
+    data_dir = Path(args.data_dir)
+    searcher = Searcher.build(data_dir)
+    questions = load_questions(data_dir)
+    split = load_split(Path(args.split))
+    systems = {"bm25/all-pages": lambda text: searcher.ranked_pages(text, DEPTH)}
+    searcher.ranked_pages("warm up", 1)  # first call pays for page faults; keep it out of p95
+    results = run(systems, questions, split)
+    meta = run_meta(args.command_line, financebench_commit=FINANCEBENCH_COMMIT,
+                    filings=len(searcher.corpus.docs), pages=len(searcher.corpus),
+                    questions=len(questions), dev=len(split["dev"]), test=len(split["test"]),
+                    depth=DEPTH)
+    results = {"meta": meta, **results}
+    save(results, Path(args.out))
+    write_markdown(results, Path(args.markdown))
+    for r in results["table"]:
+        if r["split"] == "test":
+            print(f"{r['config']:<24} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}  "
+                  f"p95 {r['p95_ms']:.1f} ms")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -74,7 +103,16 @@ def main(argv: list[str] | None = None) -> int:
                    help="dev questions per type (default: 17, 17 and 16 of the 150)")
     p.set_defaults(func=cmd_split)
 
+    p = sub.add_parser("eval", help="rank pages for every question and score the rankings")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--out", default="results/eval.json")
+    p.add_argument("--markdown", default="results/RESULTS.md")
+    p.set_defaults(func=cmd_eval)
+
+    argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
+    args.command_line = shlex.join(["finrag", *argv])
     return args.func(args)
 
 
