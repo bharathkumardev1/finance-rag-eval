@@ -4,9 +4,10 @@ __pycache__/
 .pytest_cache/
 .ruff_cache/
 
-# Downloaded and derived data: rebuilt from public sources by `make data` and `make embed`.
-data/
-models/
+# Downloaded and derived data, rebuilt from public sources by the Makefile. No trailing
+# slash, so a symlink to a bigger disk is ignored as well.
+/data
+/models
 ci-results/
 
 web/node_modules/
