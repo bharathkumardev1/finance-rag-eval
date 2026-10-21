@@ -12,7 +12,6 @@ best window (MaxP). Questions fit in one window.
 
 from __future__ import annotations
 
-import hashlib
 import json
 import time
 import urllib.request
@@ -20,7 +19,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .data import sha256_file
+from .data import pages_digest, sha256_file
 
 MODEL_ID = "sentence-transformers/all-MiniLM-L6-v2"
 MODEL_SHA256 = "6fd5d72fe4589f189f8ebc006442dbb529bb7ce38f8082112682524616046452"
@@ -112,10 +111,6 @@ class MiniLM:
                 seqs.append(w)
                 owner.append(p)
         return self.embed_ids(seqs), np.array(owner, dtype=np.int32)
-
-
-def pages_digest(pages: list[str]) -> str:
-    return hashlib.sha256("\f".join(pages).encode("utf8")).hexdigest()[:16]
 
 
 def embed_corpus(model, data_dir: Path, out_dir: Path, git_sha: str | None = None) -> dict:

@@ -10,6 +10,14 @@ DOCS = [
     "",
     "The company repurchased shares under its buyback program and the program continues.",
 ]
+FILINGS = {
+    "A": [tokenize(DOCS[0]), tokenize(DOCS[1])],
+    "B": [tokenize(DOCS[2])],
+    "C": [tokenize(DOCS[3]), tokenize(DOCS[4])],
+}
+OFFSETS = {"A": (0, 2), "B": (2, 3), "C": (3, 5)}
+QUERIES = ["wildfire mitigation wildfire", "capital expenditures 2021", "program buyback shares",
+           "revenue", "million"]
 
 
 def test_tokenize_matches_lucene_style_rules():
@@ -23,21 +31,56 @@ def test_scores_match_bm25s():
     bm25s = pytest.importorskip("bm25s")
     ref = bm25s.BM25()
     ref.index(bm25s.tokenize(DOCS, stopwords="en", show_progress=False), show_progress=False)
-    ours = BM25(tokenize(d) for d in DOCS)
-    for query in ("wildfire mitigation wildfire", "capital expenditures 2021",
-                  "program buyback shares", "revenue"):
+    ours = BM25.from_pages(tokenize(d) for d in DOCS)
+    for query in QUERIES:
         q = tokenize(query)
         expected = np.asarray(ref.get_scores([t for t in q if t in ref.vocab_dict]))
         np.testing.assert_allclose(ours.scores(q), expected, atol=1e-5)
 
 
-def test_scoring_a_subset_equals_scoring_everything(tmp_path):
-    index = BM25(tokenize(d) for d in DOCS)
+def test_scoring_a_subset_equals_scoring_everything():
+    index = BM25.from_pages(tokenize(d) for d in DOCS)
     rows = np.array([0, 2, 4])
     q = tokenize("program revenue capital")
-    np.testing.assert_allclose(index.scores(q, rows), index.scores(q)[rows])
+    np.testing.assert_array_equal(index.scores(q, rows), index.scores(q)[rows])
     assert index.scores(tokenize("unknownword")).sum() == 0
-    index.save(tmp_path / "idx")
-    loaded = BM25.load(tmp_path / "idx")
-    np.testing.assert_allclose(loaded.scores(q), index.scores(q))
-    assert loaded.avg_len == pytest.approx(index.avg_len)
+
+
+def test_segments_score_exactly_like_one_pass(tmp_path):
+    one = BM25()
+    one.add(FILINGS)
+    one.assign_rows(OFFSETS)
+    grown = BM25()
+    grown.add({"C": FILINGS["C"]})
+    grown.save(tmp_path)
+    grown = BM25.load(tmp_path)
+    grown.add({"A": FILINGS["A"]})
+    grown.add({"B": FILINGS["B"]})
+    grown.save(tmp_path)
+    grown = BM25.load(tmp_path)
+    grown.assign_rows(OFFSETS)
+    assert len(grown.segments) == 3 and grown.n_docs == one.n_docs == 5
+    for query in QUERIES:
+        q = tokenize(query)
+        np.testing.assert_array_equal(grown.scores(q), one.scores(q))
+
+
+def test_save_writes_only_new_segments(tmp_path):
+    index = BM25()
+    index.add({"A": FILINGS["A"]})
+    index.save(tmp_path)
+    first = (tmp_path / "segment-0000.npz").stat().st_mtime_ns
+    index.add({"B": FILINGS["B"]})
+    index.save(tmp_path)
+    assert (tmp_path / "segment-0000.npz").stat().st_mtime_ns == first
+    assert sorted(p.name for p in tmp_path.glob("segment-*.npz")) == ["segment-0000.npz",
+                                                                       "segment-0001.npz"]
+
+
+def test_a_filing_goes_in_once_and_must_match_the_corpus():
+    index = BM25()
+    index.add({"A": FILINGS["A"]})
+    with pytest.raises(ValueError, match="already indexed: A"):
+        index.add({"A": FILINGS["A"]})
+    with pytest.raises(ValueError, match="indexed 2 pages, corpus has 3"):
+        index.assign_rows({"A": (0, 3)})

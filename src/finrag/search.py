@@ -6,7 +6,7 @@ filter result is a set of contiguous row ranges and both retrievers score just t
 
 from __future__ import annotations
 
-import hashlib
+import shutil
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -14,7 +14,7 @@ from pathlib import Path
 import numpy as np
 
 from .bm25 import BM25, tokenize
-from .data import DocMeta, load_doc_meta, load_pages
+from .data import DocMeta, load_doc_meta, load_pages, pages_digest
 from .filters import MetadataFilter
 from .statements import page_kinds, question_kinds, route
 
@@ -109,30 +109,38 @@ class Corpus:
         ranges = [np.arange(*self.offsets[d]) for d in sorted(docs) if d in self.offsets]
         return np.concatenate(ranges) if ranges else np.empty(0, dtype=np.int64)
 
-    def digest(self) -> str:
-        """Hash of the page text, so cached indexes are rebuilt when the text changes."""
-        h = hashlib.sha256()
-        for doc in self.docs:
-            h.update(doc.encode())
-            start, end = self.offsets[doc]
-            for t in self.texts[start:end]:
-                h.update(b"\f" + t.encode("utf8"))
-        return h.hexdigest()[:16]
+    def pages(self, doc: str) -> list[str]:
+        start, end = self.offsets[doc]
+        return self.texts[start:end]
 
     def __len__(self) -> int:
         return len(self.texts)
 
 
-def load_or_build_bm25(corpus: Corpus, cache_dir: Path) -> BM25:
-    prefix = Path(cache_dir) / f"bm25-{corpus.digest()}"
-    if Path(f"{prefix}.npz").exists() and Path(f"{prefix}.json").exists():
-        return BM25.load(prefix)
-    index = BM25(tokenize(t) for t in corpus.texts)
-    try:
-        prefix.parent.mkdir(parents=True, exist_ok=True)
-        index.save(prefix)
-    except OSError:  # a read-only data volume keeps the index in memory only
-        pass
+def load_or_build_bm25(corpus: Corpus, index_dir: Path) -> BM25:
+    """Load the saved BM25 index, add the filings it doesn't have as one new segment, save.
+
+    A segment can't give a filing back, so a filing whose text changed or that left the
+    corpus means a full rebuild.
+    """
+    directory = Path(index_dir) / "bm25"
+    hashes = {d: pages_digest(corpus.pages(d)) for d in corpus.docs}
+    index = None
+    if (directory / "manifest.json").exists():
+        index = BM25.load(directory)
+        if any(hashes.get(name) != digest for name, (_, digest) in index.filings().items()):
+            shutil.rmtree(directory)
+            index = None
+    index = index or BM25()
+    indexed = index.filings()
+    new = [d for d in corpus.docs if d not in indexed]
+    if new:
+        index.add({d: [tokenize(t) for t in corpus.pages(d)] for d in new}, hashes)
+        try:
+            index.save(directory)
+        except OSError:  # a read-only data volume keeps the index in memory only
+            pass
+    index.assign_rows(corpus.offsets)
     return index
 
 

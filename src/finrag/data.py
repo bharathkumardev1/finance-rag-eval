@@ -58,6 +58,11 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def pages_digest(pages: list[str]) -> str:
+    """Short hash of a filing's page text, to notice when an extraction changes."""
+    return hashlib.sha256("\f".join(pages).encode("utf8")).hexdigest()[:16]
+
+
 def read_manifest(path: Path) -> dict[str, str]:
     """``sha256sum`` format: one ``<hex>  <relative path>`` line per file."""
     out = {}

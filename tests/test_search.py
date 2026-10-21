@@ -18,18 +18,13 @@ def test_rows_are_numbered_filing_by_filing():
     assert [c.key(r) for r in range(3)] == [("A", 0), ("B", 0), ("B", 1)]
 
 
-def test_digest_changes_with_the_text():
-    a = Corpus({"A": ["x y"]}, {}).digest()
-    assert a == Corpus({"A": ["x y"]}, {}).digest()
-    assert a != Corpus({"A": ["x z"]}, {}).digest()
-
-
-def test_index_is_cached_and_reloaded(mini_dir):
+def test_index_is_saved_and_reloaded(mini_dir):
     first = Searcher.build(mini_dir)
-    assert len(list((mini_dir / "index").glob("bm25-*.npz"))) == 1
+    assert len(list((mini_dir / "index" / "bm25").glob("segment-*.npz"))) == 1
     second = Searcher.build(mini_dir)
-    q = "coastal litigation settlement"
-    np.testing.assert_allclose(first.bm25.scores(q.split()), second.bm25.scores(q.split()))
+    assert len(second.bm25.segments) == 1
+    q = "coastal litigation settlement".split()
+    np.testing.assert_array_equal(first.bm25.scores(q), second.bm25.scores(q))
 
 
 def test_search_finds_the_page_with_the_fact(mini_dir):
