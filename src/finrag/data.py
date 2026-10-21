@@ -93,10 +93,16 @@ def _fetch(url: str, dest: Path, expected: str, timeout: int = 180) -> str:
     return "downloaded"
 
 
-def download(data_dir: Path, manifest: Path, base: str = RAW_BASE, workers: int = 6) -> dict:
-    """Fetch every file the manifest lists: the two question/metadata files and 360 PDFs."""
+def download(data_dir: Path, manifest: Path, base: str = RAW_BASE, workers: int = 6,
+             only: set[str] | None = None) -> dict:
+    """Fetch every file the manifest lists: the two question/metadata files and 360 PDFs.
+
+    ``only`` limits the PDFs to those filings; the question and metadata files always come.
+    """
     data_dir = Path(data_dir)
     files = read_manifest(manifest)
+    if only is not None:
+        files = {n: d for n, d in files.items() if not n.startswith("pdfs/") or Path(n).stem in only}
 
     def get(item: tuple[str, str]) -> tuple[str, str]:
         name, digest = item

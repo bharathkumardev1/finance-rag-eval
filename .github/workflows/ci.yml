@@ -29,3 +29,25 @@ jobs:
         run: finrag model
       - name: Tests
         run: pytest -q
+
+  gate:
+    # The BM25 pipeline on the 40 real filings behind the 50 dev questions, compared with the
+    # run recorded in configs/gate.json. See src/finrag/gate.py for the threshold.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -e .
+      - uses: actions/cache@v6
+        with:
+          path: gate-data/pdfs
+          key: gate-pdfs-${{ hashFiles('configs/gate.json', 'configs/financebench.sha256') }}
+      - name: Filings, checked against their SHA-256
+        run: finrag download --data-dir gate-data --filings configs/gate.json
+      - name: Page text
+        run: finrag pages --data-dir gate-data
+      - name: Gate
+        run: finrag gate --data-dir gate-data

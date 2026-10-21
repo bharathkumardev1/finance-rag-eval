@@ -12,7 +12,8 @@ from pathlib import Path
 def cmd_download(args: argparse.Namespace) -> int:
     from .data import download
 
-    summary = download(Path(args.data_dir), Path(args.manifest))
+    only = set(json.loads(Path(args.filings).read_text())["filings"]) if args.filings else None
+    summary = download(Path(args.data_dir), Path(args.manifest), only=only)
     print(json.dumps({status: len(names) for status, names in summary.items()}))
     bad = summary.get("failed", []) + summary.get("mismatch", [])
     for name in bad:
@@ -137,6 +138,29 @@ def cmd_check_incremental(args: argparse.Namespace) -> int:
     return 0 if result["passed"] else 1
 
 
+def cmd_gate(args: argparse.Namespace) -> int:
+    from . import gate as g
+
+    path = Path(args.config)
+    if args.define:
+        from .data import load_questions
+        from .split import load_split
+
+        subset = g.define(load_questions(Path(args.data_dir)), load_split(Path(args.split))["dev"])
+        g.save({"max_drop": args.max_drop, **subset}, path)
+        print(f"{len(subset['questions'])} questions over {len(subset['filings'])} filings -> {path}")
+        return 0
+    gate = g.load(path)
+    hits = g.run(Path(args.data_dir), gate, Path(args.aliases))
+    if args.record:
+        g.save(g.record(gate, hits), path)
+        print(f"recorded Hit@10 {sum(hits.values())}/{len(hits)} -> {path}")
+        return 0
+    ok, report = g.check(gate, hits)
+    print(report)
+    return 0 if ok else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -144,6 +168,8 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("download", help="FinanceBench questions, metadata and filing PDFs")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--manifest", default="configs/financebench.sha256")
+    p.add_argument("--filings", default=None,
+                   help="JSON file with a \"filings\" list; download only those PDFs")
     p.set_defaults(func=cmd_download)
 
     p = sub.add_parser("pages", help="extract page text from every PDF into data/pages")
@@ -193,6 +219,16 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--batch", type=int, default=12)
     p.add_argument("--out", default="results/incremental.json")
     p.set_defaults(func=cmd_check_incremental)
+
+    p = sub.add_parser("gate", help="regression gate: BM25 pipeline on the dev questions' filings")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--config", default="configs/gate.json")
+    p.add_argument("--aliases", default="configs/aliases.yaml")
+    p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--max-drop", type=int, default=1)
+    p.add_argument("--define", action="store_true", help="write the question and filing lists")
+    p.add_argument("--record", action="store_true", help="store this run as the one to compare with")
+    p.set_defaults(func=cmd_gate)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)

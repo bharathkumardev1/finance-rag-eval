@@ -109,6 +109,10 @@ class Corpus:
         ranges = [np.arange(*self.offsets[d]) for d in sorted(docs) if d in self.offsets]
         return np.concatenate(ranges) if ranges else np.empty(0, dtype=np.int64)
 
+    def searchable_metas(self) -> dict[str, DocMeta]:
+        """Metadata of the filings that have pages here, so the filter never picks one that doesn't."""
+        return {d: m for d, m in self.metas.items() if d in self.offsets}
+
     def pages(self, doc: str) -> list[str]:
         start, end = self.offsets[doc]
         return self.texts[start:end]
@@ -149,7 +153,7 @@ class Searcher:
                  dense=None, encoder=None):
         self.corpus = corpus
         self.bm25 = bm25
-        self.filter = flt or MetadataFilter(corpus.metas)
+        self.filter = flt or MetadataFilter(corpus.searchable_metas())
         self.dense = dense
         self.encoder = encoder
         self.kinds = [page_kinds(t) for t in corpus.texts]
@@ -160,7 +164,7 @@ class Searcher:
               threads: int = 1) -> Searcher:
         corpus = Corpus.load(data_dir)
         bm25 = load_or_build_bm25(corpus, Path(data_dir) / "index")
-        flt = MetadataFilter(corpus.metas, aliases or {})
+        flt = MetadataFilter(corpus.searchable_metas(), aliases or {})
         dense = encoder = None
         if model_dir is not None and emb_dir is not None:
             from .dense import DenseIndex, MiniLM
