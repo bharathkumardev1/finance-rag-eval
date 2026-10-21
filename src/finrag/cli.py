@@ -159,7 +159,7 @@ def main(argv: list[str] | None = None) -> int:
                    help="comma-separated; dense and hybrid need `finrag embed` first")
     p.add_argument("--model-dir", default="models/all-MiniLM-L6-v2")
     p.add_argument("--emb-dir", default="data/embeddings")
-    p.add_argument("--aliases", default=None, help="YAML file of extra company names")
+    p.add_argument("--aliases", default="configs/aliases.yaml", help="YAML file of extra company names")
     p.add_argument("--out", default="results/eval.json")
     p.add_argument("--markdown", default="results/RESULTS.md")
     p.set_defaults(func=cmd_eval)
