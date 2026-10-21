@@ -121,6 +121,22 @@ def cmd_eval(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_check_incremental(args: argparse.Namespace) -> int:
+    from .data import load_questions
+    from .evaluate import run_meta, save
+    from .filters import MetadataFilter, load_aliases
+    from .incremental import check
+    from .search import Corpus
+
+    data_dir = Path(args.data_dir)
+    corpus = Corpus.load(data_dir)
+    flt = MetadataFilter(corpus.metas, load_aliases(Path(args.aliases)))
+    result = check(corpus, load_questions(data_dir), flt, args.holdout_every, args.batch)
+    save({"meta": run_meta(args.command_line), **result}, Path(args.out))
+    print(json.dumps(result))
+    return 0 if result["passed"] else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -168,6 +184,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", default="results/eval.json")
     p.add_argument("--markdown", default="results/RESULTS.md")
     p.set_defaults(func=cmd_eval)
+
+    p = sub.add_parser("check-incremental",
+                       help="grow a BM25 index in batches and compare it with a one-pass build")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--aliases", default="configs/aliases.yaml")
+    p.add_argument("--holdout-every", type=int, default=10)
+    p.add_argument("--batch", type=int, default=12)
+    p.add_argument("--out", default="results/incremental.json")
+    p.set_defaults(func=cmd_check_incremental)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
