@@ -16,15 +16,16 @@ embed:
 	finrag model
 	finrag embed
 
-# Every configuration on dev and test: results/eval.json and results/RESULTS.md.
+# Every configuration on dev and test: results/eval.json and results/RESULTS.md. One thread,
+# so per-query latency means the same thing here as in the one-worker service.
 eval:
-	finrag eval
+	OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 finrag eval
 
 # The incremental-index check and the chunk-size study. The reranker and generation runs
 # need a Hugging Face download and an OpenAI key; see the README.
 studies:
-	finrag check-incremental
-	finrag chunk-study
+	OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 finrag check-incremental
+	OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 finrag chunk-study
 
 # Service on one CPU, load generator on the other: results/load.json.
 loadtest:

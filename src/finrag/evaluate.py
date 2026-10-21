@@ -100,6 +100,8 @@ def run_meta(command: str, **extra) -> dict:
         "pymupdf": pymupdf.__version__,
         "cpu": cpu_name(),
         "cpus": os.cpu_count(),
+        # numpy's BLAS and ONNX Runtime both use every core unless told otherwise
+        "threads": {k: os.environ.get(k) for k in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS")},
         "bootstrap": BOOTSTRAP,
         **extra,
     }
