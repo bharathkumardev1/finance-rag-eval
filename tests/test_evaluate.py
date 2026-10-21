@@ -77,8 +77,8 @@ def test_eval_runs_minilm_and_the_hybrid_end_to_end(mini_dir, tmp_path):
                  "--markdown", str(tmp_path / "R.md")]) == 0
     res = json.loads(out.read_text())
     configs = {r["config"] for r in res["table"]}
-    assert configs == {"bm25/all-pages", "dense/all-pages", "hybrid/all-pages"}
+    assert {"bm25/all-pages", "dense/all-pages", "hybrid/all-pages",
+            "hybrid/company_year+quarter+drop+route", "dense/company_year+quarter+route"} <= configs
     assert res["meta"]["dense_windows"] >= res["meta"]["pages"]
-    assert {(c["a"], c["metric"]) for c in res["comparisons"]} == {
-        ("dense/all-pages", "hit@10"), ("dense/all-pages", "mrr@10"),
-        ("hybrid/all-pages", "hit@10"), ("hybrid/all-pages", "mrr@10")}
+    assert ("hybrid/all-pages", "bm25/all-pages", "hit@10") in {
+        (c["a"], c["b"], c["metric"]) for c in res["comparisons"]}

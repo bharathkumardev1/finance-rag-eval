@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from finrag.search import RRF_DEPTH, Corpus, Searcher, rrf, top_k
+from finrag.search import ALL_PAGES, FULL, RRF_DEPTH, Corpus, Options, Searcher, rrf, top_k
 
 
 def test_top_k_is_best_first_and_breaks_ties_by_position():
@@ -54,7 +54,8 @@ def hash_searcher(mini_dir, tmp_path):
 
     embed_corpus(HashEncoder(), mini_dir, tmp_path)
     s = Searcher.build(mini_dir)
-    return Searcher(s.corpus, s.bm25, DenseIndex.load(tmp_path, s.corpus.offsets), HashEncoder())
+    return Searcher(s.corpus, s.bm25, dense=DenseIndex.load(tmp_path, s.corpus.offsets),
+                    encoder=HashEncoder())
 
 
 def test_hybrid_fuses_the_bm25_and_dense_rankings(mini_dir, tmp_path):
@@ -75,3 +76,36 @@ def test_dense_needs_an_index():
         s.rank("x", 1, "dense")
     with pytest.raises(ValueError, match="unknown method"):
         s.rank("x", 1, "sparse")
+
+
+def test_option_keys_name_each_piece():
+    assert ALL_PAGES.key() == "all-pages"
+    assert Options("company").key() == "company"
+    assert Options("company_year", quarters=True, route_statements=True).key() == (
+        "company_year+quarter+route")
+    assert FULL.key() == "company_year+quarter+drop+route"
+
+
+def test_the_filter_limits_which_pages_are_ranked(mini_dir):
+    s = Searcher.build(mini_dir)
+    q = "What restructuring charges did Initech record in 2022?"
+    docs, rows = s.filtered(q, Options("company_year"))
+    assert docs == {"INITECH_2022_10K"} and len(rows) == 8
+    assert {d for d, _ in s.ranked_pages(q, 100, "bm25", Options("company_year"))} == {"INITECH_2022_10K"}
+    assert s.filtered("Which company retired its last coal unit?", FULL) == (None, None)
+
+
+def test_routing_puts_the_requested_statement_first(mini_dir):
+    s = Searcher.build(mini_dir)
+    q = "What is Acme's FY2021 working capital?"
+    plain = s.ranked_pages(q, 3, "bm25", Options("company_year"))
+    routed = s.ranked_pages(q, 3, "bm25", Options("company_year", route_statements=True))
+    assert routed[0] == ("ACME_2021_10K", 4) and plain[0] != routed[0]
+
+
+def test_dropping_the_company_name_changes_only_the_bm25_query(mini_dir):
+    s = Searcher.build(mini_dir)
+    q = "Acme Corporation net income 2021"
+    assert s.query_tokens(q, True, FULL) == ["net", "income", "2021"]
+    assert s.query_tokens(q, False, FULL) == ["acme", "corporation", "net", "income", "2021"]
+    assert s.query_tokens(q, True, ALL_PAGES) == ["acme", "corporation", "net", "income", "2021"]
