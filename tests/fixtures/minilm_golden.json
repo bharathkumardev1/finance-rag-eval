@@ -1,0 +1,40 @@
+{
+ "note": "First 8 dimensions of all-MiniLM-L6-v2 sentence embeddings (mean pooling, L2-normalized) from the official ONNX export, recorded with finrag.dense.MiniLM.",
+ "texts": [
+  "What was 3M's FY2018 capital expenditure?",
+  "Net cash provided by operating activities was $382 million.",
+  "The Company operates in three reportable segments."
+ ],
+ "first8": [
+  [
+   0.068507,
+   -0.023061,
+   -0.05558,
+   0.036857,
+   0.026606,
+   -0.009433,
+   0.01795,
+   -0.005889
+  ],
+  [
+   0.039127,
+   -0.018291,
+   0.017416,
+   0.002237,
+   -0.123085,
+   -0.059014,
+   0.103514,
+   0.094452
+  ],
+  [
+   -0.015772,
+   -0.087447,
+   -0.083288,
+   -0.020027,
+   -0.026921,
+   0.067874,
+   -0.077386,
+   -0.01837
+  ]
+ ]
+}

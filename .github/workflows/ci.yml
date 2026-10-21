@@ -20,5 +20,12 @@ jobs:
       - run: pip install -e ".[dev]"
       - name: Lint
         run: ruff check src tests
+      # The MiniLM tests compare against recorded vectors, so CI needs the real weights.
+      - uses: actions/cache@v6
+        with:
+          path: models/all-MiniLM-L6-v2
+          key: minilm-l6-v2-6fd5d72f
+      - name: MiniLM weights, checked against their SHA-256
+        run: finrag model
       - name: Tests
         run: pytest -q

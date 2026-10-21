@@ -50,6 +50,23 @@ def cmd_split(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_model(args: argparse.Namespace) -> int:
+    from .dense import download_model
+
+    print(download_model(Path(args.model_dir)))
+    return 0
+
+
+def cmd_embed(args: argparse.Namespace) -> int:
+    from .dense import MiniLM, embed_corpus
+    from .evaluate import git
+
+    model = MiniLM(Path(args.model_dir), threads=args.threads)
+    print(json.dumps(embed_corpus(model, Path(args.data_dir), Path(args.emb_dir),
+                                  git_sha=git("rev-parse", "HEAD"))))
+    return 0
+
+
 def cmd_eval(args: argparse.Namespace) -> int:
     from .data import FINANCEBENCH_COMMIT, load_questions
     from .evaluate import DEPTH, run, run_meta, save
@@ -102,6 +119,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--per-type", type=int, default=None,
                    help="dev questions per type (default: 17, 17 and 16 of the 150)")
     p.set_defaults(func=cmd_split)
+
+    p = sub.add_parser("model", help="download all-MiniLM-L6-v2 (ONNX) and check its SHA-256")
+    p.add_argument("--model-dir", default="models/all-MiniLM-L6-v2")
+    p.set_defaults(func=cmd_model)
+
+    p = sub.add_parser("embed", help="MiniLM vectors for every page window; resumes where it stopped")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--model-dir", default="models/all-MiniLM-L6-v2")
+    p.add_argument("--emb-dir", default="data/embeddings")
+    p.add_argument("--threads", type=int, default=2)
+    p.set_defaults(func=cmd_embed)
 
     p = sub.add_parser("eval", help="rank pages for every question and score the rankings")
     p.add_argument("--data-dir", default="data")
