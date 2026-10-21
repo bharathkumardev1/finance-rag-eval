@@ -1,6 +1,13 @@
+import os
 import zlib
+from pathlib import Path
 
 import numpy as np
+import pytest
+
+MODEL_DIR = Path(os.environ.get("FINRAG_MODEL_DIR", "models/all-MiniLM-L6-v2"))
+needs_model = pytest.mark.skipif(not (MODEL_DIR / "onnx" / "model.onnx").exists(),
+                                 reason="MiniLM not downloaded (finrag model)")
 
 
 class HashEncoder:

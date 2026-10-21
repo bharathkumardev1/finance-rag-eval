@@ -1,18 +1,14 @@
 import json
-import os
 from pathlib import Path
 
 import numpy as np
 import pytest
-from helpers import HashEncoder
+from helpers import MODEL_DIR, HashEncoder, needs_model
 
 from finrag.data import sha256_file
 from finrag.dense import DIM, MAX_TOKENS, MODEL_SHA256, DenseIndex, download_model, embed_corpus
 
-MODEL_DIR = Path(os.environ.get("FINRAG_MODEL_DIR", "models/all-MiniLM-L6-v2"))
 GOLDEN = Path(__file__).parent / "fixtures" / "minilm_golden.json"
-needs_model = pytest.mark.skipif(not (MODEL_DIR / "onnx" / "model.onnx").exists(),
-                                 reason="MiniLM not downloaded (finrag model)")
 
 
 def test_embed_corpus_is_incremental(mini_dir, tmp_path):

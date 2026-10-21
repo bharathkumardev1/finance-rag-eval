@@ -69,22 +69,40 @@ def cmd_embed(args: argparse.Namespace) -> int:
 
 def cmd_eval(args: argparse.Namespace) -> int:
     from .data import FINANCEBENCH_COMMIT, load_questions
-    from .evaluate import DEPTH, run, run_meta, save
+    from .evaluate import DEPTH, compare, run, run_meta, save
     from .report import write_markdown
     from .search import Searcher
     from .split import load_split
 
     data_dir = Path(args.data_dir)
-    searcher = Searcher.build(data_dir)
+    methods = tuple(args.methods.split(","))
+    dense = methods != ("bm25",)
+    searcher = Searcher.build(data_dir, model_dir=Path(args.model_dir) if dense else None,
+                              emb_dir=Path(args.emb_dir) if dense else None)
     questions = load_questions(data_dir)
     split = load_split(Path(args.split))
-    systems = {"bm25/all-pages": lambda text: searcher.ranked_pages(text, DEPTH)}
-    searcher.ranked_pages("warm up", 1)  # first call pays for page faults; keep it out of p95
+
+    def system(method: str):
+        return lambda text: searcher.ranked_pages(text, DEPTH, method)
+
+    systems = {f"{m}/all-pages": system(m) for m in methods}
+    for m in methods:  # the first call pays for page faults; keep it out of p95
+        searcher.ranked_pages("warm up", 1, m)
     results = run(systems, questions, split)
+    results["comparisons"] = [compare(results, f"{m}/all-pages", "bm25/all-pages", "test", metric)
+                              for m in methods if m != "bm25" and "bm25" in methods
+                              for metric in ("hit@10", "mrr@10")]
+    extra = {}
+    if dense:
+        import onnxruntime
+
+        extra = {"onnxruntime": onnxruntime.__version__, "dense_windows": len(searcher.dense),
+                 "model_sha256": searcher.encoder.sha256,
+                 "tokenizer_sha256": searcher.encoder.tokenizer_sha256}
     meta = run_meta(args.command_line, financebench_commit=FINANCEBENCH_COMMIT,
                     filings=len(searcher.corpus.docs), pages=len(searcher.corpus),
                     questions=len(questions), dev=len(split["dev"]), test=len(split["test"]),
-                    depth=DEPTH)
+                    depth=DEPTH, **extra)
     results = {"meta": meta, **results}
     save(results, Path(args.out))
     write_markdown(results, Path(args.markdown))
@@ -134,6 +152,10 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("eval", help="rank pages for every question and score the rankings")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--methods", default="bm25,dense,hybrid",
+                   help="comma-separated; dense and hybrid need `finrag embed` first")
+    p.add_argument("--model-dir", default="models/all-MiniLM-L6-v2")
+    p.add_argument("--emb-dir", default="data/embeddings")
     p.add_argument("--out", default="results/eval.json")
     p.add_argument("--markdown", default="results/RESULTS.md")
     p.set_defaults(func=cmd_eval)

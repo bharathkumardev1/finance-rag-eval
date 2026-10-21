@@ -1,4 +1,4 @@
-"""Page search over the corpus.
+"""Page search over the corpus with BM25, MiniLM, or both fused with reciprocal rank fusion.
 
 Pages are numbered in one global order (filings sorted by name, pages in filing order), so
 any set of filings is a set of contiguous row ranges and a retriever can score just those
@@ -17,6 +17,10 @@ import numpy as np
 from .bm25 import BM25, tokenize
 from .data import DocMeta, load_doc_meta, load_pages
 
+METHODS = ("bm25", "dense", "hybrid")
+RRF_K = 60
+RRF_DEPTH = 100
+
 
 @dataclass(frozen=True)
 class Hit:
@@ -33,6 +37,21 @@ def top_k(scores: np.ndarray, k: int) -> np.ndarray:
         return np.empty(0, dtype=np.int64)
     part = np.argpartition(-scores, k - 1)[:k]
     return part[np.lexsort((part, -scores[part]))]
+
+
+def rrf(rankings: list[np.ndarray], k: int = RRF_K) -> tuple[np.ndarray, np.ndarray]:
+    """Reciprocal rank fusion: a row scores sum(1 / (k + rank)) over the lists it appears in.
+
+    Returns rows and fused scores, best first; ties go to the lower row.
+    """
+    fused: dict[int, float] = {}
+    for ranking in rankings:
+        for rank, row in enumerate(ranking.tolist(), start=1):
+            fused[row] = fused.get(row, 0.0) + 1.0 / (k + rank)
+    rows = np.fromiter(fused, dtype=np.int64, count=len(fused))
+    scores = np.fromiter(fused.values(), dtype=np.float64, count=len(fused))
+    order = np.lexsort((rows, -scores))
+    return rows[order], scores[order]
 
 
 class Corpus:
@@ -87,27 +106,58 @@ def load_or_build_bm25(corpus: Corpus, cache_dir: Path) -> BM25:
 
 
 class Searcher:
-    def __init__(self, corpus: Corpus, bm25: BM25):
+    def __init__(self, corpus: Corpus, bm25: BM25, dense=None, encoder=None):
         self.corpus = corpus
         self.bm25 = bm25
+        self.dense = dense
+        self.encoder = encoder
 
     @classmethod
-    def build(cls, data_dir: Path) -> Searcher:
+    def build(cls, data_dir: Path, model_dir: Path | None = None, emb_dir: Path | None = None,
+              threads: int = 1) -> Searcher:
         corpus = Corpus.load(data_dir)
-        return cls(corpus, load_or_build_bm25(corpus, Path(data_dir) / "index"))
+        bm25 = load_or_build_bm25(corpus, Path(data_dir) / "index")
+        dense = encoder = None
+        if model_dir is not None and emb_dir is not None:
+            from .dense import DenseIndex, MiniLM
 
-    def rank(self, question: str, k: int) -> tuple[np.ndarray, np.ndarray]:
+            dense = DenseIndex.load(emb_dir, corpus.offsets)
+            encoder = MiniLM(model_dir, threads=threads)
+        return cls(corpus, bm25, dense, encoder)
+
+    @property
+    def methods(self) -> tuple[str, ...]:
+        return METHODS if self.dense is not None else ("bm25",)
+
+    def _scores(self, question: str, method: str, qvec: np.ndarray | None) -> np.ndarray:
+        if method == "bm25":
+            return self.bm25.scores(tokenize(question))
+        if self.dense is None:
+            raise RuntimeError("no dense index loaded; run `finrag embed` and pass --model-dir")
+        if qvec is None:
+            qvec = self.encoder.encode([question])[0]
+        return self.dense.scores(qvec)
+
+    def rank(self, question: str, k: int, method: str = "bm25") -> tuple[np.ndarray, np.ndarray]:
         """Top-k page rows over the whole corpus, best first, with their scores."""
-        scores = self.bm25.scores(tokenize(question))
-        order = top_k(scores, k)
-        return order, scores[order]
+        if method not in METHODS:
+            raise ValueError(f"unknown method {method!r}; expected one of {METHODS}")
+        if method != "hybrid":
+            scores = self._scores(question, method, None)
+            order = top_k(scores, k)
+            return order, scores[order].astype(np.float64)
+        qvec = self.encoder.encode([question])[0] if self.encoder is not None else None
+        lists = [top_k(self._scores(question, m, qvec), RRF_DEPTH) for m in ("bm25", "dense")]
+        rows, scores = rrf(lists)
+        return rows[:k], scores[:k]
 
-    def ranked_pages(self, question: str, k: int) -> list[tuple[str, int]]:
-        rows, _ = self.rank(question, k)
+    def ranked_pages(self, question: str, k: int, method: str = "bm25") -> list[tuple[str, int]]:
+        rows, _ = self.rank(question, k, method)
         return [self.corpus.key(int(r)) for r in rows]
 
-    def search(self, question: str, k: int = 10) -> tuple[list[Hit], dict]:
+    def search(self, question: str, k: int = 10, method: str = "bm25") -> tuple[list[Hit], dict]:
         t0 = time.perf_counter()
-        rows, scores = self.rank(question, k)
+        rows, scores = self.rank(question, k, method)
         hits = [Hit(int(r), *self.corpus.key(int(r)), float(s)) for r, s in zip(rows, scores, strict=True)]
-        return hits, {"pages_searched": len(self.corpus), "ms": round((time.perf_counter() - t0) * 1e3, 3)}
+        return hits, {"method": method, "pages_searched": len(self.corpus),
+                      "ms": round((time.perf_counter() - t0) * 1e3, 3)}
