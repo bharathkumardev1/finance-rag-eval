@@ -1,0 +1,36 @@
+{
+ "meta": {
+  "git_sha": "8034887c7ff06b4e59991997f3c4bccb5ac10eb8",
+  "git_dirty": false,
+  "command": "finrag check-incremental",
+  "date": "2026-10-21",
+  "python": "3.13.16",
+  "numpy": "2.5.3",
+  "scipy": "1.18.1",
+  "pymupdf": "2.0",
+  "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+  "cpus": 2,
+  "threads": {
+   "OMP_NUM_THREADS": "1",
+   "OPENBLAS_NUM_THREADS": "1"
+  },
+  "bootstrap": 10000
+ },
+ "filings": 360,
+ "pages": 53399,
+ "held_out_filings": 36,
+ "held_out_pages": 5263,
+ "segments": 4,
+ "batch": 12,
+ "queries": 300,
+ "max_abs_score_diff": 0.0,
+ "tolerance": 1e-09,
+ "same_top100": 300,
+ "passed": true,
+ "full_build_seconds": 13.05,
+ "add_batch_seconds": [
+  0.64,
+  0.6,
+  0.42
+ ]
+}
