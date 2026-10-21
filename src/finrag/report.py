@@ -171,8 +171,9 @@ def write_markdown(results: dict, path: Path, results_dir: Path | None = None) -
         f"FinanceBench at `{m['financebench_commit'][:7]}`: {m['filings']} filings, "
         f"{m['pages']:,} pages{windows}, {m['questions']} questions ({m['dev']} dev, {m['test']} test). "
         f"{m['cpu']}, {m['cpus']} CPUs, Python {m['python']}, numpy {m['numpy']}. Latency is "
-        f"in-process wall time per query, one query at a time, including MiniLM query encoding "
-        f"for dense and hybrid.\n",
+        f"in-process wall time per query, one query at a time"
+        f"{' on one thread' if (m.get('threads') or {}).get('OPENBLAS_NUM_THREADS') == '1' else ''}, "
+        f"including MiniLM query encoding for dense and hybrid.\n",
     ]
     if results.get("headline"):
         parts.append(f"Headline system, picked on dev: `{results['headline']}`.\n")
