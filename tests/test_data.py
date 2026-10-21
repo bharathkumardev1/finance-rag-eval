@@ -52,3 +52,45 @@ def test_download_rejects_a_file_that_changed_upstream(tmp_path):
     summary = download(tmp_path / "data", manifest, base=remote.as_uri())
     assert summary["mismatch"] == ["pdfs/A_2022_10K.pdf"]
     assert not (tmp_path / "data" / "pdfs" / "A_2022_10K.pdf").exists()
+
+
+def _pdf(path, pages):
+    import pymupdf
+
+    doc = pymupdf.open()
+    for text in pages:
+        doc.new_page().insert_text((72, 72), text)
+    doc.save(path)
+
+
+def test_pages_come_out_in_order_and_are_cached(tmp_path):
+    from finrag.data import build_page_cache, load_pages
+
+    (tmp_path / "pdfs").mkdir()
+    _pdf(tmp_path / "pdfs" / "A_2022_10K.pdf", ["cover page", "balance sheet", "exhibit"])
+    assert build_page_cache(tmp_path) == {"A_2022_10K": 3}
+    pages = load_pages(tmp_path)["A_2022_10K"]
+    assert [p.strip() for p in pages] == ["cover page", "balance sheet", "exhibit"]
+    (tmp_path / "pdfs" / "A_2022_10K.pdf").unlink()
+    _pdf(tmp_path / "pdfs" / "A_2022_10K.pdf", ["changed"])
+    assert build_page_cache(tmp_path) == {"A_2022_10K": 3}  # cached text wins
+
+
+def test_verify_finds_a_label_that_is_one_page_off(tmp_path):
+    from finrag.data import QUESTIONS_FILE, verify_evidence_pages
+
+    (tmp_path / "pages").mkdir()
+    texts = ["cover " * 40, "Total current assets 1,200 and total current liabilities 900. " * 4,
+             "Exhibit index " * 40]
+    (tmp_path / "pages" / "A_2022_10K.json").write_text(json.dumps(texts))
+    rows = [
+        {"financebench_id": "a", "evidence": [
+            {"doc_name": "A_2022_10K", "evidence_page_num": 1, "evidence_text_full_page": texts[1]}]},
+        {"financebench_id": "b", "evidence": [
+            {"doc_name": "A_2022_10K", "evidence_page_num": 2, "evidence_text_full_page": texts[1]}]},
+        {"financebench_id": "c", "evidence": [
+            {"doc_name": "B_2022_10K", "evidence_page_num": 0, "evidence_text_full_page": "x"}]},
+    ]
+    (tmp_path / QUESTIONS_FILE).write_text("".join(json.dumps(r) + "\n" for r in rows))
+    counts = verify_evidence_pages(tmp_path)
+    assert (counts["match"], counts["off_by_one"], counts["missing_doc"]) == (1, 1, 1)
