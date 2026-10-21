@@ -21,7 +21,7 @@ import json
 from pathlib import Path
 
 from .data import Question, load_questions
-from .evaluate import DEPTH, git
+from .evaluate import DEPTH, git, git_dirty
 from .filters import load_aliases
 from .metrics import score_ranking
 from .search import FULL, Searcher
@@ -51,7 +51,7 @@ def run(data_dir: Path, gate: dict, aliases: Path | None) -> dict[str, bool]:
 
 def record(gate: dict, hits: dict[str, bool]) -> dict:
     return {**gate, "recorded": {"config": CONFIG, "git_sha": git("rev-parse", "HEAD"),
-                                 "git_dirty": bool(git("status", "--porcelain", "--untracked-files=no")),
+                                 "git_dirty": git_dirty(),
                                  "hit@10": sum(hits.values()) / len(hits),
                                  "hits": sorted(q for q, h in hits.items() if h)}}
 

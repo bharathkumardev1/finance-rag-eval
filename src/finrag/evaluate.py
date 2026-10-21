@@ -74,6 +74,11 @@ def git(*args: str) -> str | None:
         return None
 
 
+def git_dirty() -> bool:
+    """Whether tracked code or configs differ from HEAD; results/ is output, so it doesn't count."""
+    return bool(git("status", "--porcelain", "--untracked-files=no", "--", ".", ":(exclude)results"))
+
+
 def cpu_name() -> str | None:
     try:
         for line in Path("/proc/cpuinfo").read_text().splitlines():
@@ -91,7 +96,7 @@ def run_meta(command: str, **extra) -> dict:
 
     return {
         "git_sha": git("rev-parse", "HEAD"),
-        "git_dirty": bool(git("status", "--porcelain", "--untracked-files=no")),
+        "git_dirty": git_dirty(),
         "command": command,
         "date": time.strftime("%Y-%m-%d"),
         "python": platform.python_version(),
