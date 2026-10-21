@@ -1,0 +1,6 @@
+# The versions the published embeddings and results were computed with. `make lock` holds
+# requirements.lock to them, so the image runs the same numerics.
+numpy==2.5.3
+scipy==1.18.1
+onnxruntime==1.29.0
+tokenizers==0.23.3
