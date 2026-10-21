@@ -190,7 +190,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
     config = args.config or evaluation["headline"]
     wanted = set(load_split(Path(args.split))[args.on])
     questions = [q for q in load_questions(data_dir) if q.qid in wanted]
-    retrieved = {qid: x["runs"][config]["top10"] for qid, x in evaluation["questions"].items()}
+    retrieved = {qid: x["runs"][config]["top"] for qid, x in evaluation["questions"].items()}
     pages = load_pages(data_dir)
     recorder = Recorder(Path(args.record), None if args.replay else openai_client(), Budget(args.cap))
     res = run(questions, retrieved, lambda d, p: pages[d][p], recorder, args.generator, args.judge)
@@ -240,6 +240,33 @@ def cmd_judge_agreement(args: argparse.Namespace) -> int:
     results["judge_check"] = {"labels": args.labels, **check}
     save(results, path)
     print(json.dumps(check))
+    return 0
+
+
+def cmd_reranker(args: argparse.Namespace) -> int:
+    from .rerank import download_reranker
+
+    print(download_reranker(Path(args.model_dir)))
+    return 0
+
+
+def cmd_rerank_study(args: argparse.Namespace) -> int:
+    from .data import load_pages, load_questions
+    from .evaluate import run_meta, save
+    from .rerank import MODEL_ID, ONNX_SHA256, REVISION, CrossEncoder, study
+
+    data_dir = Path(args.data_dir)
+    evaluation = json.loads(Path(args.eval).read_text())
+    config = args.config or evaluation["headline"]
+    questions = [q for q in load_questions(data_dir) if q.qid in evaluation["questions"]]
+    pages = load_pages(data_dir)
+    encoder = CrossEncoder(Path(args.model_dir), threads=args.threads)
+    res = study(evaluation, questions, lambda d, p: pages[d][p], encoder.score, config)
+    meta = run_meta(args.command_line, model=MODEL_ID, revision=REVISION, onnx_sha256=ONNX_SHA256,
+                    tokenizer_sha256=encoder.tokenizer_sha256, threads=args.threads)
+    save({"meta": meta, **res}, Path(args.out))
+    for r in res["table"]:
+        print(f"{r['split']:<5} {r['config']:<56} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}")
     return 0
 
 
@@ -344,6 +371,19 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--results", default="results/generation.json")
     p.add_argument("--labels", default="results/generation/labels.csv")
     p.set_defaults(func=cmd_judge_agreement)
+
+    p = sub.add_parser("reranker", help="download BAAI/bge-reranker-base (ONNX, 1.1 GB), check its SHA-256")
+    p.add_argument("--model-dir", default="models/bge-reranker-base")
+    p.set_defaults(func=cmd_reranker)
+
+    p = sub.add_parser("rerank-study", help="rerank a system's top 30 with the cross-encoder")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--eval", default="results/eval.json")
+    p.add_argument("--config", default=None, help="retrieval system (default: the headline)")
+    p.add_argument("--model-dir", default="models/bge-reranker-base")
+    p.add_argument("--threads", type=int, default=4)
+    p.add_argument("--out", default="results/rerank.json")
+    p.set_defaults(func=cmd_rerank_study)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
