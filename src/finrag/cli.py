@@ -161,6 +161,24 @@ def cmd_gate(args: argparse.Namespace) -> int:
     return 0 if ok else 1
 
 
+def cmd_chunk_study(args: argparse.Namespace) -> int:
+    from .chunks import study
+    from .data import load_questions
+    from .evaluate import run_meta, save
+    from .filters import load_aliases
+    from .search import Searcher
+    from .split import load_split
+
+    data_dir = Path(args.data_dir)
+    searcher = Searcher.build(data_dir, load_aliases(Path(args.aliases)))
+    results = study(searcher, load_questions(data_dir), load_split(Path(args.split)))
+    save({"meta": run_meta(args.command_line), **results}, Path(args.out))
+    for r in results["table"]:
+        if r["split"] == "test":
+            print(f"{r['config']:<52} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -229,6 +247,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--define", action="store_true", help="write the question and filing lists")
     p.add_argument("--record", action="store_true", help="store this run as the one to compare with")
     p.set_defaults(func=cmd_gate)
+
+    p = sub.add_parser("chunk-study", help="BM25 over 128-, 256- and 650-token chunks against pages")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--aliases", default="configs/aliases.yaml")
+    p.add_argument("--split", default="configs/split.json")
+    p.add_argument("--out", default="results/chunks.json")
+    p.set_defaults(func=cmd_chunk_study)
 
     argv = sys.argv[1:] if argv is None else argv
     args = parser.parse_args(argv)
