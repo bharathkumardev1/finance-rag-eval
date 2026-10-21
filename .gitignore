@@ -7,8 +7,8 @@ __pycache__/
 # Downloaded and derived data, rebuilt from public sources by the Makefile. No trailing
 # slash, so a symlink to a bigger disk is ignored as well.
 /data
+/gate-data
 /models
-ci-results/
 
 web/node_modules/
 web/test/data/
