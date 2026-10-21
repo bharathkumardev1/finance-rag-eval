@@ -37,6 +37,18 @@ def cmd_verify(args: argparse.Namespace) -> int:
     return 0 if counts["missing_doc"] == 0 else 1
 
 
+def cmd_split(args: argparse.Namespace) -> int:
+    from .data import load_questions
+    from .split import DEV_PER_TYPE, make_split, save_split
+
+    questions = load_questions(Path(args.data_dir))
+    per_type = {t: args.per_type for t in DEV_PER_TYPE} if args.per_type else None
+    split = make_split(questions, per_type)
+    save_split(split, Path(args.out))
+    print(json.dumps({name: len(ids) for name, ids in split.items()}))
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="finrag")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -54,6 +66,13 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("verify", help="check labeled evidence pages against the extracted text")
     p.add_argument("--data-dir", default="data")
     p.set_defaults(func=cmd_verify)
+
+    p = sub.add_parser("split", help="write the stratified dev/test split")
+    p.add_argument("--data-dir", default="data")
+    p.add_argument("--out", default="configs/split.json")
+    p.add_argument("--per-type", type=int, default=None,
+                   help="dev questions per type (default: 17, 17 and 16 of the 150)")
+    p.set_defaults(func=cmd_split)
 
     args = parser.parse_args(argv)
     return args.func(args)
