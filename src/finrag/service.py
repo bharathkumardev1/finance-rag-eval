@@ -8,6 +8,10 @@ Configuration comes from the environment so the same image runs anywhere:
 * ``FINRAG_MODEL_DIR`` and ``FINRAG_EMB_DIR``: MiniLM and the page embeddings. If either is
   missing the service starts with BM25 only and ``/healthz`` says so.
 
+``GET /search?q=...`` runs the BM25 pipeline: the filter, statement routing and the query
+without the company's name. ``method=hybrid`` and ``method=dense`` need the embeddings. BM25
+is the default because the hybrid tied it on test at about five times the latency.
+
 The handlers are plain ``def`` functions, so FastAPI runs them on its thread pool. NumPy and
 ONNX Runtime release the GIL for the heavy parts; run one worker per core for throughput.
 """
@@ -101,7 +105,7 @@ def healthz() -> dict:
 @app.get("/search")
 def search(
     q: str = Query(..., min_length=3, max_length=2000, description="the question"),
-    method: str = Query("hybrid", description="bm25 | dense | hybrid"),
+    method: str = Query("bm25", description="bm25 | dense | hybrid"),
     k: int = Query(10, ge=1, le=50),
     filter: str = Query("company_year", description="none | company | company_year"),
     route: bool = Query(True, description="send statement questions to statement pages first"),
