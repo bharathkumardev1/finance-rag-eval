@@ -252,11 +252,12 @@ class Searcher:
         docs, rows = self.filtered(question, opts)
         picked, scores = self.rank(question, k, method, opts)
         hits = [Hit(int(r), *self.corpus.key(int(r)), float(s)) for r, s in zip(picked, scores, strict=True)]
+        routed = opts.route_statements and rows is not None  # rank() routes filtered searches only
         info = {
             "method": method,
             "filter": opts.filter,
             "filings": sorted(docs) if docs is not None else None,
-            "statements": sorted(question_kinds(question)) if opts.route_statements else [],
+            "statements": sorted(question_kinds(question)) if routed else [],
             "pages_searched": len(self.corpus) if rows is None else int(len(rows)),
             "ms": round((time.perf_counter() - t0) * 1000, 3),
         }
