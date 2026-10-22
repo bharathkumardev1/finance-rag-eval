@@ -98,6 +98,14 @@ def test_routing_puts_the_requested_statement_first(mini_dir):
     assert routed[0] == ("ACME_2021_10K", 4) and plain[0] != routed[0]
 
 
+def test_search_reports_routing_only_when_it_ran(mini_dir):
+    s = Searcher.build(mini_dir)
+    _, routed = s.search("What is Acme's FY2021 working capital?", 3, "bm25", FULL)
+    _, unfiltered = s.search("What is the FY2021 working capital?", 3, "bm25", FULL)
+    assert routed["statements"] == ["balance"]
+    assert unfiltered["filings"] is None and unfiltered["statements"] == []
+
+
 def test_dropping_the_company_name_changes_only_the_bm25_query(mini_dir):
     s = Searcher.build(mini_dir)
     q = "Acme Corporation net income 2021"
