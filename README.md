@@ -38,7 +38,7 @@ By FinanceBench's question types, Hit@10 is 0.94 for the questions generated fro
 
 ## Serving
 
-`GET /search?q=...&method=bm25` runs the full pipeline. In a closed-loop load test with one uvicorn worker on one core and the load generator on the other, BM25 serves 125.8 queries a second to one client (p50 7.6 ms, p95 11.6 ms) and reaches 162 a second at 16 clients; the hybrid serves 49.4 a second to one client (p95 35.2 ms). There were no errors, and the server held 0.94 to 1.16 GB. Priced at half an AWS c7i.large on demand, that's $0.10 per million BM25 queries and $0.25 per million hybrid queries, assuming this throughput carries over to that vCPU, which I haven't measured.
+`GET /search?q=...` runs the BM25 pipeline above; `method=hybrid` or `method=dense` uses the embeddings when they're mounted. In a closed-loop load test with one uvicorn worker on one core and the load generator on the other, BM25 serves 125.8 queries a second to one client (p50 7.6 ms, p95 11.6 ms) and reaches 162 a second at 16 clients; the hybrid serves 49.4 a second to one client (p95 35.2 ms). There were no errors, and the server held 0.94 to 1.16 GB. Priced at half an AWS c7i.large on demand, that's $0.10 per million BM25 queries and $0.25 per million hybrid queries, assuming this throughput carries over to that vCPU, which I haven't measured.
 
 ```bash
 docker build -t finrag .

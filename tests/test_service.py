@@ -29,6 +29,11 @@ def test_search_filters_routes_and_explains_itself(client):
     assert body["hits"][0]["statement"] == ["balance"] and body["hits"][0]["snippet"]
 
 
+def test_a_plain_query_runs_the_bm25_pipeline(client):
+    r = client.get("/search", params={"q": "What is Acme's FY2021 working capital?"})
+    assert r.status_code == 200 and r.json()["config"] == "bm25/company_year+quarter+drop+route"
+
+
 def test_bad_requests_get_clear_errors(client):
     assert client.get("/search", params={"q": "capex", "method": "sparse"}).status_code == 400
     assert client.get("/search", params={"q": "capex", "method": "hybrid"}).status_code == 503
