@@ -14,9 +14,10 @@ asking the judge. ``finrag label-judge`` samples judged answers for a person to 
 
 Every API call goes through a recording keyed by a hash of the request, with the model the
 API reports, the tokens and the cost. A rerun replays the recording, and ``--replay`` makes
-a run that needs no API key, which is how CI checks the committed results. Spending is
-checked before each call against a worst-case estimate, and the run stops before it can
-pass the cap. The cap covers everything in the recording, not just one run.
+a run that needs no API key. Spending is checked before each call against a worst-case
+estimate, and the run stops before it can pass the cap. The cap covers everything in the
+recording, not just one run. A reply cut off at its token allowance stops the run too: it's
+recorded as incomplete so its cost counts, and never replayed, so a rerun asks again.
 """
 
 from __future__ import annotations
@@ -44,8 +45,11 @@ JUDGE = "gpt-6.1-sol"
 CAP_USD = 25.0
 TOP_PAGES = 5
 DECLINE = "NOT IN PAGES"
-MAX_ANSWER_TOKENS = 4000
-MAX_JUDGE_TOKENS = 1000
+# Reasoning tokens count against these, and a cut-off reply stops the run. Raising them after
+# a run would change every request's hash and void the recording, so they start generous;
+# only tokens actually produced are billed.
+MAX_ANSWER_TOKENS = 8000
+MAX_JUDGE_TOKENS = 2000
 CHARS_PER_TOKEN = 3  # worst case for the pre-call estimate; English filings run about 4
 
 ANSWER_INSTRUCTIONS = (
@@ -88,6 +92,10 @@ class BudgetExceeded(RuntimeError):
 
 class MissingRecording(RuntimeError):
     pass
+
+
+class IncompleteReply(RuntimeError):
+    """The reply hit its max_output_tokens; it's billed and recorded as incomplete."""
 
 
 def price(model: str) -> dict[str, float]:
@@ -144,12 +152,16 @@ class Recorder:
         self.client = client
         self.budget = budget
         self.calls: dict[str, dict] = {}
+        self.incomplete: list[dict] = []
         if self.path.exists():
             for line in self.path.read_text(encoding="utf8").splitlines():
                 rec = json.loads(line)
-                self.calls[rec["key"]] = rec
+                if rec.get("incomplete"):
+                    self.incomplete.append(rec)
+                else:
+                    self.calls[rec["key"]] = rec
         self.replayed = self.made = 0
-        self.budget.spent = sum(rec.get("cost_usd", 0.0) for rec in self.calls.values())
+        self.budget.spent = sum(rec.get("cost_usd", 0.0) for rec in [*self.calls.values(), *self.incomplete])
 
     @staticmethod
     def key(request: dict) -> str:
@@ -167,12 +179,21 @@ class Recorder:
         reply = self.client(request)
         self.budget.spent += cost(reply)
         rec = {"key": k, "tag": tag, "reply": asdict(reply), "cost_usd": cost(reply)}
+        if reply.status != "completed":
+            rec["incomplete"] = True
+            self.incomplete.append(rec)
+            self._append(rec)
+            raise IncompleteReply(f"{tag}: response {reply.status} after {reply.output_tokens} output tokens "
+                                  f"({reply.reasoning_tokens} reasoning); rerun to ask again")
         self.calls[k] = rec
+        self._append(rec)
+        self.made += 1
+        return reply, False
+
+    def _append(self, rec: dict) -> None:
         self.path.parent.mkdir(parents=True, exist_ok=True)
         with open(self.path, "a", encoding="utf8") as fh:
             fh.write(json.dumps(rec) + "\n")
-        self.made += 1
-        return reply, False
 
 
 def answer_request(q: Question, pages: list[tuple[str, int, str]], model: str) -> dict:
@@ -197,7 +218,8 @@ def page_sets(q: Question, retrieved: list[list]) -> dict[str, list[tuple[str, i
 
 def run(questions: list[Question], retrieved: dict[str, list[list]], page_text: Callable[[str, int], str],
         recorder: Recorder, generator: str = GENERATOR, judge: str = JUDGE) -> dict:
-    """Answer and judge every question in both settings; stops cleanly at the budget cap."""
+    """Answer and judge every question in both settings; stops cleanly at the budget cap or a
+    cut-off reply, keeping the rows it finished."""
     rows = []
     stopped = None
     try:
@@ -219,7 +241,7 @@ def run(questions: list[Question], retrieved: dict[str, list[list]], page_text: 
                     row.update(verdict=v["verdict"], reason=v["reason"], judge_model=jr.model)
                     row["cost_usd"] += cost(jr)
                 rows.append(row)
-    except BudgetExceeded as e:
+    except (BudgetExceeded, IncompleteReply) as e:
         stopped = str(e)
     return {"generator": generator, "judge": judge, "top_pages": TOP_PAGES, "rows": rows,
             "summary": summarize(rows), "stopped": stopped,

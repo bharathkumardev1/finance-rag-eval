@@ -7,6 +7,7 @@ from finrag.generate import (
     DECLINE,
     Budget,
     BudgetExceeded,
+    IncompleteReply,
     MissingRecording,
     Recorder,
     Reply,
@@ -98,6 +99,30 @@ def test_label_sheet_hides_the_verdict_and_agreement_counts_both_ways(tmp_path):
     with pytest.raises(BudgetExceeded):
         Budget(0.0).check({"model": "gpt-6-luna", "instructions": "x", "input": "y",
                            "max_output_tokens": 10})
+
+
+def test_a_cut_off_reply_stops_the_run_counts_toward_the_cap_and_is_asked_again(tmp_path):
+    class CutsOffTheFirstJudge(FakeAPI):
+        def __call__(self, request):
+            reply = super().__call__(request)
+            if "text" in request and sum("text" in r for r in self.calls) == 1:
+                reply.status, reply.text = "incomplete", '{"verdict": "corr'
+            return reply
+
+    path = tmp_path / "calls.jsonl"
+    res = run(QUESTIONS, RETRIEVED, page_text, Recorder(path, CutsOffTheFirstJudge(), Budget(25)))
+    assert res["stopped"] and "incomplete" in res["stopped"]
+    assert any(json.loads(line).get("incomplete") for line in path.read_text().splitlines())
+    first = Recorder(path, None, Budget(25)).budget.spent
+    assert first > 0
+    api = FakeAPI()
+    res = run(QUESTIONS, RETRIEVED, page_text, Recorder(path, api, Budget(25)))
+    assert not res["stopped"] and len(res["rows"]) == 4
+    assert sum("text" in r for r in api.calls) == 1  # only the cut-off judge call is made again
+    judge = {"model": "gpt-6.1-sol", "instructions": "", "input": "Answer to grade: x",
+             "max_output_tokens": 10, "text": {}}
+    with pytest.raises(IncompleteReply):
+        Recorder(tmp_path / "x.jsonl", CutsOffTheFirstJudge(), Budget(25)).call(judge, {"qid": "q"})
 
 
 def test_committed_summary_recomputes_from_its_rows():
