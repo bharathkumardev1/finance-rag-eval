@@ -1,0 +1,4 @@
+# results/eval.json records the SHA-256 of the MiniLM tokenizer.json it ran with
+# (finrag/dense.py: sha256_file(model_dir / "tokenizer.json")). Gitleaks reads the
+# 64-hex value as a generic API key. This one fingerprint is the only finding.
+f20b0ddd1706b889beb4f2aa6f31d68ab375cbfc:results/eval.json:generic-api-key:29
