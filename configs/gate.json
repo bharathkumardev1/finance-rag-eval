@@ -96,7 +96,7 @@
  ],
  "recorded": {
   "config": "bm25/company_year+quarter+drop+route",
-  "git_sha": "93d9ca42ea635e59fe2e96b08322f76e4d4ad03e",
+  "git_sha": "78f01292e9063f1076c349e51caa28fb97a5dd2f",
   "git_dirty": false,
   "hit@10": 0.76,
   "hits": [

@@ -1,6 +1,6 @@
 {
  "meta": {
-  "git_sha": "8034887c7ff06b4e59991997f3c4bccb5ac10eb8",
+  "git_sha": "95d3fe91e64501e6b414d19077a78fba201b0256",
   "git_dirty": false,
   "command": "finrag loadtest --methods bm25,hybrid --levels 1,2,4,8,16 --seconds 30 --server-note '1 uvicorn worker pinned to CPU 0, load generator on CPU 1'",
   "date": "2026-10-21",

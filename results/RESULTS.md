@@ -1,6 +1,6 @@
 # Results
 
-Produced by `finrag eval` at commit `8034887` on 2026-10-21. FinanceBench at `cc39aeb`: 360 filings, 53,399 pages, 171,158 MiniLM windows, 150 questions (50 dev, 100 test). Intel(R) Xeon(R) Processor @ 2.10GHz, 2 CPUs, Python 3.13.16, numpy 2.5.3. Latency is in-process wall time per query, one query at a time on one thread, including MiniLM query encoding for dense and hybrid.
+Produced by `finrag eval` at commit `95d3fe9` on 2026-10-21. FinanceBench at `cc39aeb`: 360 filings, 53,399 pages, 171,158 MiniLM windows, 150 questions (50 dev, 100 test). Intel(R) Xeon(R) Processor @ 2.10GHz, 2 CPUs, Python 3.13.16, numpy 2.5.3. Latency is in-process wall time per query, one query at a time on one thread, including MiniLM query encoding for dense and hybrid.
 
 Headline system, picked on dev: `hybrid/company_year+quarter+drop+route`.
 
@@ -147,11 +147,11 @@ Same questions, 10,000 bootstrap resamples of the per-question difference.
 
 ## Incremental index
 
-From `finrag check-incremental` at commit `8034887` on 2026-10-21. Every tenth filing (36 filings, 5,263 pages) was held out, then added in batches of 12 with a save and reload after each, leaving 4 segments. Against a one-pass build, over 300 queries (every question as asked and with the company's name dropped): largest score difference 0.0e+00 (tolerance 1e-09), identical top 100 for 300 of 300. Building all 360 filings took 13.1 s; each added batch took 0.64, 0.60, 0.42 s including the reload and save.
+From `finrag check-incremental` at commit `95d3fe9` on 2026-10-21. Every tenth filing (36 filings, 5,263 pages) was held out, then added in batches of 12 with a save and reload after each, leaving 4 segments. Against a one-pass build, over 300 queries (every question as asked and with the company's name dropped): largest score difference 0.0e+00 (tolerance 1e-09), identical top 100 for 300 of 300. Building all 360 filings took 13.1 s; each added batch took 0.64, 0.60, 0.42 s including the reload and save.
 
 ## Chunk size (BM25)
 
-From `finrag chunk-study` at commit `8034887` on 2026-10-21. BM25 over chunks that never cross a page, a page scoring as its best chunk, against BM25 over whole pages.
+From `finrag chunk-study` at commit `95d3fe9` on 2026-10-21. BM25 over chunks that never cross a page, a page scoring as its best chunk, against BM25 over whole pages.
 
 | Unit | Documents indexed |
 |---|---|
@@ -192,7 +192,7 @@ Same questions, 10,000 bootstrap resamples of the per-question difference.
 
 ## Load test
 
-From `finrag loadtest --methods bm25,hybrid --levels 1,2,4,8,16 --seconds 30 --server-note '1 uvicorn worker pinned to CPU 0, load generator on CPU 1'` at commit `8034887` on 2026-10-21. 1 uvicorn worker pinned to CPU 0, load generator on CPU 1. Closed-loop clients, 30 s per level, cycling through the 150 questions with the full pipeline. Cost per million queries prices one vCPU at $0.0446 an hour (half a c7i.large on demand in us-east-1).
+From `finrag loadtest --methods bm25,hybrid --levels 1,2,4,8,16 --seconds 30 --server-note '1 uvicorn worker pinned to CPU 0, load generator on CPU 1'` at commit `95d3fe9` on 2026-10-21. 1 uvicorn worker pinned to CPU 0, load generator on CPU 1. Closed-loop clients, 30 s per level, cycling through the 150 questions with the full pipeline. Cost per million queries prices one vCPU at $0.0446 an hour (half a c7i.large on demand in us-east-1).
 
 | Method | Clients | Queries/s | p50 ms | p95 ms | p99 ms | Errors | Server RSS MB | $ per million |
 |---|---|---|---|---|---|---|---|---|
