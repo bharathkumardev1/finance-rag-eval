@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+import pytest
 from test_generate import ALL, NAIVE, QUESTIONS, RETRIEVED, FakeAPI, page_text
 
 from finrag.data import Evidence, Question
@@ -116,3 +117,20 @@ def test_the_report_adds_the_windows_section_only_when_that_file_exists(tmp_path
     (tmp_path / "rerank-windows3.json").write_text(json.dumps(many))
     write_markdown(results, out, tmp_path)
     assert out.read_text().count("### Reading 3 windows") == 1
+
+
+def test_the_portfolio_summary_carries_the_reranker_and_generation_studies():
+    from pathlib import Path
+
+    from finrag.demo import summary
+
+    results = Path(__file__).resolve().parents[1] / "results"
+    if not (results / "generation.json").exists() or not (results / "rerank.json").exists():
+        pytest.skip("the study results are not committed")
+    out = summary(results)
+    assert out["generation"]["generator"] and out["generation"]["summary"]["settings"]["gold"]["n"] == 100
+    assert out["generation"]["judge_check"]["labeled"] == 60
+    assert out["rerank"]["windows"] == 1 and out["rerank"]["model"].startswith("BAAI/")
+    if (results / "rerank-windows3.json").exists():
+        assert out["rerank-windows3"]["windows"] == 3
+    assert out["rerank"]["git_dirty"] in (True, False, None)

@@ -108,18 +108,23 @@ def _first_ranks(results_dir: Path | None) -> dict[str, dict]:
 def summary(results_dir: Path) -> dict:
     """The numbers the portfolio page prints, each with the file and commit it came from."""
     out = {}
-    for name in ("eval", "incremental", "chunks", "load", "rerank", "generation"):
+    for name in ("eval", "incremental", "chunks", "load", "rerank", "rerank-windows3", "generation"):
         path = results_dir / f"{name}.json"
         if not path.exists():
             continue
         res = json.loads(path.read_text())
         entry = {"file": f"results/{name}.json", "git_sha": res["meta"]["git_sha"],
-                 "command": res["meta"]["command"], "date": res["meta"]["date"]}
+                 "command": res["meta"]["command"], "date": res["meta"]["date"],
+                 "git_dirty": res["meta"].get("git_dirty")}
+        if res["meta"].get("model"):
+            entry["model"] = res["meta"]["model"]
         if "table" in res:
             entry["table"] = [{k: v for k, v in r.items()} for r in res["table"]]
         for key in ("headline", "comparisons", "filter", "summary", "levels", "units", "passed",
                     "max_abs_score_diff", "same_top100", "queries", "held_out_filings",
-                    "full_build_seconds", "add_batch_seconds", "judge_check"):
+                    "full_build_seconds", "add_batch_seconds", "judge_check", "windows", "top", "bases",
+                    "pairs_scored", "seconds_per_pair", "generator", "judge", "retrieval",
+                    "naive_retrieval", "split", "recorded_spend_usd", "cap_usd"):
             if key in res:
                 entry[key] = res[key]
         if "taxonomy" in res:
