@@ -1,0 +1,13 @@
+# The evaluation records hold SHA-256 values that the generic-api-key rule reads as keys:
+# the request hashes in results/generation/calls.jsonl, and the tokenizer checksums in
+# results/eval.json and the results/rerank*.json files. Each exception needs the rule, the file and a
+# bare 64-hex value to match, so a real key anywhere else still fails the scan.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "SHA-256 values recorded by the evaluations"
+condition = "AND"
+targetRules = ["generic-api-key"]
+paths = ['''^results/(generation/calls\.jsonl|eval\.json|rerank(-windows[0-9]+)?\.json)$''']
+regexes = ['''^[0-9a-f]{10,64}$''']
