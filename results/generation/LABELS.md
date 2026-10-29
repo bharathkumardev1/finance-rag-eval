@@ -21,8 +21,19 @@ Verdicts follow the reference, not the filing. Where the reference itself looks 
 | 13 | AMD FY22 revenue drivers | Reference lists EPYC, semi-custom and Xilinx embedded. The answer covers embedded, client and gaming, not EPYC. |
 | 27 | Boeing gross margin | Answer says 4.9% for FY2021, filing gives 4.84%. Conclusion matches. |
 | 29 | Pfizer spin-off | Reference says Upjohn was being spun off, but it closed on 16 November 2020. Graded incorrect against the reference. The model's "No" is historically right. |
-| 37 | Corning working capital | Answer $2,278m, reference $831m (narrower definition). Both say positive. Graded correct on the conclusion. |
+| 37 | Corning working capital | Answer $2,278m, reference $831m. Both say positive. Graded correct, see below. |
 | 46 | 3M capital intensity | Judgmental call. Graded against the reference's "No". |
+
+## Row 37: Corning working capital
+
+The question asks whether Corning had positive working capital in FY2022. The reference says yes, $831 million, and notes that it counts only the operating current assets and current liabilities shown on the balance sheet. The answer says yes, $2,278 million.
+
+Both figures come from the FY2022 balance sheet (10-K, December 31, 2022, in millions):
+
+- The answer is total current assets of 7,453 minus total current liabilities of 5,175, which is 2,278. This is the usual definition.
+- The reference leaves out cash (1,671) and the current portion of debt (224): receivables 1,721 + inventories 2,904 + other current assets 1,157 - accounts payable 1,804 - other accrued liabilities 3,147 = 831.
+
+The rubric accepts the same figure or the same conclusion. The conclusion matches and the figure is correct under the usual definition, so I graded it correct. The judge marked it incorrect because the figure differs from the reference. This is the one disagreement in the 60 labels. A grader who required the reference's figure would count it incorrect and agreement would be 60 of 60.
 
 ## Result
 
