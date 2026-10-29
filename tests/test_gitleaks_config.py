@@ -21,3 +21,9 @@ def test_the_exception_needs_rule_path_and_a_bare_hex_value():
 def test_ci_scans_with_that_config():
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
     assert "GITLEAKS_CONFIG: .gitleaks.toml" in ci
+
+
+def test_ci_pins_a_gitleaks_that_understands_the_allowlist():
+    ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
+    pinned = re.search(r"GITLEAKS_VERSION: (\d+)\.(\d+)\.(\d+)", ci)
+    assert pinned and tuple(map(int, pinned.groups())) >= (8, 25, 0)  # AND allowlists need 8.25

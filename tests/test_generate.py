@@ -190,3 +190,9 @@ def test_committed_summary_recomputes_from_its_rows():
         pytest.skip("no generation results committed yet")
     res = json.loads(path.read_text())
     assert summarize(res["rows"]) == res["summary"]
+
+
+def test_cost_totals_do_not_depend_on_how_the_python_version_adds_floats():
+    rows = [{"qid": f"q{i}", "setting": "gold", "verdict": "correct", "cost_usd": c, "answer_seconds": 1.0,
+             "type": "t", "gold_in_pages": True} for i, c in enumerate([0.1, 0.2, 0.3] * 4)]
+    assert summarize(rows)["settings"]["gold"]["cost_usd"] == 2.4

@@ -306,7 +306,7 @@ def summarize(rows: list[dict]) -> dict:
             "n": len(rs), "accuracy": float(correct.mean()), "accuracy_ci95": list(bootstrap_ci(correct)),
             "declined": sum(r["verdict"] == "declined" for r in rs),
             "incorrect": sum(r["verdict"] == "incorrect" for r in rs),
-            "cost_usd": float(sum(r["cost_usd"] for r in rs)),
+            "cost_usd": round(float(sum(r["cost_usd"] for r in rs)), 10),
             "answer_p50_s": float(np.percentile(secs, 50)), "answer_p95_s": float(np.percentile(secs, 95)),
             "by_type": {t: float(np.mean([r["verdict"] == "correct" for r in rs if r["type"] == t]))
                         for t in sorted({r["type"] for r in rs})},
