@@ -206,3 +206,127 @@ From `finrag loadtest --methods bm25,hybrid --levels 1,2,4,8,16 --seconds 30 --s
 | hybrid | 4 | 54.0 | 67.8 | 129.0 | 158.7 | 0 | 1023 | 0.23 |
 | hybrid | 8 | 55.1 | 135.1 | 246.7 | 324.1 | 0 | 1072 | 0.23 |
 | hybrid | 16 | 51.8 | 299.2 | 482.5 | 613.9 | 0 | 1163 | 0.24 |
+
+## Reranker
+
+From `finrag rerank-study` at commit `cf57ef1` with uncommitted changes on 2026-10-28. BAAI/bge-reranker-base over the top 30 of each system below, reading 1 window of 512 tokens per page, a page scoring as its best window. Scoring took 367 ms per (question, page) pair on arm, so reranking 30 pages adds about 11.0 s to a query.
+
+| Split | Config | Hit@1 | Hit@10 (95% CI) | MRR@10 |
+|---|---|---|---|---|
+| dev | `hybrid/company_year+quarter+drop+route` | 0.54 | 0.78 (0.66 to 0.88) | 0.606 |
+| test | `hybrid/company_year+quarter+drop+route` | 0.45 | 0.73 (0.64 to 0.82) | 0.542 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | 0.16 | 0.62 (0.48 to 0.76) | 0.283 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | 0.24 | 0.63 (0.53 to 0.72) | 0.336 |
+| dev | `bm25/company_year+quarter+drop+route` | 0.38 | 0.66 (0.52 to 0.78) | 0.506 |
+| test | `bm25/company_year+quarter+drop+route` | 0.43 | 0.75 (0.66 to 0.83) | 0.534 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | 0.16 | 0.58 (0.44 to 0.72) | 0.280 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | 0.29 | 0.63 (0.53 to 0.72) | 0.387 |
+| dev | `bm25/all-pages` | 0.04 | 0.10 (0.02 to 0.18) | 0.052 |
+| test | `bm25/all-pages` | 0.07 | 0.14 (0.08 to 0.21) | 0.091 |
+| dev | `bm25/all-pages+rerank` | 0.02 | 0.12 (0.04 to 0.22) | 0.044 |
+| test | `bm25/all-pages+rerank` | 0.06 | 0.13 (0.07 to 0.20) | 0.081 |
+
+Paired by question, 10,000 bootstrap resamples. `+rerank` is the system with its top 30 reordered.
+
+| Split | A | B | Metric | A minus B | 95% CI | A better | B better | Sign-test p |
+|---|---|---|---|---|---|---|---|---|
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@1 | -0.380 | -0.520 to -0.240 | 1 | 20 | <0.001 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.160 | -0.300 to -0.020 | 3 | 11 | 0.057 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.323 | -0.442 to -0.205 | 5 | 30 | <0.001 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@1 | -0.210 | -0.320 to -0.100 | 8 | 29 | <0.001 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.100 | -0.200 to -0.010 | 7 | 17 | 0.064 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.206 | -0.297 to -0.115 | 15 | 45 | <0.001 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@1 | -0.220 | -0.360 to -0.100 | 1 | 12 | 0.003 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.080 | -0.200 to +0.020 | 2 | 6 | 0.289 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.226 | -0.327 to -0.130 | 3 | 23 | <0.001 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@1 | -0.140 | -0.260 to -0.030 | 12 | 26 | 0.034 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.120 | -0.210 to -0.040 | 4 | 16 | 0.012 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.147 | -0.239 to -0.058 | 17 | 41 | 0.002 |
+| dev | `bm25/all-pages+rerank` | `bm25/all-pages` | hit@1 | -0.020 | -0.060 to +0.000 | 0 | 1 | 1.000 |
+| dev | `bm25/all-pages+rerank` | `bm25/all-pages` | hit@10 | +0.020 | +0.000 to +0.060 | 1 | 0 | 1.000 |
+| dev | `bm25/all-pages+rerank` | `bm25/all-pages` | mrr@10 | -0.008 | -0.050 to +0.021 | 3 | 2 | 1.000 |
+| test | `bm25/all-pages+rerank` | `bm25/all-pages` | hit@1 | -0.010 | -0.060 to +0.030 | 2 | 3 | 1.000 |
+| test | `bm25/all-pages+rerank` | `bm25/all-pages` | hit@10 | -0.010 | -0.030 to +0.000 | 0 | 1 | 1.000 |
+| test | `bm25/all-pages+rerank` | `bm25/all-pages` | mrr@10 | -0.010 | -0.038 to +0.015 | 2 | 8 | 0.109 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.040 | -0.180 to +0.100 | 5 | 7 | 0.774 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.223 | -0.339 to -0.108 | 6 | 25 | <0.001 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.120 | -0.220 to -0.030 | 6 | 18 | 0.023 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.198 | -0.289 to -0.109 | 20 | 46 | 0.002 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | hit@10 | +0.520 | +0.380 to +0.660 | 26 | 0 | <0.001 |
+| dev | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | mrr@10 | +0.231 | +0.136 to +0.334 | 28 | 1 | <0.001 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | hit@10 | +0.490 | +0.380 to +0.600 | 53 | 4 | <0.001 |
+| test | `hybrid/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | mrr@10 | +0.245 | +0.164 to +0.325 | 55 | 8 | <0.001 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.200 | -0.320 to -0.100 | 0 | 10 | 0.002 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.326 | -0.435 to -0.222 | 2 | 28 | <0.001 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.100 | -0.190 to -0.010 | 5 | 15 | 0.041 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.155 | -0.246 to -0.066 | 14 | 41 | <0.001 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | hit@10 | +0.480 | +0.340 to +0.620 | 24 | 0 | <0.001 |
+| dev | `bm25/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | mrr@10 | +0.228 | +0.131 to +0.332 | 27 | 1 | <0.001 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | hit@10 | +0.490 | +0.370 to +0.600 | 53 | 4 | <0.001 |
+| test | `bm25/company_year+quarter+drop+route+rerank` | `bm25/all-pages` | mrr@10 | +0.296 | +0.207 to +0.382 | 55 | 8 | <0.001 |
+| dev | `bm25/all-pages+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.660 | -0.780 to -0.520 | 0 | 33 | <0.001 |
+| dev | `bm25/all-pages+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.562 | -0.684 to -0.438 | 1 | 37 | <0.001 |
+| test | `bm25/all-pages+rerank` | `hybrid/company_year+quarter+drop+route` | hit@10 | -0.600 | -0.700 to -0.490 | 3 | 63 | <0.001 |
+| test | `bm25/all-pages+rerank` | `hybrid/company_year+quarter+drop+route` | mrr@10 | -0.461 | -0.557 to -0.365 | 6 | 66 | <0.001 |
+| dev | `bm25/all-pages+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.540 | -0.680 to -0.400 | 1 | 28 | <0.001 |
+| dev | `bm25/all-pages+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.462 | -0.581 to -0.344 | 1 | 32 | <0.001 |
+| test | `bm25/all-pages+rerank` | `bm25/company_year+quarter+drop+route` | hit@10 | -0.620 | -0.720 to -0.510 | 3 | 65 | <0.001 |
+| test | `bm25/all-pages+rerank` | `bm25/company_year+quarter+drop+route` | mrr@10 | -0.453 | -0.545 to -0.360 | 5 | 69 | <0.001 |
+
+### Reading 3 windows of each page
+
+The same reranker on `hybrid/company_year+quarter+drop+route` with each page cut into up to 3 windows of 512 tokens, a page scoring as its best window. Scoring 4,473 pages took 4067 s, 909 ms per page.
+
+| Split | System | Hit@10 | MRR@10 |
+|---|---|---|---|
+| dev | no rerank | 0.78 | 0.606 |
+| dev | 1 window | 0.62 | 0.283 |
+| dev | 3 windows | 0.64 | 0.241 |
+| test | no rerank | 0.73 | 0.542 |
+| test | 1 window | 0.63 | 0.336 |
+| test | 3 windows | 0.57 | 0.314 |
+
+Paired by question, 10,000 bootstrap resamples; the sign test is exact.
+
+| Split | A | B | Metric | A minus B | 95% CI | A better | B better | Sign-test p |
+|---|---|---|---|---|---|---|---|---|
+| dev | 3 windows | no rerank | hit@10 | -0.140 | -0.280 to +0.000 | 4 | 11 | 0.118 |
+| dev | 3 windows | no rerank | mrr@10 | -0.366 | -0.480 to -0.253 | 7 | 32 | <0.001 |
+| dev | 3 windows | 1 window | hit@10 | +0.020 | -0.060 to +0.100 | 3 | 2 | 1.000 |
+| dev | 3 windows | 1 window | mrr@10 | -0.043 | -0.106 to +0.020 | 5 | 17 | 0.017 |
+| test | 3 windows | no rerank | hit@10 | -0.160 | -0.260 to -0.060 | 6 | 22 | 0.004 |
+| test | 3 windows | no rerank | mrr@10 | -0.228 | -0.321 to -0.133 | 15 | 47 | <0.001 |
+| test | 3 windows | 1 window | hit@10 | -0.060 | -0.120 to +0.000 | 2 | 8 | 0.109 |
+| test | 3 windows | 1 window | mrr@10 | -0.022 | -0.051 to +0.009 | 5 | 27 | <0.001 |
+
+## Generation
+
+From `finrag generate --cap 1.50` at commit `cf57ef1` with uncommitted changes on 2026-10-28. gpt-6-luna answers from five pages, judged by gpt-6.1-sol against FinanceBench's reference answers, on the test split. Retrieval: `hybrid/company_year+quarter+drop+route` and `bm25/all-pages`. Recorded spend $0.46 of a $1.50 cap.
+
+| Pages given | Questions | Correct (95% CI) | Declined | Incorrect | Cost | p50 s | p95 s |
+|---|---|---|---|---|---|---|---|
+| gold pages | 100 | 0.83 (0.75 to 0.90) | 4 | 13 | $0.12 | 3.4 | 8.6 |
+| reported system's top 5 | 100 | 0.66 (0.57 to 0.75) | 21 | 13 | $0.14 | 3.1 | 10.2 |
+| BM25 over all pages, top 5 | 100 | 0.14 (0.08 to 0.21) | 79 | 7 | $0.07 | 1.8 | 7.0 |
+| no pages | 100 | 0.37 (0.27 to 0.47) | 23 | 40 | $0.14 | 10.6 | 20.2 |
+
+Accuracy by whether a gold page was among the pages given:
+
+| Pages given | Questions with a gold page | Correct | Questions without | Correct |
+|---|---|---|---|---|
+| gold pages | 100 | 0.83 | 0 | n/a |
+| reported system's top 5 | 66 | 0.83 | 34 | 0.32 |
+| BM25 over all pages, top 5 | 12 | 0.92 | 88 | 0.03 |
+
+Paired by question, 10,000 bootstrap resamples; the sign test is exact and uncorrected for the 4 comparisons.
+
+| A | B | A minus B | 95% CI | A better | B better | Sign-test p |
+|---|---|---|---|---|---|---|
+| gold pages | reported system's top 5 | +0.170 | +0.090 to +0.250 | 18 | 1 | <0.001 |
+| reported system's top 5 | BM25 over all pages, top 5 | +0.520 | +0.410 to +0.620 | 54 | 2 | <0.001 |
+| reported system's top 5 | no pages | +0.290 | +0.160 to +0.410 | 39 | 10 | <0.001 |
+| gold pages | no pages | +0.460 | +0.350 to +0.570 | 50 | 4 | <0.001 |
+
+The judge agreed with the 60 labels in `results/generation/labels.csv` on 59 answers, 98.3% (95% CI 0.95 to 1.00); Cohen's kappa 0.95 (0.83 to 1.00), over 51 questions. It passed 0 answers the labels failed and failed 1 answers the labels passed.
+
+How the labels were made: graded by the author against the FinanceBench reference answers, with AI-assisted evidence gathering. Not blind to AI input.

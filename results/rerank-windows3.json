@@ -1,0 +1,9782 @@
+{
+ "meta": {
+  "git_sha": "cf57ef192c9c476cfe7fae4b54926ef3a18e7059",
+  "git_dirty": true,
+  "command": "finrag rerank-study --config hybrid/company_year+quarter+drop+route --windows 3 --out results/rerank-windows3.json",
+  "date": "2026-10-28",
+  "python": "3.12.16",
+  "numpy": "2.5.4",
+  "scipy": "1.18.1",
+  "pymupdf": "2.0",
+  "cpu": "arm",
+  "cpus": 8,
+  "threads": 4,
+  "bootstrap": 10000,
+  "model": "BAAI/bge-reranker-base",
+  "revision": "2cfc18c9415c912f9d8155881c133215df768a70",
+  "onnx_sha256": "15b9a8c3da82eddf263df571281166e00e9308fe19d077084b642ebfcaf06d2b",
+  "tokenizer_sha256": "9eb652ac4e40cc093272bbbe0f55d521cf67570060227109b5cdc20945a4489e",
+  "limit": null
+ },
+ "bases": [
+  "hybrid/company_year+quarter+drop+route"
+ ],
+ "base": "hybrid/company_year+quarter+drop+route",
+ "top": 30,
+ "windows": 3,
+ "table": [
+  {
+   "config": "hybrid/company_year+quarter+drop+route",
+   "split": "dev",
+   "n": 50,
+   "hit@1": 0.54,
+   "recall@1": 0.45,
+   "doc_hit@1": 0.72,
+   "hit@5": 0.66,
+   "recall@5": 0.65,
+   "doc_hit@5": 0.9,
+   "hit@10": 0.78,
+   "recall@10": 0.77,
+   "doc_hit@10": 0.96,
+   "mrr@10": 0.6062222222222222,
+   "n_multi_page": 10,
+   "recall@10_multi_page": 0.95,
+   "hit@10_ci95": [
+    0.66,
+    0.88
+   ],
+   "mrr@10_ci95": [
+    0.48249583333333335,
+    0.728447222222222
+   ]
+  },
+  {
+   "config": "hybrid/company_year+quarter+drop+route",
+   "split": "test",
+   "n": 100,
+   "hit@1": 0.45,
+   "recall@1": 0.395,
+   "doc_hit@1": 0.73,
+   "hit@5": 0.66,
+   "recall@5": 0.64,
+   "doc_hit@5": 0.91,
+   "hit@10": 0.73,
+   "recall@10": 0.71,
+   "doc_hit@10": 0.94,
+   "mrr@10": 0.5416746031746031,
+   "n_multi_page": 25,
+   "recall@10_multi_page": 0.64,
+   "hit@10_ci95": [
+    0.64,
+    0.82
+   ],
+   "mrr@10_ci95": [
+    0.4556468253968254,
+    0.6274295634920635
+   ]
+  },
+  {
+   "config": "hybrid/company_year+quarter+drop+route+rerank",
+   "split": "dev",
+   "n": 50,
+   "hit@1": 0.08,
+   "recall@1": 0.07,
+   "doc_hit@1": 0.7,
+   "hit@5": 0.46,
+   "recall@5": 0.41,
+   "doc_hit@5": 0.94,
+   "hit@10": 0.64,
+   "recall@10": 0.63,
+   "doc_hit@10": 0.94,
+   "mrr@10": 0.24054761904761904,
+   "n_multi_page": 10,
+   "recall@10_multi_page": 0.85,
+   "hit@10_ci95": [
+    0.5,
+    0.76
+   ],
+   "mrr@10_ci95": [
+    0.16659464285714284,
+    0.32266666666666666
+   ]
+  },
+  {
+   "config": "hybrid/company_year+quarter+drop+route+rerank",
+   "split": "test",
+   "n": 100,
+   "hit@1": 0.23,
+   "recall@1": 0.205,
+   "doc_hit@1": 0.74,
+   "hit@5": 0.41,
+   "recall@5": 0.365,
+   "doc_hit@5": 0.91,
+   "hit@10": 0.57,
+   "recall@10": 0.53,
+   "doc_hit@10": 0.93,
+   "mrr@10": 0.31412301587301583,
+   "n_multi_page": 25,
+   "recall@10_multi_page": 0.4,
+   "hit@10_ci95": [
+    0.47,
+    0.67
+   ],
+   "mrr@10_ci95": [
+    0.2372020833333333,
+    0.39394196428571426
+   ]
+  }
+ ],
+ "questions": {
+  "financebench_id_03029": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      17
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2018_10K",
+      6
+     ],
+     [
+      "3M_2018_10K",
+      46
+     ],
+     [
+      "3M_2018_10K",
+      38
+     ],
+     [
+      "3M_2018_10K",
+      30
+     ],
+     [
+      "3M_2018_10K",
+      25
+     ],
+     [
+      "3M_2018_10K",
+      42
+     ],
+     [
+      "3M_2018_10K",
+      43
+     ],
+     [
+      "3M_2018_10K",
+      50
+     ],
+     [
+      "3M_2018_10K",
+      85
+     ],
+     [
+      "3M_2018_10K",
+      82
+     ]
+    ]
+   }
+  },
+  "financebench_id_04672": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2018_10K",
+      46
+     ],
+     [
+      "3M_2018_10K",
+      25
+     ],
+     [
+      "3M_2018_10K",
+      45
+     ],
+     [
+      "3M_2018_10K",
+      43
+     ],
+     [
+      "3M_2018_10K",
+      40
+     ],
+     [
+      "3M_2018_10K",
+      85
+     ],
+     [
+      "3M_2018_10K",
+      105
+     ],
+     [
+      "3M_2018_10K",
+      126
+     ],
+     [
+      "3M_2018_10K",
+      75
+     ],
+     [
+      "3M_2018_10K",
+      30
+     ]
+    ]
+   }
+  },
+  "financebench_id_00499": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 3,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 3,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2022_10K",
+      36
+     ],
+     [
+      "3M_2022_10K",
+      8
+     ],
+     [
+      "3M_2022_10K",
+      37
+     ],
+     [
+      "3M_2022_10K",
+      35
+     ],
+     [
+      "3M_2022_10K",
+      53
+     ],
+     [
+      "3M_2022_10K",
+      120
+     ],
+     [
+      "3M_2022_10K",
+      27
+     ],
+     [
+      "3M_2022_10K",
+      40
+     ],
+     [
+      "3M_2022_10K",
+      5
+     ],
+     [
+      "3M_2022_10K",
+      14
+     ]
+    ]
+   }
+  },
+  "financebench_id_01226": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      18
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2022_10K",
+      20
+     ],
+     [
+      "3M_2022_10K",
+      23
+     ],
+     [
+      "3M_2022_10K",
+      25
+     ],
+     [
+      "3M_2022_10K",
+      37
+     ],
+     [
+      "3M_2022_10K",
+      21
+     ],
+     [
+      "3M_2022_10K",
+      14
+     ],
+     [
+      "3M_2022_10K",
+      40
+     ],
+     [
+      "3M_2022_10K",
+      9
+     ],
+     [
+      "3M_2022_10K",
+      10
+     ],
+     [
+      "3M_2022_10K",
+      120
+     ]
+    ]
+   }
+  },
+  "financebench_id_01865": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      12
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      27
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2022_10K",
+      31
+     ],
+     [
+      "3M_2022_10K",
+      26
+     ],
+     [
+      "3M_2022_10K",
+      20
+     ],
+     [
+      "3M_2022_10K",
+      18
+     ],
+     [
+      "3M_2022_10K",
+      5
+     ],
+     [
+      "3M_2022_10K",
+      25
+     ],
+     [
+      "3M_2022_10K",
+      120
+     ],
+     [
+      "3M_2022_10K",
+      33
+     ],
+     [
+      "3M_2022_10K",
+      21
+     ],
+     [
+      "3M_2022_10K",
+      9
+     ]
+    ]
+   }
+  },
+  "financebench_id_00807": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2023Q2_10Q",
+      69
+     ],
+     [
+      "3M_2023Q2_10Q",
+      72
+     ],
+     [
+      "3M_2023Q2_10Q",
+      70
+     ],
+     [
+      "3M_2023Q2_10Q",
+      31
+     ],
+     [
+      "3M_2023Q2_10Q",
+      61
+     ],
+     [
+      "3M_2023Q2_10Q",
+      82
+     ],
+     [
+      "3M_2023Q2_10Q",
+      75
+     ],
+     [
+      "3M_2023Q2_10Q",
+      71
+     ],
+     [
+      "3M_2023Q2_10Q",
+      56
+     ],
+     [
+      "3M_2023Q2_10Q",
+      35
+     ]
+    ]
+   }
+  },
+  "financebench_id_00941": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2023Q2_10Q",
+      69
+     ],
+     [
+      "3M_2023Q2_10Q",
+      1
+     ],
+     [
+      "3M_2023Q2_10Q",
+      70
+     ],
+     [
+      "3M_2023Q2_10Q",
+      17
+     ],
+     [
+      "3M_2023Q2_10Q",
+      72
+     ],
+     [
+      "3M_2023Q2_10Q",
+      26
+     ],
+     [
+      "3M_2023Q2_10Q",
+      4
+     ],
+     [
+      "3M_2023Q2_10Q",
+      0
+     ],
+     [
+      "3M_2023Q2_10Q",
+      21
+     ],
+     [
+      "3M_2023Q2_10Q",
+      61
+     ]
+    ]
+   }
+  },
+  "financebench_id_01858": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 7
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 17
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "3M_2015_10K",
+      38
+     ],
+     [
+      "3M_2019_10K",
+      11
+     ],
+     [
+      "3M_2017_10K",
+      24
+     ],
+     [
+      "3M_2018_10K",
+      42
+     ],
+     [
+      "3M_2021_10K",
+      37
+     ],
+     [
+      "3M_2022_10K",
+      36
+     ],
+     [
+      "3M_2022_10K",
+      25
+     ],
+     [
+      "3M_2017_10K",
+      42
+     ],
+     [
+      "3M_2020_10K",
+      27
+     ],
+     [
+      "3M_2018_10K",
+      25
+     ]
+    ]
+   }
+  },
+  "financebench_id_02987": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      15,
+      23
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ACTIVISIONBLIZZARD_2018_10K",
+      258
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      172
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2018_10K",
+      256
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      174
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      173
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      51
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2018_10K",
+      264
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2018_10K",
+      257
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      91
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2018_10K",
+      131
+     ]
+    ]
+   }
+  },
+  "financebench_id_07966": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6,
+      13
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      105
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      31
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      100
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2017_10K",
+      45
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2017_10K",
+      77
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      72
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      172
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2017_10K",
+      4
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2019_10K",
+      59
+     ],
+     [
+      "ACTIVISIONBLIZZARD_2017_10K",
+      122
+     ]
+    ]
+   }
+  },
+  "financebench_id_04735": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      6
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ADOBE_2015_10K",
+      39
+     ],
+     [
+      "ADOBE_2015_10K",
+      58
+     ],
+     [
+      "ADOBE_2015_10K",
+      103
+     ],
+     [
+      "ADOBE_2015_10K",
+      50
+     ],
+     [
+      "ADOBE_2015_10K",
+      71
+     ],
+     [
+      "ADOBE_2015_10K",
+      62
+     ],
+     [
+      "ADOBE_2015_10K",
+      74
+     ],
+     [
+      "ADOBE_2015_10K",
+      76
+     ],
+     [
+      "ADOBE_2015_10K",
+      66
+     ],
+     [
+      "ADOBE_2015_10K",
+      77
+     ]
+    ]
+   }
+  },
+  "financebench_id_07507": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ADOBE_2016_10K",
+      51
+     ],
+     [
+      "ADOBE_2016_10K",
+      64
+     ],
+     [
+      "ADOBE_2016_10K",
+      42
+     ],
+     [
+      "ADOBE_2016_10K",
+      41
+     ],
+     [
+      "ADOBE_2016_10K",
+      61
+     ],
+     [
+      "ADOBE_2015_10K",
+      62
+     ],
+     [
+      "ADOBE_2016_10K",
+      91
+     ],
+     [
+      "ADOBE_2015_10K",
+      100
+     ],
+     [
+      "ADOBE_2015_10K",
+      37
+     ],
+     [
+      "ADOBE_2016_10K",
+      86
+     ]
+    ]
+   }
+  },
+  "financebench_id_03856": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      3,
+      5
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ADOBE_2017_10K",
+      39
+     ],
+     [
+      "ADOBE_2017_10K",
+      38
+     ],
+     [
+      "ADOBE_2017_10K",
+      60
+     ],
+     [
+      "ADOBE_2017_10K",
+      70
+     ],
+     [
+      "ADOBE_2017_10K",
+      56
+     ],
+     [
+      "ADOBE_2017_10K",
+      76
+     ],
+     [
+      "ADOBE_2017_10K",
+      94
+     ],
+     [
+      "ADOBE_2017_10K",
+      50
+     ],
+     [
+      "ADOBE_2017_10K",
+      96
+     ],
+     [
+      "ADOBE_2017_10K",
+      48
+     ]
+    ]
+   }
+  },
+  "financebench_id_00438": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ADOBE_2022_10K",
+      22
+     ],
+     [
+      "ADOBE_2022_10K",
+      2
+     ],
+     [
+      "ADOBE_2022_10K",
+      31
+     ],
+     [
+      "ADOBE_2022_10K",
+      3
+     ],
+     [
+      "ADOBE_2022_10K",
+      23
+     ],
+     [
+      "ADOBE_2022_10K",
+      19
+     ],
+     [
+      "ADOBE_2022_10K",
+      17
+     ],
+     [
+      "ADOBE_2022_10K",
+      36
+     ],
+     [
+      "ADOBE_2022_10K",
+      63
+     ],
+     [
+      "ADOBE_2022_10K",
+      14
+     ]
+    ]
+   }
+  },
+  "financebench_id_00591": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      18
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      14
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ADOBE_2022_10K",
+      8
+     ],
+     [
+      "ADOBE_2022_10K",
+      2
+     ],
+     [
+      "ADOBE_2022_10K",
+      16
+     ],
+     [
+      "ADOBE_2022_10K",
+      3
+     ],
+     [
+      "ADOBE_2022_10K",
+      39
+     ],
+     [
+      "ADOBE_2022_10K",
+      7
+     ],
+     [
+      "ADOBE_2022_10K",
+      40
+     ],
+     [
+      "ADOBE_2022_10K",
+      35
+     ],
+     [
+      "ADOBE_2022_10K",
+      57
+     ],
+     [
+      "ADOBE_2022_10K",
+      36
+     ]
+    ]
+   }
+  },
+  "financebench_id_01319": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      14
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AES_2022_10K",
+      93
+     ],
+     [
+      "AES_2022_10K",
+      115
+     ],
+     [
+      "AES_2022_10K",
+      88
+     ],
+     [
+      "AES_2022_10K",
+      100
+     ],
+     [
+      "AES_2022_10K",
+      94
+     ],
+     [
+      "AES_2022_10K",
+      180
+     ],
+     [
+      "AES_2022_10K",
+      216
+     ],
+     [
+      "AES_2022_10K",
+      75
+     ],
+     [
+      "AES_2022_10K",
+      132
+     ],
+     [
+      "AES_2022_10K",
+      217
+     ]
+    ]
+   }
+  },
+  "financebench_id_00540": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      11
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AES_2022_10K",
+      1
+     ],
+     [
+      "AES_2022_10K",
+      134
+     ],
+     [
+      "AES_2022_10K",
+      14
+     ],
+     [
+      "AES_2022_10K",
+      201
+     ],
+     [
+      "AES_2022_10K",
+      49
+     ],
+     [
+      "AES_2022_10K",
+      81
+     ],
+     [
+      "AES_2022_10K",
+      56
+     ],
+     [
+      "AES_2022_10K",
+      180
+     ],
+     [
+      "AES_2022_10K",
+      136
+     ],
+     [
+      "AES_2022_10K",
+      158
+     ]
+    ]
+   }
+  },
+  "financebench_id_10420": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6,
+      9
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AES_2022_10K",
+      110
+     ],
+     [
+      "AES_2021_10K",
+      81
+     ],
+     [
+      "AES_2022_10K",
+      201
+     ],
+     [
+      "AES_2022_10K",
+      154
+     ],
+     [
+      "AES_2021_10K",
+      1
+     ],
+     [
+      "AES_2022_10K",
+      131
+     ],
+     [
+      "AES_2022_10K",
+      83
+     ],
+     [
+      "AES_2021_10K",
+      130
+     ],
+     [
+      "AES_2022_10K",
+      129
+     ],
+     [
+      "AES_2021_10K",
+      152
+     ]
+    ]
+   }
+  },
+  "financebench_id_06655": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      12,
+      16
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMAZON_2017_10K",
+      19
+     ],
+     [
+      "AMAZON_2016_10K",
+      18
+     ],
+     [
+      "AMAZON_2017_10K",
+      76
+     ],
+     [
+      "AMAZON_2017_10K",
+      41
+     ],
+     [
+      "AMAZON_2016_10K",
+      46
+     ],
+     [
+      "AMAZON_2017_10K",
+      47
+     ],
+     [
+      "AMAZON_2017_10K",
+      75
+     ],
+     [
+      "AMAZON_2016_10K",
+      40
+     ],
+     [
+      "AMAZON_2017_10K",
+      36
+     ],
+     [
+      "AMAZON_2016_10K",
+      35
+     ]
+    ]
+   }
+  },
+  "financebench_id_08135": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      14
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMAZON_2017_10K",
+      25
+     ],
+     [
+      "AMAZON_2017_10K",
+      24
+     ],
+     [
+      "AMAZON_2016_10K",
+      17
+     ],
+     [
+      "AMAZON_2017_10K",
+      42
+     ],
+     [
+      "AMAZON_2016_10K",
+      22
+     ],
+     [
+      "AMAZON_2016_10K",
+      24
+     ],
+     [
+      "AMAZON_2017_10K",
+      31
+     ],
+     [
+      "AMAZON_2017_10K",
+      38
+     ],
+     [
+      "AMAZON_2016_10K",
+      76
+     ],
+     [
+      "AMAZON_2016_10K",
+      23
+     ]
+    ]
+   }
+  },
+  "financebench_id_08286": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMAZON_2019_10K",
+      30
+     ],
+     [
+      "AMAZON_2019_10K",
+      63
+     ],
+     [
+      "AMAZON_2019_10K",
+      36
+     ],
+     [
+      "AMAZON_2019_10K",
+      38
+     ],
+     [
+      "AMAZON_2019_10K",
+      37
+     ],
+     [
+      "AMAZON_2019_10K",
+      51
+     ],
+     [
+      "AMAZON_2019_10K",
+      40
+     ],
+     [
+      "AMAZON_2019_10K",
+      23
+     ],
+     [
+      "AMAZON_2019_10K",
+      21
+     ],
+     [
+      "AMAZON_2019_10K",
+      17
+     ]
+    ]
+   }
+  },
+  "financebench_id_03882": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2020_10K",
+      30
+     ],
+     [
+      "AMCOR_2020_10K",
+      22
+     ],
+     [
+      "AMCOR_2020_10K",
+      111
+     ],
+     [
+      "AMCOR_2020_10K",
+      50
+     ],
+     [
+      "AMCOR_2020_10K",
+      49
+     ],
+     [
+      "AMCOR_2020_10K",
+      27
+     ],
+     [
+      "AMCOR_2020_10K",
+      33
+     ],
+     [
+      "AMCOR_2020_10K",
+      2
+     ],
+     [
+      "AMCOR_2020_10K",
+      66
+     ],
+     [
+      "AMCOR_2020_10K",
+      72
+     ]
+    ]
+   }
+  },
+  "financebench_id_01935": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2022_8K_dated-2022-07-01",
+      0
+     ],
+     [
+      "AMCOR_2022_10K",
+      110
+     ],
+     [
+      "AMCOR_2022_10K",
+      11
+     ],
+     [
+      "AMCOR_2022_8K_dated-2022-04-26",
+      0
+     ],
+     [
+      "AMCOR_2022_8K_dated-2022-07-01",
+      2
+     ],
+     [
+      "AMCOR_2022_8K_dated-2022-07-01",
+      1
+     ],
+     [
+      "AMCOR_2022_8K_dated-2022-04-26",
+      2
+     ],
+     [
+      "AMCOR_2022_10K",
+      111
+     ],
+     [
+      "AMCOR_2022_10K",
+      112
+     ],
+     [
+      "AMCOR_2022_10K",
+      109
+     ]
+    ]
+   }
+  },
+  "financebench_id_00799": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      12
+     ],
+     "n_gold": 1,
+     "doc_rank": 12
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q2_10Q",
+      38
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "AMCOR_2022_10K",
+      30
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      35
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      6
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      6
+     ],
+     [
+      "AMCOR_2022_10K",
+      50
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      4
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      9
+     ]
+    ]
+   }
+  },
+  "financebench_id_01079": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 8
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 5
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      5
+     ],
+     [
+      "AMCOR_2021_10K",
+      5
+     ],
+     [
+      "AMCOR_2021_10K",
+      53
+     ],
+     [
+      "AMCOR_2023_10K",
+      52
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      38
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      35
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      7
+     ],
+     [
+      "AMCOR_2022_10K",
+      111
+     ],
+     [
+      "AMCOR_2021_10K",
+      51
+     ]
+    ]
+   }
+  },
+  "financebench_id_01148": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      5
+     ],
+     [
+      "AMCOR_2022_10K",
+      7
+     ],
+     [
+      "AMCOR_2023_10K",
+      54
+     ],
+     [
+      "AMCOR_2022_10K",
+      53
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      9
+     ],
+     [
+      "AMCOR_2021_10K",
+      34
+     ],
+     [
+      "AMCOR_2021_10K",
+      9
+     ],
+     [
+      "AMCOR_2023_10K",
+      133
+     ],
+     [
+      "AMCOR_2022_10K",
+      10
+     ],
+     [
+      "AMCOR_2022_8K_dated-2022-04-26",
+      129
+     ]
+    ]
+   }
+  },
+  "financebench_id_00684": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      2
+     ],
+     [
+      "AMCOR_2023_10K",
+      28
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      38
+     ],
+     [
+      "AMCOR_2023_10K",
+      31
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      35
+     ],
+     [
+      "AMCOR_2023_10K",
+      47
+     ],
+     [
+      "AMCOR_2023_10K",
+      49
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      7
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      9
+     ]
+    ]
+   }
+  },
+  "financebench_id_01936": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      17
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q2_10Q",
+      33
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      9
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      6
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      31
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      41
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      43
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      8
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      7
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      56
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      3
+     ]
+    ]
+   }
+  },
+  "financebench_id_01928": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "AMCOR_2023_10K",
+      34
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      3
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      10
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      4
+     ],
+     [
+      "AMCOR_2023_10K",
+      45
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      11
+     ],
+     [
+      "AMCOR_2023_10K",
+      92
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      2
+     ]
+    ]
+   }
+  },
+  "financebench_id_01930": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      21
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "AMCOR_2023_10K",
+      29
+     ],
+     [
+      "AMCOR_2023_10K",
+      31
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      33
+     ],
+     [
+      "AMCOR_2023_10K",
+      92
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      2
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "AMCOR_2023Q2_10Q",
+      38
+     ],
+     [
+      "AMCOR_2023_10K",
+      67
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      7
+     ]
+    ]
+   }
+  },
+  "financebench_id_03069": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      11
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2015_10K",
+      59
+     ],
+     [
+      "AMD_2015_10K",
+      2
+     ],
+     [
+      "AMD_2015_10K",
+      79
+     ],
+     [
+      "AMD_2015_10K",
+      33
+     ],
+     [
+      "AMD_2015_10K",
+      97
+     ],
+     [
+      "AMD_2015_10K",
+      99
+     ],
+     [
+      "AMD_2015_10K",
+      38
+     ],
+     [
+      "AMD_2015_10K",
+      91
+     ],
+     [
+      "AMD_2015_10K",
+      42
+     ],
+     [
+      "AMD_2015_10K",
+      62
+     ]
+    ]
+   }
+  },
+  "financebench_id_00222": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      24
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_10K",
+      4
+     ],
+     [
+      "AMD_2022_annualreport",
+      9
+     ],
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      68
+     ],
+     [
+      "AMD_2022_10K",
+      59
+     ],
+     [
+      "AMD_2022_10K",
+      23
+     ],
+     [
+      "AMD_2022_annualreport",
+      43
+     ],
+     [
+      "AMD_2022_annualreport",
+      118
+     ],
+     [
+      "AMD_2022_annualreport",
+      15
+     ]
+    ]
+   }
+  },
+  "financebench_id_00995": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_10K",
+      59
+     ],
+     [
+      "AMD_2022_annualreport",
+      68
+     ],
+     [
+      "AMD_2022_10K",
+      10
+     ],
+     [
+      "AMD_2022_annualreport",
+      1
+     ],
+     [
+      "AMD_2022_10K",
+      13
+     ],
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2022_annualreport",
+      15
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      16
+     ],
+     [
+      "AMD_2022_10K",
+      66
+     ]
+    ]
+   }
+  },
+  "financebench_id_01198": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_annualreport",
+      1
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_10K",
+      59
+     ],
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2022_10K",
+      42
+     ],
+     [
+      "AMD_2022_annualreport",
+      68
+     ],
+     [
+      "AMD_2022_annualreport",
+      25
+     ],
+     [
+      "AMD_2022_annualreport",
+      2
+     ],
+     [
+      "AMD_2022_annualreport",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      76
+     ]
+    ]
+   }
+  },
+  "financebench_id_00917": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_annualreport",
+      1
+     ],
+     [
+      "AMD_2022_annualreport",
+      67
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      100
+     ],
+     [
+      "AMD_2022_annualreport",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      57
+     ],
+     [
+      "AMD_2022_annualreport",
+      56
+     ],
+     [
+      "AMD_2022_annualreport",
+      20
+     ],
+     [
+      "AMD_2022_annualreport",
+      77
+     ],
+     [
+      "AMD_2022_10K",
+      42
+     ]
+    ]
+   }
+  },
+  "financebench_id_01279": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2022_annualreport",
+      59
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_10K",
+      58
+     ],
+     [
+      "AMD_2022_10K",
+      50
+     ],
+     [
+      "AMD_2022_10K",
+      57
+     ],
+     [
+      "AMD_2022_annualreport",
+      2
+     ],
+     [
+      "AMD_2022_10K",
+      100
+     ],
+     [
+      "AMD_2022_annualreport",
+      60
+     ],
+     [
+      "AMD_2022_10K",
+      51
+     ]
+    ]
+   }
+  },
+  "financebench_id_00563": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      6
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 4
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_annualreport",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      10
+     ],
+     [
+      "AMD_2021_10K",
+      45
+     ],
+     [
+      "AMD_2022_10K",
+      47
+     ],
+     [
+      "AMD_2022_10K",
+      8
+     ],
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2021_10K",
+      3
+     ],
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      54
+     ],
+     [
+      "AMD_2022_annualreport",
+      14
+     ]
+    ]
+   }
+  },
+  "financebench_id_00757": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMD_2022_10K",
+      3
+     ],
+     [
+      "AMD_2022_annualreport",
+      8
+     ],
+     [
+      "AMD_2022_10K",
+      23
+     ],
+     [
+      "AMD_2022_10K",
+      4
+     ],
+     [
+      "AMD_2022_annualreport",
+      9
+     ],
+     [
+      "AMD_2022_10K",
+      42
+     ],
+     [
+      "AMD_2022_10K",
+      103
+     ],
+     [
+      "AMD_2022_10K",
+      101
+     ],
+     [
+      "AMD_2022_10K",
+      104
+     ],
+     [
+      "AMD_2022_10K",
+      105
+     ]
+    ]
+   }
+  },
+  "financebench_id_00476": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      12
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      161
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      119
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      251
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      40
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      117
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      68
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      67
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      98
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      124
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      66
+     ]
+    ]
+   }
+  },
+  "financebench_id_01028": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      30
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      15
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      151
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      8
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      152
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      62
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      156
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      24
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      91
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      161
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      5
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      125
+     ]
+    ]
+   }
+  },
+  "financebench_id_00723": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      28
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      4
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      8
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      63
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      195
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      98
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      131
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      91
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      223
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      45
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      149
+     ]
+    ]
+   }
+  },
+  "financebench_id_00720": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      25
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      149
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      8
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      258
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      91
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      59
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      259
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      162
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      125
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      3
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      161
+     ]
+    ]
+   }
+  },
+  "financebench_id_01351": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      30
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      88
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      48
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      170
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      43
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      44
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      149
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      162
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      36
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      91
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      147
+     ]
+    ]
+   }
+  },
+  "financebench_id_01964": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      151
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      84
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      169
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      133
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      63
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      91
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      97
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      98
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      167
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      149
+     ]
+    ]
+   }
+  },
+  "financebench_id_01981": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      11
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANEXPRESS_2022_10K",
+      31
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      28
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      27
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      87
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      44
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      89
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      88
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      29
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      26
+     ],
+     [
+      "AMERICANEXPRESS_2022_10K",
+      85
+     ]
+    ]
+   }
+  },
+  "financebench_id_05718": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      85
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      105
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      52
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      0
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      65
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      86
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      88
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      87
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      67
+     ],
+     [
+      "AMERICANWATERWORKS_2020_10K",
+      39
+     ]
+    ]
+   }
+  },
+  "financebench_id_04254": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      89
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      87
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      68
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      85
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      86
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      81
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      88
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      141
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      136
+     ],
+     [
+      "AMERICANWATERWORKS_2021_10K",
+      143
+     ]
+    ]
+   }
+  },
+  "financebench_id_00070": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      11,
+      13
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      18
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      5
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      85
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      17
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      64
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      86
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      16
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      138
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      63
+     ],
+     [
+      "AMERICANWATERWORKS_2022_10K",
+      139
+     ]
+    ]
+   }
+  },
+  "financebench_id_02608": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2017_10K",
+      55
+     ],
+     [
+      "BESTBUY_2015_10K",
+      60
+     ],
+     [
+      "BESTBUY_2017_10K",
+      90
+     ],
+     [
+      "BESTBUY_2017_10K",
+      96
+     ],
+     [
+      "BESTBUY_2015_10K",
+      25
+     ],
+     [
+      "BESTBUY_2017_10K",
+      25
+     ],
+     [
+      "BESTBUY_2015_10K",
+      34
+     ],
+     [
+      "BESTBUY_2015_10K",
+      32
+     ],
+     [
+      "BESTBUY_2015_10K",
+      81
+     ],
+     [
+      "BESTBUY_2017_10K",
+      33
+     ]
+    ]
+   }
+  },
+  "financebench_id_04417": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2019_10K",
+      51
+     ],
+     [
+      "BESTBUY_2019_10K",
+      25
+     ],
+     [
+      "BESTBUY_2019_10K",
+      31
+     ],
+     [
+      "BESTBUY_2019_10K",
+      90
+     ],
+     [
+      "BESTBUY_2019_10K",
+      54
+     ],
+     [
+      "BESTBUY_2019_10K",
+      80
+     ],
+     [
+      "BESTBUY_2019_10K",
+      79
+     ],
+     [
+      "BESTBUY_2019_10K",
+      29
+     ],
+     [
+      "BESTBUY_2019_10K",
+      34
+     ],
+     [
+      "BESTBUY_2019_10K",
+      44
+     ]
+    ]
+   }
+  },
+  "financebench_id_00685": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 10
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      26
+     ],
+     "n_gold": 1,
+     "doc_rank": 26
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2015_10K",
+      32
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      2
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      7
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      5
+     ],
+     [
+      "BESTBUY_2016_10K",
+      94
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      4
+     ],
+     [
+      "BESTBUY_2017_10K",
+      90
+     ],
+     [
+      "BESTBUY_2022_10K",
+      26
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      8
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      1
+     ]
+    ]
+   }
+  },
+  "financebench_id_01077": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2023_10K",
+      22
+     ],
+     [
+      "BESTBUY_2023_10K",
+      50
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "BESTBUY_2023_10K",
+      43
+     ],
+     [
+      "BESTBUY_2022_10K",
+      44
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      11
+     ],
+     [
+      "BESTBUY_2022_10K",
+      23
+     ],
+     [
+      "BESTBUY_2021_10K",
+      23
+     ],
+     [
+      "BESTBUY_2021_10K",
+      19
+     ],
+     [
+      "BESTBUY_2022_10K",
+      19
+     ]
+    ]
+   }
+  },
+  "financebench_id_01275": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      7
+     ],
+     [
+      "BESTBUY_2023_10K",
+      22
+     ],
+     [
+      "BESTBUY_2023_10K",
+      31
+     ],
+     [
+      "BESTBUY_2023_10K",
+      28
+     ],
+     [
+      "BESTBUY_2023_10K",
+      25
+     ],
+     [
+      "BESTBUY_2023_10K",
+      36
+     ],
+     [
+      "BESTBUY_2023_10K",
+      4
+     ],
+     [
+      "BESTBUY_2023_10K",
+      41
+     ],
+     [
+      "BESTBUY_2023_10K",
+      5
+     ],
+     [
+      "BESTBUY_2023Q4_EARNINGS",
+      0
+     ]
+    ]
+   }
+  },
+  "financebench_id_00288": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 8
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      2
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      20
+     ],
+     [
+      "SALESFORCE_2024Q2_EARNINGS",
+      0
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      1
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      0
+     ],
+     [
+      "FEDEX_2023_annualreport",
+      69
+     ],
+     [
+      "LOCKHEEDMARTIN_2022_10K",
+      31
+     ],
+     [
+      "AMCOR_2023Q4_EARNINGS",
+      8
+     ],
+     [
+      "ORACLE_2023_10K",
+      53
+     ],
+     [
+      "NETFLIX_2023Q2_10Q",
+      26
+     ]
+    ]
+   }
+  },
+  "financebench_id_00460": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 4
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2024Q2_10Q",
+      18
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      17
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      2
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      14
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      0
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      1
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      16
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      7
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      21
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      15
+     ]
+    ]
+   }
+  },
+  "financebench_id_01902": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 5
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BESTBUY_2024Q2_10Q",
+      17
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      1
+     ],
+     [
+      "BESTBUY_2024Q2_EARNINGS",
+      2
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      18
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      7
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      24
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      15
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      12
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      14
+     ],
+     [
+      "BESTBUY_2024Q2_10Q",
+      11
+     ]
+    ]
+   }
+  },
+  "financebench_id_04660": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BLOCK_2016_10K",
+      67
+     ],
+     [
+      "BLOCK_2016_10K",
+      47
+     ],
+     [
+      "BLOCK_2016_10K",
+      38
+     ],
+     [
+      "BLOCK_2016_10K",
+      72
+     ],
+     [
+      "BLOCK_2016_10K",
+      66
+     ],
+     [
+      "BLOCK_2016_10K",
+      44
+     ],
+     [
+      "BLOCK_2016_10K",
+      65
+     ],
+     [
+      "BLOCK_2016_10K",
+      91
+     ],
+     [
+      "BLOCK_2016_10K",
+      6
+     ],
+     [
+      "BLOCK_2016_10K",
+      24
+     ]
+    ]
+   }
+  },
+  "financebench_id_03838": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      22
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BLOCK_2019_10K",
+      79
+     ],
+     [
+      "BLOCK_2020_10K",
+      61
+     ],
+     [
+      "BLOCK_2019_10K",
+      4
+     ],
+     [
+      "BLOCK_2019_10K",
+      53
+     ],
+     [
+      "BLOCK_2019_10K",
+      9
+     ],
+     [
+      "BLOCK_2020_10K",
+      58
+     ],
+     [
+      "BLOCK_2019_10K",
+      54
+     ],
+     [
+      "BLOCK_2020_10K",
+      21
+     ],
+     [
+      "BLOCK_2020_10K",
+      62
+     ],
+     [
+      "BLOCK_2019_10K",
+      78
+     ]
+    ]
+   }
+  },
+  "financebench_id_07661": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BLOCK_2020_10K",
+      73
+     ],
+     [
+      "BLOCK_2020_10K",
+      89
+     ],
+     [
+      "BLOCK_2020_10K",
+      21
+     ],
+     [
+      "BLOCK_2020_10K",
+      4
+     ],
+     [
+      "BLOCK_2020_10K",
+      91
+     ],
+     [
+      "BLOCK_2020_10K",
+      85
+     ],
+     [
+      "BLOCK_2020_10K",
+      52
+     ],
+     [
+      "BLOCK_2020_10K",
+      133
+     ],
+     [
+      "BLOCK_2020_10K",
+      9
+     ],
+     [
+      "BLOCK_2020_10K",
+      10
+     ]
+    ]
+   }
+  },
+  "financebench_id_10285": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2018_10K",
+      52
+     ],
+     [
+      "BOEING_2018_10K",
+      51
+     ],
+     [
+      "BOEING_2018_10K",
+      109
+     ],
+     [
+      "BOEING_2018_10K",
+      54
+     ],
+     [
+      "BOEING_2018_10K",
+      56
+     ],
+     [
+      "BOEING_2018_10K",
+      49
+     ],
+     [
+      "BOEING_2018_10K",
+      63
+     ],
+     [
+      "BOEING_2018_10K",
+      55
+     ],
+     [
+      "BOEING_2018_10K",
+      71
+     ],
+     [
+      "BOEING_2018_10K",
+      84
+     ]
+    ]
+   }
+  },
+  "financebench_id_00517": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2022_10K",
+      40
+     ],
+     [
+      "BOEING_2022_10K",
+      39
+     ],
+     [
+      "BOEING_2022_10K",
+      145
+     ],
+     [
+      "BOEING_2022_10K",
+      6
+     ],
+     [
+      "BOEING_2022_10K",
+      28
+     ],
+     [
+      "BOEING_2022_10K",
+      23
+     ],
+     [
+      "BOEING_2022_10K",
+      82
+     ],
+     [
+      "BOEING_2022_10K",
+      54
+     ],
+     [
+      "BOEING_2022_10K",
+      26
+     ],
+     [
+      "BOEING_2022_10K",
+      3
+     ]
+    ]
+   }
+  },
+  "financebench_id_01091": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      25
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2022_10K",
+      6
+     ],
+     [
+      "BOEING_2022_10K",
+      15
+     ],
+     [
+      "BOEING_2022_10K",
+      4
+     ],
+     [
+      "BOEING_2022_10K",
+      18
+     ],
+     [
+      "BOEING_2022_10K",
+      1
+     ],
+     [
+      "BOEING_2022_10K",
+      11
+     ],
+     [
+      "BOEING_2022_10K",
+      36
+     ],
+     [
+      "BOEING_2022_10K",
+      28
+     ],
+     [
+      "BOEING_2022_10K",
+      127
+     ],
+     [
+      "BOEING_2022_10K",
+      8
+     ]
+    ]
+   }
+  },
+  "financebench_id_00678": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2022_10K",
+      2
+     ],
+     [
+      "BOEING_2022_10K",
+      4
+     ],
+     [
+      "BOEING_2022_10K",
+      29
+     ],
+     [
+      "BOEING_2022_10K",
+      50
+     ],
+     [
+      "BOEING_2022_10K",
+      36
+     ],
+     [
+      "BOEING_2022_10K",
+      34
+     ],
+     [
+      "BOEING_2022_10K",
+      189
+     ],
+     [
+      "BOEING_2022_10K",
+      54
+     ],
+     [
+      "BOEING_2022_10K",
+      49
+     ],
+     [
+      "BOEING_2022_10K",
+      121
+     ]
+    ]
+   }
+  },
+  "financebench_id_01290": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      15
+     ],
+     "n_gold": 3,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      19
+     ],
+     "n_gold": 3,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2022_10K",
+      4
+     ],
+     [
+      "BOEING_2022_10K",
+      11
+     ],
+     [
+      "BOEING_2022_10K",
+      29
+     ],
+     [
+      "BOEING_2022_10K",
+      28
+     ],
+     [
+      "BOEING_2022_10K",
+      6
+     ],
+     [
+      "BOEING_2022_10K",
+      39
+     ],
+     [
+      "BOEING_2022_10K",
+      2
+     ],
+     [
+      "BOEING_2022_10K",
+      127
+     ],
+     [
+      "BOEING_2022_10K",
+      15
+     ],
+     [
+      "BOEING_2022_10K",
+      21
+     ]
+    ]
+   }
+  },
+  "financebench_id_00464": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      17
+     ],
+     "n_gold": 1,
+     "doc_rank": 16
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 5
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2016_10K",
+      19
+     ],
+     [
+      "BOEING_2015_10K",
+      20
+     ],
+     [
+      "BOEING_2017_10K",
+      19
+     ],
+     [
+      "BOEING_2015_10K",
+      2
+     ],
+     [
+      "BOEING_2022_10K",
+      7
+     ],
+     [
+      "BOEING_2016_10K",
+      2
+     ],
+     [
+      "BOEING_2018_10K",
+      5
+     ],
+     [
+      "BOEING_2019_10K",
+      5
+     ],
+     [
+      "BOEING_2021_10K",
+      18
+     ],
+     [
+      "BOEING_2021_10K",
+      16
+     ]
+    ]
+   }
+  },
+  "financebench_id_00494": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 5
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2016_10K",
+      8
+     ],
+     [
+      "BOEING_2022_10K",
+      8
+     ],
+     [
+      "BOEING_2022_10K",
+      34
+     ],
+     [
+      "BOEING_2021_10K",
+      94
+     ],
+     [
+      "BOEING_2020_10K",
+      55
+     ],
+     [
+      "BOEING_2019_10K",
+      8
+     ],
+     [
+      "BOEING_2015_10K",
+      30
+     ],
+     [
+      "BOEING_2021_10K",
+      38
+     ],
+     [
+      "BOEING_2016_10K",
+      31
+     ],
+     [
+      "BOEING_2016_10K",
+      83
+     ]
+    ]
+   }
+  },
+  "financebench_id_00585": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "BOEING_2022_10K",
+      26
+     ],
+     [
+      "BOEING_2022_10K",
+      23
+     ],
+     [
+      "BOEING_2022_10K",
+      42
+     ],
+     [
+      "BOEING_2021_10K",
+      46
+     ],
+     [
+      "BOEING_2021_10K",
+      27
+     ],
+     [
+      "BOEING_2022_10K",
+      54
+     ],
+     [
+      "BOEING_2022_10K",
+      55
+     ],
+     [
+      "BOEING_2021_10K",
+      141
+     ],
+     [
+      "BOEING_2022_10K",
+      132
+     ],
+     [
+      "BOEING_2021_10K",
+      59
+     ]
+    ]
+   }
+  },
+  "financebench_id_03473": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      9
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "COCACOLA_2016_10K",
+      76
+     ],
+     [
+      "COCACOLA_2017_10K",
+      75
+     ],
+     [
+      "COCACOLA_2017_10K",
+      126
+     ],
+     [
+      "COCACOLA_2017_10K",
+      153
+     ],
+     [
+      "COCACOLA_2016_10K",
+      166
+     ],
+     [
+      "COCACOLA_2017_10K",
+      166
+     ],
+     [
+      "COCACOLA_2017_10K",
+      125
+     ],
+     [
+      "COCACOLA_2016_10K",
+      168
+     ],
+     [
+      "COCACOLA_2017_10K",
+      73
+     ],
+     [
+      "COCACOLA_2016_10K",
+      74
+     ]
+    ]
+   }
+  },
+  "financebench_id_09724": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "COCACOLA_2021_10K",
+      61
+     ],
+     [
+      "COCACOLA_2021_10K",
+      67
+     ],
+     [
+      "COCACOLA_2021_10K",
+      121
+     ],
+     [
+      "COCACOLA_2021_10K",
+      50
+     ],
+     [
+      "COCACOLA_2021_10K",
+      63
+     ],
+     [
+      "COCACOLA_2021_10K",
+      84
+     ],
+     [
+      "COCACOLA_2021_10K",
+      65
+     ],
+     [
+      "COCACOLA_2021_10K",
+      46
+     ],
+     [
+      "COCACOLA_2021_10K",
+      3
+     ],
+     [
+      "COCACOLA_2021_10K",
+      75
+     ]
+    ]
+   }
+  },
+  "financebench_id_06272": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      3,
+      7
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "COCACOLA_2022_10K",
+      108
+     ],
+     [
+      "COCACOLA_2022_10K",
+      107
+     ],
+     [
+      "COCACOLA_2022_10K",
+      62
+     ],
+     [
+      "COCACOLA_2022_10K",
+      86
+     ],
+     [
+      "COCACOLA_2022_10K",
+      64
+     ],
+     [
+      "COCACOLA_2022_10K",
+      109
+     ],
+     [
+      "COCACOLA_2022_10K",
+      65
+     ],
+     [
+      "COCACOLA_2022_10K",
+      66
+     ],
+     [
+      "COCACOLA_2022_10K",
+      136
+     ],
+     [
+      "COCACOLA_2022_10K",
+      158
+     ]
+    ]
+   }
+  },
+  "financebench_id_10130": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      16,
+      24
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CORNING_2020_10K",
+      30
+     ],
+     [
+      "CORNING_2020_10K",
+      92
+     ],
+     [
+      "CORNING_2019_10K",
+      30
+     ],
+     [
+      "CORNING_2020_10K",
+      42
+     ],
+     [
+      "CORNING_2020_10K",
+      87
+     ],
+     [
+      "CORNING_2020_10K",
+      86
+     ],
+     [
+      "CORNING_2020_10K",
+      89
+     ],
+     [
+      "CORNING_2020_10K",
+      83
+     ],
+     [
+      "CORNING_2019_10K",
+      43
+     ],
+     [
+      "CORNING_2020_10K",
+      109
+     ]
+    ]
+   }
+  },
+  "financebench_id_02981": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CORNING_2021_10K",
+      27
+     ],
+     [
+      "CORNING_2019_10K",
+      22
+     ],
+     [
+      "CORNING_2021_10K",
+      28
+     ],
+     [
+      "CORNING_2021_10K",
+      114
+     ],
+     [
+      "CORNING_2021_10K",
+      25
+     ],
+     [
+      "CORNING_2021_10K",
+      37
+     ],
+     [
+      "CORNING_2019_10K",
+      30
+     ],
+     [
+      "CORNING_2021_10K",
+      24
+     ],
+     [
+      "CORNING_2021_10K",
+      64
+     ],
+     [
+      "CORNING_2019_10K",
+      69
+     ]
+    ]
+   }
+  },
+  "financebench_id_01346": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      13
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CORNING_2022_10K",
+      76
+     ],
+     [
+      "CORNING_2021_10K",
+      28
+     ],
+     [
+      "CORNING_2022_10K",
+      25
+     ],
+     [
+      "CORNING_2022_10K",
+      78
+     ],
+     [
+      "CORNING_2022_10K",
+      23
+     ],
+     [
+      "CORNING_2021_10K",
+      86
+     ],
+     [
+      "CORNING_2022_10K",
+      90
+     ],
+     [
+      "CORNING_2021_10K",
+      87
+     ],
+     [
+      "CORNING_2022_10K",
+      31
+     ],
+     [
+      "CORNING_2021_10K",
+      101
+     ]
+    ]
+   }
+  },
+  "financebench_id_00005": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CORNING_2022_10K",
+      42
+     ],
+     [
+      "CORNING_2022_10K",
+      16
+     ],
+     [
+      "CORNING_2022_10K",
+      17
+     ],
+     [
+      "CORNING_2022_10K",
+      1
+     ],
+     [
+      "CORNING_2022_10K",
+      7
+     ],
+     [
+      "CORNING_2022_10K",
+      67
+     ],
+     [
+      "CORNING_2022_10K",
+      78
+     ],
+     [
+      "CORNING_2022_10K",
+      93
+     ],
+     [
+      "CORNING_2022_10K",
+      101
+     ],
+     [
+      "CORNING_2022_10K",
+      66
+     ]
+    ]
+   }
+  },
+  "financebench_id_04209": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "COSTCO_2021_10K",
+      37
+     ],
+     [
+      "COSTCO_2021_10K",
+      40
+     ],
+     [
+      "COSTCO_2021_10K",
+      46
+     ],
+     [
+      "COSTCO_2021_10K",
+      28
+     ],
+     [
+      "COSTCO_2021_10K",
+      49
+     ],
+     [
+      "COSTCO_2021_10K",
+      39
+     ],
+     [
+      "COSTCO_2021_10K",
+      4
+     ],
+     [
+      "COSTCO_2021_10K",
+      35
+     ],
+     [
+      "COSTCO_2021_10K",
+      57
+     ],
+     [
+      "COSTCO_2021_10K",
+      38
+     ]
+    ]
+   }
+  },
+  "financebench_id_05915": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3,
+      5
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CVSHEALTH_2018_10K",
+      303
+     ],
+     [
+      "CVSHEALTH_2018_10K",
+      338
+     ],
+     [
+      "CVSHEALTH_2018_10K",
+      301
+     ],
+     [
+      "CVSHEALTH_2017_10K",
+      49
+     ],
+     [
+      "CVSHEALTH_2017_10K",
+      81
+     ],
+     [
+      "CVSHEALTH_2017_10K",
+      79
+     ],
+     [
+      "CVSHEALTH_2017_10K",
+      47
+     ],
+     [
+      "CVSHEALTH_2017_10K",
+      37
+     ],
+     [
+      "CVSHEALTH_2018_10K",
+      326
+     ],
+     [
+      "CVSHEALTH_2018_10K",
+      325
+     ]
+    ]
+   }
+  },
+  "financebench_id_00790": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CVSHEALTH_2022_10K",
+      91
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      121
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      65
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      167
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      68
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      166
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      15
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      3
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      2
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      192
+     ]
+    ]
+   }
+  },
+  "financebench_id_01107": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      27
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CVSHEALTH_2022_10K",
+      163
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      65
+     ],
+     [
+      "CVSHEALTH_2021_10K",
+      65
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      183
+     ],
+     [
+      "CVSHEALTH_2021_10K",
+      157
+     ],
+     [
+      "CVSHEALTH_2021_10K",
+      156
+     ],
+     [
+      "CVSHEALTH_2021_10K",
+      252
+     ],
+     [
+      "CVSHEALTH_2021_10K",
+      169
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      173
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      72
+     ]
+    ]
+   }
+  },
+  "financebench_id_01244": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "CVSHEALTH_2022_10K",
+      91
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      67
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      192
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      167
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      68
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      166
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      112
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      92
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      69
+     ],
+     [
+      "CVSHEALTH_2022_10K",
+      184
+     ]
+    ]
+   }
+  },
+  "financebench_id_00839": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "FOOTLOCKER_2022_8K_dated_2022-08-19",
+      28
+     ],
+     [
+      "FOOTLOCKER_2022_8K_dated_2022-08-19",
+      29
+     ],
+     [
+      "FOOTLOCKER_2023_annualreport",
+      2
+     ],
+     [
+      "FOOTLOCKER_2022_10K",
+      19
+     ],
+     [
+      "FOOTLOCKER_2023_annualreport",
+      1
+     ],
+     [
+      "FOOTLOCKER_2022_10K",
+      3
+     ],
+     [
+      "FOOTLOCKER_2023_annualreport",
+      6
+     ],
+     [
+      "FOOTLOCKER_2022_10K",
+      22
+     ],
+     [
+      "FOOTLOCKER_2023_10K",
+      3
+     ],
+     [
+      "FOOTLOCKER_2023_annualreport",
+      16
+     ]
+    ]
+   }
+  },
+  "financebench_id_00822": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "EBAY_2018_10K",
+      124
+     ],
+     [
+      "AMD_2020_10K",
+      115
+     ],
+     [
+      "COSTCO_2023_8K_dated-2023-08-09",
+      24
+     ],
+     [
+      "COSTCO_2023_8K_dated-2023-08-09",
+      23
+     ],
+     [
+      "MGMRESORTS_2020_10K",
+      118
+     ],
+     [
+      "FOOTLOCKER_2022_10K",
+      87
+     ],
+     [
+      "PG_E_2016_10K",
+      216
+     ],
+     [
+      "MGMRESORTS_2019_10K",
+      120
+     ],
+     [
+      "PG_E_2016_10K",
+      211
+     ],
+     [
+      "AMCOR_2022_10K",
+      117
+     ]
+    ]
+   }
+  },
+  "financebench_id_04103": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      11
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "GENERALMILLS_2019_10K",
+      52
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      58
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      69
+     ],
+     [
+      "GENERALMILLS_2019_10K",
+      57
+     ],
+     [
+      "GENERALMILLS_2019_10K",
+      28
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      19
+     ],
+     [
+      "GENERALMILLS_2019_10K",
+      17
+     ],
+     [
+      "GENERALMILLS_2019_10K",
+      20
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      17
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      63
+     ]
+    ]
+   }
+  },
+  "financebench_id_03471": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "GENERALMILLS_2020_10K",
+      49
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      26
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      51
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      50
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      74
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      65
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      66
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      48
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      95
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      94
+     ]
+    ]
+   }
+  },
+  "financebench_id_04854": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "GENERALMILLS_2020_10K",
+      16
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      26
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      51
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      36
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      92
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      94
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      74
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      17
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      76
+     ],
+     [
+      "GENERALMILLS_2020_10K",
+      73
+     ]
+    ]
+   }
+  },
+  "financebench_id_10136": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "GENERALMILLS_2022_10K",
+      44
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      48
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      18
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      27
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      45
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      47
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      46
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      88
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      69
+     ],
+     [
+      "GENERALMILLS_2022_10K",
+      89
+     ]
+    ]
+   }
+  },
+  "financebench_id_00956": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      20
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      34
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      113
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      38
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      12
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      26
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      32
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      13
+     ]
+    ]
+   }
+  },
+  "financebench_id_00669": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      58
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      34
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      43
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      9
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      10
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      37
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      63
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      54
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      12
+     ]
+    ]
+   }
+  },
+  "financebench_id_00711": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      28
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      18,
+      21
+     ],
+     "n_gold": 2,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      10
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      9
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      35
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      26
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      44
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      25
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      27
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      52
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      107
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      6
+     ]
+    ]
+   }
+  },
+  "financebench_id_00651": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      3
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      5
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      4
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      4
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      2
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-23",
+      0
+     ]
+    ]
+   }
+  },
+  "financebench_id_01484": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      16
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      22
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      35
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      86
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      27
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      15
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      29
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      13
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      32
+     ],
+     [
+      "JOHNSON_JOHNSON_2022Q4_EARNINGS",
+      12
+     ],
+     [
+      "JOHNSON_JOHNSON_2022_10K",
+      28
+     ]
+    ]
+   }
+  },
+  "financebench_id_01488": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      3
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      2
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      1
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      11
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      13
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      6
+     ]
+    ]
+   }
+  },
+  "financebench_id_01490": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      3
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      7
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      24
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      14
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      21
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      22
+     ]
+    ]
+   }
+  },
+  "financebench_id_01491": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      3
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      5
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      9
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      1
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      10
+     ],
+     [
+      "JOHNSON_JOHNSON_2023_8K_dated-2023-08-30",
+      14
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      7
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      11
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q1_EARNINGS",
+      0
+     ]
+    ]
+   }
+  },
+  "financebench_id_01487": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      9
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      10
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      21
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      6
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      12
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      16
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      13
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      22
+     ],
+     [
+      "JOHNSON_JOHNSON_2023Q2_EARNINGS",
+      17
+     ]
+    ]
+   }
+  },
+  "financebench_id_00299": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      23
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JPMORGAN_2021Q1_10Q",
+      5
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      159
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      3
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      8
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      17
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      83
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      27
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      142
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      4
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      32
+     ]
+    ]
+   }
+  },
+  "financebench_id_02119": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      20
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      26
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JPMORGAN_2021Q1_10Q",
+      3
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      80
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      82
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      4
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      114
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      38
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      172
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      32
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      30
+     ],
+     [
+      "JPMORGAN_2021Q1_10Q",
+      6
+     ]
+    ]
+   }
+  },
+  "financebench_id_00206": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 8
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 11
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JPMORGAN_2023Q2_10Q",
+      95
+     ],
+     [
+      "JPMORGAN_2021Q2_10Q",
+      88
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      87
+     ],
+     [
+      "JPMORGAN_2021Q3_10Q",
+      90
+     ],
+     [
+      "JPMORGAN_2022Q3_10Q",
+      89
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      37
+     ],
+     [
+      "JPMORGAN_2022Q3_10Q",
+      38
+     ],
+     [
+      "JPMORGAN_2021_10K",
+      295
+     ],
+     [
+      "JPMORGAN_2022Q1_10Q",
+      79
+     ],
+     [
+      "JPMORGAN_2023Q1_10Q",
+      78
+     ]
+    ]
+   }
+  },
+  "financebench_id_00394": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      21
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JPMORGAN_2022Q2_10Q",
+      6
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      3
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      9
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      176
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      7
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      4
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      2
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      36
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      40
+     ],
+     [
+      "JPMORGAN_2022Q2_10Q",
+      32
+     ]
+    ]
+   }
+  },
+  "financebench_id_02049": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "JPMORGAN_2023Q2_10Q",
+      84
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      41
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      53
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      3
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      4
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      25
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      30
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      7
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      83
+     ],
+     [
+      "JPMORGAN_2023Q2_10Q",
+      88
+     ]
+    ]
+   }
+  },
+  "financebench_id_10499": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      12,
+      15
+     ],
+     "n_gold": 2,
+     "doc_rank": 12
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4,
+      11
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "KRAFTHEINZ_2019_10K",
+      127
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      144
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      138
+     ],
+     [
+      "KRAFTHEINZ_2019_10K",
+      49
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      137
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      180
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      176
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      209
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      178
+     ],
+     [
+      "KRAFTHEINZ_2018_10K",
+      170
+     ]
+    ]
+   }
+  },
+  "financebench_id_04412": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      19
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "LOCKHEEDMARTIN_2019_10K",
+      68
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      68
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      107
+     ],
+     [
+      "LOCKHEEDMARTIN_2019_10K",
+      99
+     ],
+     [
+      "LOCKHEEDMARTIN_2019_10K",
+      63
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      71
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      21
+     ],
+     [
+      "LOCKHEEDMARTIN_2019_10K",
+      60
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      76
+     ],
+     [
+      "LOCKHEEDMARTIN_2019_10K",
+      49
+     ]
+    ]
+   }
+  },
+  "financebench_id_03031": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      111
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      39
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      29
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      67
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      31
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      66
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      68
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      75
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      76
+     ],
+     [
+      "LOCKHEEDMARTIN_2021_10K",
+      65
+     ]
+    ]
+   }
+  },
+  "financebench_id_03718": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "LOCKHEEDMARTIN_2022_10K",
+      63
+     ],
+     [
+      "LOCKHEEDMARTIN_2022_10K",
+      62
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      32
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      13
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      2
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      66
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      24
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      12
+     ],
+     [
+      "LOCKHEEDMARTIN_2020_10K",
+      67
+     ],
+     [
+      "LOCKHEEDMARTIN_2022Q2_10Q",
+      5
+     ]
+    ]
+   }
+  },
+  "financebench_id_04171": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2018_10K",
+      59
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      67
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      94
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      56
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      60
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      185
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      85
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      86
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      178
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      186
+     ]
+    ]
+   }
+  },
+  "financebench_id_03849": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      5
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2020_10K",
+      50
+     ],
+     [
+      "MGMRESORTS_2020_10K",
+      64
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      57
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      59
+     ],
+     [
+      "MGMRESORTS_2020_10K",
+      66
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      95
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      97
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      99
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      44
+     ],
+     [
+      "MGMRESORTS_2018_10K",
+      45
+     ]
+    ]
+   }
+  },
+  "financebench_id_01254": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2022_10K",
+      61
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      63
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      9
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      5
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      76
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      73
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      96
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      58
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      31
+     ]
+    ]
+   }
+  },
+  "financebench_id_00382": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      6
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2022_10K",
+      98
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      99
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      1
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      40
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      12
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      14
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      3
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      42
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      13
+     ]
+    ]
+   }
+  },
+  "financebench_id_01911": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      18
+     ],
+     "n_gold": 1,
+     "doc_rank": 5
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2022_10K",
+      98
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      40
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      73
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      83
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      70
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      42
+     ],
+     [
+      "MGMRESORTS_2022Q4_EARNINGS",
+      10
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      99
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      59
+     ]
+    ]
+   }
+  },
+  "financebench_id_01912": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 13
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2022_10K",
+      4
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      64
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      6
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      7
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      50
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      109
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      5
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      107
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      47
+     ],
+     [
+      "MGMRESORTS_2022_10K",
+      8
+     ]
+    ]
+   }
+  },
+  "financebench_id_00407": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      37
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      10
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      34
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      38
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      9
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      2
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      22
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      36
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      21
+     ],
+     [
+      "MGMRESORTS_2023Q2_10Q",
+      5
+     ]
+    ]
+   }
+  },
+  "financebench_id_04700": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      14
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MICROSOFT_2016_10K",
+      56
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      81
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      30
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      94
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      75
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      39
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      80
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      93
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      32
+     ],
+     [
+      "MICROSOFT_2016_10K",
+      41
+     ]
+    ]
+   }
+  },
+  "financebench_id_00552": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      4
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "MICROSOFT_2023_10K",
+      62
+     ],
+     [
+      "MICROSOFT_2022_10K",
+      61
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      39
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      43
+     ],
+     [
+      "MICROSOFT_2022_10K",
+      48
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      80
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      50
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      95
+     ],
+     [
+      "MICROSOFT_2023_10K",
+      59
+     ],
+     [
+      "MICROSOFT_2022_10K",
+      58
+     ]
+    ]
+   }
+  },
+  "financebench_id_04458": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      2
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5,
+      6
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NETFLIX_2015_10K",
+      38
+     ],
+     [
+      "NETFLIX_2015_10K",
+      26
+     ],
+     [
+      "NETFLIX_2015_10K",
+      16
+     ],
+     [
+      "NETFLIX_2015_10K",
+      18
+     ],
+     [
+      "NETFLIX_2015_10K",
+      41
+     ],
+     [
+      "NETFLIX_2015_10K",
+      39
+     ],
+     [
+      "NETFLIX_2015_10K",
+      33
+     ],
+     [
+      "NETFLIX_2015_10K",
+      27
+     ],
+     [
+      "NETFLIX_2015_10K",
+      2
+     ],
+     [
+      "NETFLIX_2015_10K",
+      62
+     ]
+    ]
+   }
+  },
+  "financebench_id_03282": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NETFLIX_2017_10K",
+      49
+     ],
+     [
+      "NETFLIX_2017_10K",
+      44
+     ],
+     [
+      "NETFLIX_2017_10K",
+      43
+     ],
+     [
+      "NETFLIX_2017_10K",
+      30
+     ],
+     [
+      "NETFLIX_2017_10K",
+      29
+     ],
+     [
+      "NETFLIX_2017_10K",
+      31
+     ],
+     [
+      "NETFLIX_2017_10K",
+      12
+     ],
+     [
+      "NETFLIX_2017_10K",
+      14
+     ],
+     [
+      "NETFLIX_2017_10K",
+      18
+     ],
+     [
+      "NETFLIX_2017_10K",
+      28
+     ]
+    ]
+   }
+  },
+  "financebench_id_04302": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NIKE_2016_10K",
+      25
+     ],
+     [
+      "NIKE_2018_10K",
+      24
+     ],
+     [
+      "NIKE_2016_10K",
+      30
+     ],
+     [
+      "NIKE_2016_10K",
+      28
+     ],
+     [
+      "NIKE_2016_10K",
+      26
+     ],
+     [
+      "NIKE_2018_10K",
+      21
+     ],
+     [
+      "NIKE_2016_10K",
+      27
+     ],
+     [
+      "NIKE_2018_10K",
+      45
+     ],
+     [
+      "NIKE_2016_10K",
+      52
+     ],
+     [
+      "NIKE_2016_10K",
+      13
+     ]
+    ]
+   }
+  },
+  "financebench_id_03531": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NIKE_2019_10K",
+      63
+     ],
+     [
+      "NIKE_2019_10K",
+      69
+     ],
+     [
+      "NIKE_2019_10K",
+      53
+     ],
+     [
+      "NIKE_2019_10K",
+      39
+     ],
+     [
+      "NIKE_2019_10K",
+      54
+     ],
+     [
+      "NIKE_2019_10K",
+      25
+     ],
+     [
+      "NIKE_2019_10K",
+      76
+     ],
+     [
+      "NIKE_2019_10K",
+      81
+     ],
+     [
+      "NIKE_2019_10K",
+      71
+     ],
+     [
+      "NIKE_2019_10K",
+      67
+     ]
+    ]
+   }
+  },
+  "financebench_id_04080": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      8,
+      23
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NIKE_2020_10K",
+      59
+     ],
+     [
+      "NIKE_2021_10K",
+      30
+     ],
+     [
+      "NIKE_2021_10K",
+      46
+     ],
+     [
+      "NIKE_2021_10K",
+      59
+     ],
+     [
+      "NIKE_2020_10K",
+      90
+     ],
+     [
+      "NIKE_2021_10K",
+      56
+     ],
+     [
+      "NIKE_2020_10K",
+      58
+     ],
+     [
+      "NIKE_2021_10K",
+      60
+     ],
+     [
+      "NIKE_2020_10K",
+      68
+     ],
+     [
+      "NIKE_2021_10K",
+      88
+     ]
+    ]
+   }
+  },
+  "financebench_id_01163": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "NIKE_2023_10K",
+      48
+     ],
+     [
+      "NIKE_2023_10K",
+      61
+     ],
+     [
+      "NIKE_2023_10K",
+      47
+     ],
+     [
+      "NIKE_2023_10K",
+      31
+     ],
+     [
+      "NIKE_2023_10K",
+      49
+     ],
+     [
+      "NIKE_2023_10K",
+      46
+     ],
+     [
+      "NIKE_2023_10K",
+      18
+     ],
+     [
+      "NIKE_2023_10K",
+      7
+     ],
+     [
+      "NIKE_2023_10K",
+      8
+     ],
+     [
+      "NIKE_2023_10K",
+      25
+     ]
+    ]
+   }
+  },
+  "financebench_id_00080": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PAYPAL_2022_10K",
+      2
+     ],
+     [
+      "PAYPAL_2022_10K",
+      13
+     ],
+     [
+      "PAYPAL_2022_10K",
+      23
+     ],
+     [
+      "PAYPAL_2022_10K",
+      73
+     ],
+     [
+      "PAYPAL_2022_10K",
+      106
+     ],
+     [
+      "PAYPAL_2022_10K",
+      38
+     ],
+     [
+      "PAYPAL_2022_10K",
+      116
+     ],
+     [
+      "PAYPAL_2022_10K",
+      15
+     ],
+     [
+      "PAYPAL_2022_10K",
+      12
+     ],
+     [
+      "PAYPAL_2022_10K",
+      60
+     ]
+    ]
+   }
+  },
+  "financebench_id_04980": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2021_10K",
+      62
+     ],
+     [
+      "PEPSICO_2021_10K",
+      53
+     ],
+     [
+      "PEPSICO_2021_10K",
+      52
+     ],
+     [
+      "PEPSICO_2021_10K",
+      63
+     ],
+     [
+      "PEPSICO_2021_10K",
+      65
+     ],
+     [
+      "PEPSICO_2021_10K",
+      111
+     ],
+     [
+      "PEPSICO_2021_10K",
+      44
+     ],
+     [
+      "PEPSICO_2021_10K",
+      70
+     ],
+     [
+      "PEPSICO_2021_10K",
+      126
+     ],
+     [
+      "PEPSICO_2021_10K",
+      108
+     ]
+    ]
+   }
+  },
+  "financebench_id_01009": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      12
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      2,
+      8
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      16
+     ],
+     [
+      "PEPSICO_2022_10K",
+      4
+     ],
+     [
+      "PEPSICO_2022_10K",
+      488
+     ],
+     [
+      "PEPSICO_2022_10K",
+      481
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      9
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      23
+     ],
+     [
+      "PEPSICO_2022_10K",
+      489
+     ],
+     [
+      "PEPSICO_2022_10K",
+      3
+     ],
+     [
+      "PEPSICO_2022_10K",
+      490
+     ],
+     [
+      "PEPSICO_2022_10K",
+      487
+     ]
+    ]
+   }
+  },
+  "financebench_id_00735": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 3
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2022_10K",
+      118
+     ],
+     [
+      "PEPSICO_2021_10K",
+      116
+     ],
+     [
+      "PEPSICO_2022_10K",
+      202
+     ],
+     [
+      "PEPSICO_2022_10K",
+      442
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      23
+     ],
+     [
+      "PEPSICO_2021_10K",
+      548
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      1
+     ],
+     [
+      "PEPSICO_2021_10K",
+      540
+     ],
+     [
+      "PEPSICO_2022_10K",
+      111
+     ],
+     [
+      "PEPSICO_2021_10K",
+      36
+     ]
+    ]
+   }
+  },
+  "financebench_id_01328": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 4
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      10
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      21
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      18
+     ],
+     [
+      "PEPSICO_2022_10K",
+      48
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      20
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      19
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      17
+     ],
+     [
+      "PEPSICO_2022_10K",
+      63
+     ],
+     [
+      "PEPSICO_2022_10K",
+      77
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      8
+     ]
+    ]
+   }
+  },
+  "financebench_id_03620": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5,
+      7
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      8
+     ],
+     [
+      "PEPSICO_2022_10K",
+      30
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      18
+     ],
+     [
+      "PEPSICO_2022_10K",
+      66
+     ],
+     [
+      "PEPSICO_2022_10K",
+      63
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      19
+     ],
+     [
+      "PEPSICO_2022_10K",
+      61
+     ],
+     [
+      "PEPSICO_2022_10K",
+      64
+     ],
+     [
+      "PEPSICO_2022_10K",
+      102
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      10
+     ]
+    ]
+   }
+  },
+  "financebench_id_04481": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      4,
+      13
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      17
+     ],
+     [
+      "PEPSICO_2022_10K",
+      48
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      8
+     ],
+     [
+      "PEPSICO_2022_10K",
+      63
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      19
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      18
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      10
+     ],
+     [
+      "PEPSICO_2022_10K",
+      102
+     ],
+     [
+      "PEPSICO_2022_10K",
+      66
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      11
+     ]
+    ]
+   }
+  },
+  "financebench_id_01482": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2023_8K_dated-2023-05-05",
+      3
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-05",
+      2
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      12
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      12
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      14
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      11
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      15
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      18
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      11
+     ]
+    ]
+   }
+  },
+  "financebench_id_00705": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      1
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      84
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      80
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      8
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      4
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      2
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      162
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      159
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      171
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      168
+     ]
+    ]
+   }
+  },
+  "financebench_id_00882": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      1
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      84
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      8
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      80
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      2
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      4
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      168
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      159
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      77
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-30",
+      171
+     ]
+    ]
+   }
+  },
+  "financebench_id_01474": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      3
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      2
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      12
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      18
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      15
+     ],
+     [
+      "PEPSICO_2023_8K_dated-2023-05-05",
+      2
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      11
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      16
+     ]
+    ]
+   }
+  },
+  "financebench_id_01476": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      12
+     ],
+     "n_gold": 1,
+     "doc_rank": 12
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      7
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      3
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      2
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      0
+     ],
+     [
+      "PEPSICO_2023Q1_EARNINGS",
+      9
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      14
+     ],
+     [
+      "PEPSICO_2023Q2_EARNINGS",
+      10
+     ],
+     [
+      "PEPSICO_2022Q4_EARNINGS",
+      1
+     ]
+    ]
+   }
+  },
+  "financebench_id_00302": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      18
+     ],
+     "n_gold": 1,
+     "doc_rank": 3
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2020_10K",
+      10
+     ],
+     [
+      "PFIZER_2020_10K",
+      46
+     ],
+     [
+      "PFIZER_2021_10K",
+      79
+     ],
+     [
+      "PFIZER_2020_10K",
+      114
+     ],
+     [
+      "PFIZER_2020_10K",
+      66
+     ],
+     [
+      "PFIZER_2021_10K",
+      62
+     ],
+     [
+      "PFIZER_2021_10K",
+      132
+     ],
+     [
+      "PFIZER_2020_10K",
+      67
+     ],
+     [
+      "PFIZER_2021_10K",
+      75
+     ],
+     [
+      "PFIZER_2020_10K",
+      45
+     ]
+    ]
+   }
+  },
+  "financebench_id_00702": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2019_10K",
+      116
+     ],
+     [
+      "PFIZER_2019_10K",
+      83
+     ],
+     [
+      "PFIZER_2019_10K",
+      177
+     ],
+     [
+      "PFIZER_2019_10K",
+      226
+     ],
+     [
+      "PFIZER_2019_10K",
+      84
+     ],
+     [
+      "PFIZER_2019_10K",
+      145
+     ],
+     [
+      "PFIZER_2019_10K",
+      117
+     ],
+     [
+      "PFIZER_2019_10K",
+      95
+     ],
+     [
+      "PFIZER_2019_10K",
+      228
+     ],
+     [
+      "PFIZER_2019_10K",
+      130
+     ]
+    ]
+   }
+  },
+  "financebench_id_02416": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 7
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 2,
+     "doc_rank": 6
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2017_10K",
+      3
+     ],
+     [
+      "PFIZER_2019_10K",
+      7
+     ],
+     [
+      "PFIZER_2016_10K",
+      3
+     ],
+     [
+      "PFIZER_2018_10K",
+      4
+     ],
+     [
+      "PFIZER_2022_10K",
+      114
+     ],
+     [
+      "PFIZER_2021_10K",
+      97
+     ],
+     [
+      "PFIZER_2022_10K",
+      74
+     ],
+     [
+      "PFIZER_2017_10K",
+      270
+     ],
+     [
+      "PFIZER_2022_10K",
+      94
+     ],
+     [
+      "PFIZER_2015_10K",
+      84
+     ]
+    ]
+   }
+  },
+  "financebench_id_00283": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2020_10K",
+      32
+     ],
+     [
+      "PFIZER_2022_10K",
+      88
+     ],
+     [
+      "PFIZER_2021_10K",
+      31
+     ],
+     [
+      "PFIZER_2020_10K",
+      73
+     ],
+     [
+      "PFIZER_2019_10K",
+      114
+     ],
+     [
+      "PFIZER_2022_10K",
+      67
+     ],
+     [
+      "PFIZER_2020_10K",
+      31
+     ],
+     [
+      "PFIZER_2019_10K",
+      4
+     ],
+     [
+      "PFIZER_2020_10K",
+      97
+     ],
+     [
+      "PFIZER_2019_10K",
+      128
+     ]
+    ]
+   }
+  },
+  "financebench_id_00724": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      9
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      23
+     ],
+     "n_gold": 1,
+     "doc_rank": 7
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      25
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      24
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      27
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      26
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      5
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      28
+     ],
+     [
+      "Pfizer_2023Q2_10Q",
+      38
+     ],
+     [
+      "Pfizer_2023Q2_10Q",
+      39
+     ],
+     [
+      "Pfizer_2023Q2_10Q",
+      17
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      14
+     ]
+    ]
+   }
+  },
+  "financebench_id_02419": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      14
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      17
+     ],
+     "n_gold": 1,
+     "doc_rank": 4
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      25
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      28
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      5
+     ],
+     [
+      "Pfizer_2023Q2_10Q",
+      36
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      1
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      2
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      18
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      4
+     ],
+     [
+      "PFIZER_2023Q2_EARNINGS",
+      15
+     ],
+     [
+      "Pfizer_2023Q2_10Q",
+      37
+     ]
+    ]
+   }
+  },
+  "financebench_id_00746": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ULTABEAUTY_2023_8K_dated-2023-09-18",
+      0
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      26
+     ],
+     [
+      "ULTABEAUTY_2023_8K_dated-2023-06-07",
+      0
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      3
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      30
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      32
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      0
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      49
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      31
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      56
+     ]
+    ]
+   }
+  },
+  "financebench_id_00521": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      7
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ULTABEAUTY_2023_10K",
+      8
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      58
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      56
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      9
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      7
+     ],
+     [
+      "ULTABEAUTY_2023_8K_dated-2023-09-18",
+      3
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      41
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      6
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      10
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      4
+     ]
+    ]
+   }
+  },
+  "financebench_id_00601": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [],
+     "n_gold": 1,
+     "doc_rank": null
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "GENERALMILLS_2017_10K",
+      21
+     ],
+     [
+      "3M_2015_10K",
+      21
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      21
+     ],
+     [
+      "GENERALMILLS_2018_10K",
+      25
+     ],
+     [
+      "COSTCO_2017_10K",
+      23
+     ],
+     [
+      "COSTCO_2018_10K",
+      25
+     ],
+     [
+      "AMCOR_2023_10K",
+      32
+     ],
+     [
+      "COSTCO_2015_10K",
+      23
+     ],
+     [
+      "COSTCO_2016_10K",
+      24
+     ],
+     [
+      "AMCOR_2019_10K",
+      25
+     ]
+    ]
+   }
+  },
+  "financebench_id_00603": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      17
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      2
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      17
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      18
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      41
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      7
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      65
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      56
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      53
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      5
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      6
+     ]
+    ]
+   }
+  },
+  "financebench_id_00605": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      2
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      8
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      7
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      5
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      6
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      3
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      1
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      4
+     ]
+    ]
+   }
+  },
+  "financebench_id_00606": {
+   "split": "dev",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      11
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      22
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      0
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      5
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      54
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      7
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      65
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      34
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      56
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      10
+     ],
+     [
+      "ULTABEAUTY_2023Q4_EARNINGS",
+      8
+     ],
+     [
+      "ULTABEAUTY_2023_10K",
+      33
+     ]
+    ]
+   }
+  },
+  "financebench_id_00859": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "VERIZON_2021_10K",
+      84
+     ],
+     [
+      "VERIZON_2021_10K",
+      62
+     ],
+     [
+      "VERIZON_2021_10K",
+      45
+     ],
+     [
+      "VERIZON_2021_10K",
+      46
+     ],
+     [
+      "VERIZON_2021_10K",
+      86
+     ],
+     [
+      "VERIZON_2021_10K",
+      85
+     ],
+     [
+      "VERIZON_2021_10K",
+      37
+     ],
+     [
+      "VERIZON_2021_10K",
+      61
+     ],
+     [
+      "VERIZON_2021_10K",
+      4
+     ],
+     [
+      "VERIZON_2021_10K",
+      75
+     ]
+    ]
+   }
+  },
+  "financebench_id_02024": {
+   "split": "test",
+   "type": "novel-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      3
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      5
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "VERIZON_2021_10K",
+      66
+     ],
+     [
+      "VERIZON_2021_10K",
+      19
+     ],
+     [
+      "VERIZON_2021_10K",
+      38
+     ],
+     [
+      "VERIZON_2021_10K",
+      76
+     ],
+     [
+      "VERIZON_2021_10K",
+      93
+     ],
+     [
+      "VERIZON_2021_10K",
+      75
+     ],
+     [
+      "VERIZON_2021_10K",
+      16
+     ],
+     [
+      "VERIZON_2021_10K",
+      39
+     ],
+     [
+      "VERIZON_2021_10K",
+      22
+     ],
+     [
+      "VERIZON_2021_10K",
+      34
+     ]
+    ]
+   }
+  },
+  "financebench_id_00216": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      20
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "VERIZON_2022_10K",
+      36
+     ],
+     [
+      "VERIZON_2022_10K",
+      12
+     ],
+     [
+      "VERIZON_2022_10K",
+      50
+     ],
+     [
+      "VERIZON_2022_10K",
+      95
+     ],
+     [
+      "VERIZON_2022_10K",
+      24
+     ],
+     [
+      "VERIZON_2022_10K",
+      117
+     ],
+     [
+      "VERIZON_2022_10K",
+      22
+     ],
+     [
+      "VERIZON_2022_10K",
+      41
+     ],
+     [
+      "VERIZON_2022_10K",
+      42
+     ],
+     [
+      "VERIZON_2022_10K",
+      19
+     ]
+    ]
+   }
+  },
+  "financebench_id_00215": {
+   "split": "test",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      28
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "VERIZON_2022_10K",
+      100
+     ],
+     [
+      "VERIZON_2022_10K",
+      57
+     ],
+     [
+      "VERIZON_2022_10K",
+      105
+     ],
+     [
+      "VERIZON_2022_10K",
+      9
+     ],
+     [
+      "VERIZON_2022_10K",
+      20
+     ],
+     [
+      "VERIZON_2022_10K",
+      52
+     ],
+     [
+      "VERIZON_2022_10K",
+      33
+     ],
+     [
+      "VERIZON_2022_10K",
+      41
+     ],
+     [
+      "VERIZON_2022_10K",
+      37
+     ],
+     [
+      "VERIZON_2022_10K",
+      38
+     ]
+    ]
+   }
+  },
+  "financebench_id_00566": {
+   "split": "dev",
+   "type": "domain-relevant",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      8
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      11
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "VERIZON_2022_10K",
+      24
+     ],
+     [
+      "VERIZON_2022_10K",
+      39
+     ],
+     [
+      "VERIZON_2022_10K",
+      17
+     ],
+     [
+      "VERIZON_2022_10K",
+      104
+     ],
+     [
+      "VERIZON_2022_10K",
+      57
+     ],
+     [
+      "VERIZON_2022_10K",
+      40
+     ],
+     [
+      "VERIZON_2022_10K",
+      33
+     ],
+     [
+      "VERIZON_2022_10K",
+      112
+     ],
+     [
+      "VERIZON_2022_10K",
+      67
+     ],
+     [
+      "VERIZON_2022_10K",
+      77
+     ]
+    ]
+   }
+  },
+  "financebench_id_06247": {
+   "split": "test",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      7
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "WALMART_2018_10K",
+      56
+     ],
+     [
+      "WALMART_2018_10K",
+      61
+     ],
+     [
+      "WALMART_2017_10K",
+      159
+     ],
+     [
+      "WALMART_2018_10K",
+      221
+     ],
+     [
+      "WALMART_2017_10K",
+      164
+     ],
+     [
+      "WALMART_2018_10K",
+      283
+     ],
+     [
+      "WALMART_2018_10K",
+      58
+     ],
+     [
+      "WALMART_2018_10K",
+      272
+     ],
+     [
+      "WALMART_2017_10K",
+      97
+     ],
+     [
+      "WALMART_2018_10K",
+      93
+     ]
+    ]
+   }
+  },
+  "financebench_id_04784": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      2
+     ],
+     "n_gold": 1,
+     "doc_rank": 2
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      10
+     ],
+     "n_gold": 1,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "WALMART_2019_10K",
+      34
+     ],
+     [
+      "WALMART_2018_10K",
+      42
+     ],
+     [
+      "WALMART_2019_10K",
+      31
+     ],
+     [
+      "WALMART_2018_10K",
+      41
+     ],
+     [
+      "WALMART_2019_10K",
+      28
+     ],
+     [
+      "WALMART_2018_10K",
+      38
+     ],
+     [
+      "WALMART_2018_10K",
+      22
+     ],
+     [
+      "WALMART_2018_10K",
+      34
+     ],
+     [
+      "WALMART_2019_10K",
+      7
+     ],
+     [
+      "WALMART_2019_10K",
+      47
+     ]
+    ]
+   }
+  },
+  "financebench_id_06741": {
+   "split": "dev",
+   "type": "metrics-generated",
+   "runs": {
+    "hybrid/company_year+quarter+drop+route": {
+     "gold_ranks": [
+      1,
+      4
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    },
+    "hybrid/company_year+quarter+drop+route+rerank": {
+     "gold_ranks": [
+      1,
+      6
+     ],
+     "n_gold": 2,
+     "doc_rank": 1
+    }
+   },
+   "top_after": {
+    "hybrid/company_year+quarter+drop+route": [
+     [
+      "WALMART_2020_10K",
+      50
+     ],
+     [
+      "WALMART_2018_10K",
+      61
+     ],
+     [
+      "WALMART_2018_10K",
+      56
+     ],
+     [
+      "WALMART_2018_10K",
+      57
+     ],
+     [
+      "WALMART_2018_10K",
+      40
+     ],
+     [
+      "WALMART_2020_10K",
+      55
+     ],
+     [
+      "WALMART_2020_10K",
+      63
+     ],
+     [
+      "WALMART_2018_10K",
+      38
+     ],
+     [
+      "WALMART_2018_10K",
+      34
+     ],
+     [
+      "WALMART_2018_10K",
+      68
+     ]
+    ]
+   }
+  }
+ },
+ "pairs_scored": 4473,
+ "scoring_seconds": 4067.278,
+ "seconds_per_pair": 0.9092953191649926,
+ "comparisons": [
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "dev",
+   "metric": "hit@1",
+   "diff": -0.46,
+   "ci95": [
+    -0.6,
+    -0.32
+   ],
+   "a_better": 0,
+   "b_better": 23
+  },
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "dev",
+   "metric": "hit@10",
+   "diff": -0.14,
+   "ci95": [
+    -0.28,
+    0.0
+   ],
+   "a_better": 4,
+   "b_better": 11
+  },
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "dev",
+   "metric": "mrr@10",
+   "diff": -0.36567460317460315,
+   "ci95": [
+    -0.4802857142857143,
+    -0.2531978174603175
+   ],
+   "a_better": 7,
+   "b_better": 32
+  },
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "test",
+   "metric": "hit@1",
+   "diff": -0.22,
+   "ci95": [
+    -0.33,
+    -0.11
+   ],
+   "a_better": 8,
+   "b_better": 30
+  },
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "test",
+   "metric": "hit@10",
+   "diff": -0.16,
+   "ci95": [
+    -0.26,
+    -0.06
+   ],
+   "a_better": 6,
+   "b_better": 22
+  },
+  {
+   "a": "hybrid/company_year+quarter+drop+route+rerank",
+   "b": "hybrid/company_year+quarter+drop+route",
+   "split": "test",
+   "metric": "mrr@10",
+   "diff": -0.2275515873015873,
+   "ci95": [
+    -0.32101676587301586,
+    -0.13312053571428578
+   ],
+   "a_better": 15,
+   "b_better": 47
+  }
+ ]
+}

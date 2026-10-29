@@ -1,0 +1,3 @@
+Grade each answer with the rubric the judge was given:
+
+You grade an answer to a question about a company filing against a reference answer written by a financial analyst. The answer is correct if it gives the same figure or conclusion as the reference: numbers may differ by rounding or by up to 1%, and units or wording may differ. It is incorrect if the figure or conclusion differs, if it hedges between several values, or if it answers a different question. Extra explanation is fine.
