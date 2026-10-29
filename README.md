@@ -60,17 +60,22 @@ make studies   # the incremental-index check and the chunk-size study
 make loadtest
 ```
 
-Two more studies need a download or an API key, and read their page rankings from the committed `results/eval.json`, so neither reruns retrieval:
+Two more studies need a download or an API key, and read their page rankings from the committed `results/eval.json`, so neither reruns retrieval. Smoke runs come first and write to their own files, so they can't touch the real recording:
 
 ```bash
-finrag reranker && finrag rerank-study    # BAAI/bge-reranker-base (1.1 GB, checked by SHA-256) over each top 30
-pip install -e ".[generate]"              # the OpenAI client; the key goes in OPENAI_API_KEY
-finrag generate                           # answers from retrieved pages and from gold pages, judged; $25 cap
+finrag reranker                                              # BAAI/bge-reranker-base, 1.1 GB, checked by SHA-256
+finrag rerank-study --limit 3 --out /tmp/rerank-smoke.json   # tokenizer and timing check
+finrag rerank-study                                          # headline, BM25 with the filter, BM25 over all pages
+pip install -e ".[generate]"                                 # the OpenAI client; the key goes in OPENAI_API_KEY
+finrag generate --on dev --limit 3 --record /tmp/smoke.jsonl --out /tmp/smoke.json
+finrag generate                                              # four settings on the test split; $3 cap over the whole recording
 finrag label-judge && finrag judge-agreement
-finrag report                             # adds both to RESULTS.md
+finrag report                                                # adds both to RESULTS.md
 ```
 
-The generation study answers each test question twice, from the top 5 retrieved pages and from its gold pages, so the gap is what retrieval costs and what's left with gold pages is the model's own error. A stronger model judges each answer against FinanceBench's reference, and I check the judge by grading 40 of its verdicts myself. Every call is recorded under a hash of its request, so a rerun replays them, and `--replay` needs no key.
+The generation study answers each test question from four page sets: the gold pages, the reported system's top 5, BM25's top 5 over all pages, and no pages at all. The gaps between them separate what retrieval costs from what the model gets wrong with the right pages, and what it already knows without any. A stronger model judges each answer against FinanceBench's reference. Every call is recorded under a hash of its request, so a rerun replays it, and `--replay` needs no key. The judge check is 60 of its verdicts, graded by me against the reference answers. I used AI tools to find filings and check calculations, so the grading was research-assisted, not blind to AI input; `results/generation/LABELS.md` lists the rows where the reference or the rubric is debatable.
+
+On the 100 test questions the judge marks the model correct on 83 with the gold pages, 66 with the reported system's top 5, 37 with no pages and 14 with BM25's top 5 over all pages. Retrieval costs 0.17 against the gold pages (95% CI 0.09 to 0.25, paired), and the system's pages add 0.29 over no pages at all (0.16 to 0.41); the model already knows some figures for well-known companies, so the no-pages number is not zero. The cross-encoder reranker (`bge-reranker-base`) made retrieval worse: Hit@10 fell from 0.78 to 0.62 on dev and from 0.73 to 0.63 on test, and reading three windows per page did not fix it (0.57 on test), so the reported system stays without a reranker. The judge agreed with my 60 labels on 59 (kappa 0.95, 95% CI 0.83 to 1.00). All numbers are in `results/RESULTS.md`; the recorded generation run cost $0.46.
 
 On every push, CI runs the tests on Python 3.11 and 3.13 (the MiniLM test against recorded vectors), a regression gate that runs the BM25 pipeline over the 40 real filings behind the dev questions and fails if Hit@10 drops more than one question below its recorded 38 of 50, a smoke test of the image, a secret scan, and the browser port's parity test.
 
@@ -79,6 +84,8 @@ On every push, CI runs the tests on Python 3.11 and 3.13 (the MiniLM test agains
 - 150 questions is the public sample of FinanceBench. 100 test questions give intervals about 0.18 wide on Hit@10, and paired differences smaller than about 0.05 come out as ties.
 - The filter's aliases and the routing patterns were written by reading the dev questions; they'd need the same work for a new set of companies.
 - Hit@10 asks whether the right page is retrieved, not whether a model answers correctly from it; that's what the generation study is for.
+- The reranker's window is 512 tokens, so a long page is scored on its first part unless `--windows` is raised.
+- The judge check is 60 verdicts from one grader, so its agreement interval is wide. Some FinanceBench references are debatable (a Pfizer spin-off that had already closed, a JPMorgan figure that is tangible book value), so accuracy here means agreement with the reference.
 - Statement pages are recognized from their titles, so a filing that lays them out differently falls back to plain BM25.
 
 ## License
