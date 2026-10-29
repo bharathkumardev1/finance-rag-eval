@@ -4,7 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .metrics import metrics
+from .evaluate import compare
+from .generate import format_p, sign_test_p
+from .metrics import metrics, per_question
 
 COLUMNS = ("| Config | Hit@1 | Hit@5 | Hit@10 (95% CI) | MRR@10 | Recall@10 | Right filing@10 "
            "| p50 ms | p95 ms |\n|---|---|---|---|---|---|---|---|---|\n")
@@ -128,32 +130,116 @@ def load_test(res: dict) -> str:
             "Errors | Server RSS MB | $ per million |\n|---|---|---|---|---|---|---|---|---|\n" + rows + "\n")
 
 
-def rerank(res: dict) -> str:
-    rows = "\n".join(f"| {r['split']} | `{r['config']}` | {r['hit@1']:.2f} | {r['hit@10']:.2f} | "
-                     f"{r['mrr@10']:.3f} |" for r in res["table"])
+def rerank(res: dict, labels_status: str | None = None) -> str:
+    rows = "\n".join(f"| {r['split']} | `{r['config']}` | {r['hit@1']:.2f} | {r['hit@10']:.2f} "
+                     f"({_ci(r['hit@10_ci95'])}) | {r['mrr@10']:.3f} |" for r in res["table"])
+    windows = res.get("windows", 1)
+    cost = (f" Scoring took {1000 * res['seconds_per_pair']:.0f} ms per (question, page) pair on "
+            f"{res['meta'].get('cpu', 'this machine')}, so reranking 30 pages adds about "
+            f"{30 * res['seconds_per_pair']:.1f} s to a query." if res.get("seconds_per_pair") else "")
+    comps = "\n".join(
+        f"| {c['split']} | `{c['a']}` | `{c['b']}` | {c['metric']} | {c['diff']:+.3f} | "
+        f"{_ci(c['ci95'], '+.3f')} | {c['a_better']} | {c['b_better']} | "
+        f"{format_p(sign_test_p(c['a_better'], c['b_better']))} |" for c in res["comparisons"])
     return (f"## Reranker\n\n{_source(res)} {res['meta'].get('model', '')} over the top {res['top']} of "
-            f"`{res['base']}`.\n\n| Split | Config | Hit@1 | Hit@10 | MRR@10 |\n|---|---|---|---|---|\n"
-            + rows + "\n\n" + comparisons(res).replace("## Paired comparisons on test\n\n", ""))
+            f"each system below, reading {windows} window{'s' if windows != 1 else ''} of 512 tokens "
+            "per page, "
+            f"a page scoring as its best window.{cost}\n\n"
+            f"| Split | Config | Hit@1 | Hit@10 (95% CI) | MRR@10 |\n|---|---|---|---|---|\n{rows}\n\n"
+            "Paired by question, 10,000 bootstrap resamples. "
+            "`+rerank` is the system with its top 30 reordered.\n\n"
+            "| Split | A | B | Metric | A minus B | 95% CI | A better | B better | Sign-test p |\n"
+            f"|---|---|---|---|---|---|---|---|---|\n{comps}\n")
 
 
-def generation(res: dict) -> str:
+def rerank_windows(one: dict, many: dict) -> str:
+    """The headline system reranked reading one window per page against several, on the same questions."""
+    base, name, w = many["base"], many["base"] + "+rerank", many["windows"]
+    labels = {"base": "no rerank", "one": "1 window", "many": f"{w} windows"}
+    qs = {qid: {"split": v["split"], "runs": {"base": v["runs"][base], "many": v["runs"][name],
+                                              "one": one["questions"][qid]["runs"][name]}}
+          for qid, v in many["questions"].items() if qid in one["questions"]}
+    res, parts = {"questions": qs}, ("dev", "test")
     rows = "\n".join(
-        f"| {name} | {v['n']} | {v['accuracy']:.2f} ({_ci(v['accuracy_ci95'])}) | {v['declined']} | "
-        f"{v['incorrect']} | ${v['cost_usd']:.2f} | {v['answer_p50_s']:.1f} | {v['answer_p95_s']:.1f} |"
-        for name, v in res["summary"]["settings"].items())
+        f"| {p} | {labels[k]} | "
+        f"{sum(per_question([v['runs'][k] for v in qs.values() if v['split'] == p], 'hit@10')) / n:.2f} | "
+        f"{sum(per_question([v['runs'][k] for v in qs.values() if v['split'] == p], 'mrr@10')) / n:.3f} |"
+        for p in parts for k in labels
+        if (n := sum(v["split"] == p for v in qs.values())))
+    comps = "\n".join(
+        f"| {p} | {labels[a]} | {labels[b]} | {m} | {c['diff']:+.3f} | {_ci(c['ci95'], '+.3f')} | "
+        f"{c['a_better']} | {c['b_better']} | {format_p(sign_test_p(c['a_better'], c['b_better']))} |"
+        for p in parts for a, b in (("many", "base"), ("many", "one")) for m in ("hit@10", "mrr@10")
+        for c in [compare(res, a, b, p, m)])
+    secs = (f" Scoring {many['pairs_scored']:,} pages took {many['scoring_seconds']:.0f} s, "
+            f"{1000 * many['seconds_per_pair']:.0f} ms per page.") if many.get("seconds_per_pair") else ""
+    return (f"### Reading {w} windows of each page\n\n"
+            f"The same reranker on `{base}` with each page cut into up to {w} windows of 512 tokens, "
+            f"a page scoring as its best window.{secs}\n\n"
+            f"| Split | System | Hit@10 | MRR@10 |\n|---|---|---|---|\n{rows}\n\n"
+            "Paired by question, 10,000 bootstrap resamples; the sign test is exact.\n\n"
+            "| Split | A | B | Metric | A minus B | 95% CI | A better | B better | Sign-test p |\n"
+            f"|---|---|---|---|---|---|---|---|---|\n{comps}\n")
+
+
+NAMES = {"gold": "gold pages", "retrieved": "reported system's top 5", "naive": "BM25 over all pages, top 5",
+         "closed_book": "no pages"}
+
+
+def generation(res: dict, labels_status: str | None = None) -> str:
+    rows = "\n".join(
+        f"| {NAMES.get(name, name)} | {v['n']} | {v['accuracy']:.2f} ({_ci(v['accuracy_ci95'])}) | "
+        f"{v['declined']} | {v['incorrect']} | ${v['cost_usd']:.2f} | {v['answer_p50_s']:.1f} | "
+        f"{v['answer_p95_s']:.1f} |" for name, v in res["summary"]["settings"].items())
+    naive = f" and `{res['naive_retrieval']}`" if res.get("naive_retrieval") else ""
     out = (f"## Generation\n\n{_source(res)} {res['generator']} answers from five pages, judged by "
-           f"{res['judge']} against FinanceBench's reference answers. Retrieval: `{res['retrieval']}`.\n\n"
-           "| Pages | Questions | Correct (95% CI) | Declined | Incorrect | Cost | p50 s | p95 s |\n"
+           f"{res['judge']} against FinanceBench's reference answers, on the {res['split']} split"
+           f"{' (first ' + str(res['limit']) + ' questions only)' if res.get('limit') else ''}. "
+           f"Retrieval: `{res['retrieval']}`{naive}. Recorded spend ${res['recorded_spend_usd']:.2f} of a "
+           f"${res['cap_usd']:.2f} cap.\n\n"
+           "| Pages given | Questions | Correct (95% CI) | Declined | Incorrect | Cost | p50 s | p95 s |\n"
            "|---|---|---|---|---|---|---|---|\n" + rows + "\n")
-    if "gold_minus_retrieved" in res["summary"]:
-        d = res["summary"]["gold_minus_retrieved"]
-        out += (f"\nGold pages minus retrieved pages: {d['diff']:+.3f} ({_ci(d['ci95'], '+.3f')}), "
-                f"{d['a_better']} questions better with gold pages, {d['b_better']} worse.\n")
+    split_rows = "\n".join(
+        f"| {NAMES.get(name, name)} | {v['gold_in_pages']['n']} | {_pct(v['gold_in_pages']['accuracy'])} | "
+        f"{v['gold_not_in_pages']['n']} | {_pct(v['gold_not_in_pages']['accuracy'])} |"
+        for name, v in res["summary"]["settings"].items() if name != "closed_book")
+    out += ("\nAccuracy by whether a gold page was among the pages given:\n\n"
+            "| Pages given | Questions with a gold page | Correct | Questions without | Correct |\n"
+            "|---|---|---|---|---|\n" + split_rows + "\n")
+    comps = res["summary"].get("comparisons") or []
+    if comps:
+        body = "\n".join(
+            f"| {NAMES[c['a']]} | {NAMES[c['b']]} | {c['diff']:+.3f} | {_ci(c['ci95'], '+.3f')} | "
+            f"{c['a_better']} | {c['b_better']} | {format_p(c['p_sign'])} |" for c in comps)
+        out += ("\nPaired by question, 10,000 bootstrap resamples; the sign test is exact and "
+                f"uncorrected for the {len(comps)} comparisons.\n\n"
+                "| A | B | A minus B | 95% CI | A better | B better | Sign-test p |\n"
+                "|---|---|---|---|---|---|---|\n" + body + "\n")
     if res.get("judge_check", {}).get("labeled"):
         j = res["judge_check"]
-        out += (f"\nJudge against hand labels: {j['agree']} of {j['labeled']} agree, Cohen's kappa "
-                f"{j['cohens_kappa']:.2f}.\n")
+        ci = (f" (95% CI {_ci(j['agreement_ci95'], '.2f')}); Cohen's kappa {j['cohens_kappa']:.2f}"
+              + (f" ({_ci(j['kappa_ci95'], '.2f')})" if j.get("kappa_ci95") else ""))
+        out += (f"\nThe judge agreed with the {j['labeled']} labels in `{j['labels']}` on {j['agree']} "
+                f"answers, {j['agreement']:.1%}{ci}, over {j.get('questions', '?')} questions. It passed "
+                f"{j['judge_says_correct_you_dont']} answers the labels failed and failed "
+                f"{j['judge_says_incorrect_you_dont']} answers the labels passed.\n")
+        if labels_status:
+            out += f"\nHow the labels were made: {labels_status}\n"
     return out
+
+
+def _pct(x: float | None) -> str:
+    return "n/a" if x is None else f"{x:.2f}"
+
+
+def labels_status(results_dir: Path) -> str | None:
+    """The status line of results/generation/LABELS.md, so RESULTS.md says who made the labels."""
+    f = Path(results_dir) / "generation" / "LABELS.md"
+    if f.exists():
+        for line in f.read_text(encoding="utf8").splitlines():
+            if line.lower().startswith("status:"):
+                return line.split(":", 1)[1].strip()
+    return None
 
 
 EXTRAS = (("incremental", incremental), ("chunks", chunk_study), ("load", load_test),
@@ -193,9 +279,14 @@ def write_markdown(results: dict, path: Path, results_dir: Path | None = None) -
     if results_dir is not None:
         import json
 
+        status = labels_status(results_dir)
         for name, section in EXTRAS:
             extra = Path(results_dir) / f"{name}.json"
             if extra.exists():
-                parts.append(section(json.loads(extra.read_text())))
+                data = json.loads(extra.read_text())
+                parts.append(section(data, status) if name in ("rerank", "generation") else section(data))
+                many = Path(results_dir) / "rerank-windows3.json"
+                if name == "rerank" and many.exists():
+                    parts.append(rerank_windows(data, json.loads(many.read_text())))
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text("\n".join(p for p in parts if p), encoding="utf8")

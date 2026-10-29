@@ -179,22 +179,43 @@ def cmd_chunk_study(args: argparse.Namespace) -> int:
     return 0
 
 
+GENERATE_DEFAULTS = {"out": "results/generation.json", "record": "results/generation/calls.jsonl"}
+RERANK_DEFAULT_OUT = "results/rerank.json"
+
+
 def cmd_generate(args: argparse.Namespace) -> int:
     from .data import load_pages, load_questions
     from .evaluate import run_meta, save
-    from .generate import Budget, Recorder, openai_client, run
+    from .generate import SETTINGS, Budget, Recorder, format_p, openai_client, run
     from .split import load_split
 
+    settings = tuple(s for s in args.settings.split(",") if s)
+    unknown = [s for s in settings if s not in SETTINGS]
+    if unknown:
+        print(f"unknown setting {unknown}; choose from {', '.join(SETTINGS)}", file=sys.stderr)
+        return 1
+    if args.limit and (args.out == GENERATE_DEFAULTS["out"] or args.record == GENERATE_DEFAULTS["record"]):
+        print("--limit makes a partial run: give it its own --record and --out so the real run's "
+              "recording and results stay whole", file=sys.stderr)
+        return 1
     data_dir = Path(args.data_dir)
     evaluation = json.loads(Path(args.eval).read_text())
     config = args.config or evaluation["headline"]
     wanted = set(load_split(Path(args.split))[args.on])
     questions = [q for q in load_questions(data_dir) if q.qid in wanted]
+    if args.limit:
+        questions = questions[: args.limit]
     retrieved = {qid: x["runs"][config]["top"] for qid, x in evaluation["questions"].items()}
+    naive = None
+    if "naive" in settings:
+        naive = {qid: x["runs"][args.naive_config]["top"] for qid, x in evaluation["questions"].items()}
     pages = load_pages(data_dir)
     recorder = Recorder(Path(args.record), None if args.replay else openai_client(), Budget(args.cap))
-    res = run(questions, retrieved, lambda d, p: pages[d][p], recorder, args.generator, args.judge)
-    res = {"meta": run_meta(args.command_line), "retrieval": config, "split": args.on, **res}
+    res = run(questions, retrieved, lambda d, p: pages[d][p], recorder, args.generator, args.judge,
+              naive=naive, settings=settings)
+    res = {"meta": run_meta(args.command_line), "retrieval": config,
+           "naive_retrieval": args.naive_config if naive is not None else None, "split": args.on,
+           "limit": args.limit or None, **res}
     old = Path(args.out)
     if old.exists() and "judge_check" in (prev := json.loads(old.read_text())):
         res["judge_check"] = prev["judge_check"]
@@ -202,6 +223,9 @@ def cmd_generate(args: argparse.Namespace) -> int:
     for setting, v in res["summary"]["settings"].items():
         print(f"{setting:<10} accuracy {v['accuracy']:.2f} ({v['n']} questions, "
               f"{v['declined']} declined)  ${v['cost_usd']:.4f}")
+    for c in res["summary"]["comparisons"]:
+        print(f"{c['a']} minus {c['b']}: {c['diff']:+.3f} ({c['ci95'][0]:+.3f} to {c['ci95'][1]:+.3f}), "
+              f"{c['a_better']} better, {c['b_better']} worse, sign-test p {format_p(c['p_sign'])}")
     print(f"calls made {res['calls']['made']}, replayed {res['calls']['replayed']}; "
           f"recorded spend ${res['recorded_spend_usd']:.4f} of ${res['cap_usd']:.2f}")
     if res["stopped"]:
@@ -214,16 +238,22 @@ def cmd_label_judge(args: argparse.Namespace) -> int:
     import csv
 
     from .data import load_questions
-    from .generate import label_sheet
+    from .generate import JUDGE_INSTRUCTIONS, label_sheet
 
     results = json.loads(Path(args.results).read_text())
     questions = {q.qid: q for q in load_questions(Path(args.data_dir))}
     rows = label_sheet(results, questions, args.n)
+    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
+    rubric = Path(args.out).with_name("RUBRIC.txt")
+    header = "Grade each answer with the rubric the judge was given:\n\n"
+    rubric.write_text(header + JUDGE_INSTRUCTIONS + "\n",
+                      encoding="utf8")
     with open(args.out, "w", newline="", encoding="utf8") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(rows[0]))
         writer.writeheader()
         writer.writerows(rows)
-    print(f"{len(rows)} answers to label in {args.out}: fill your_verdict with correct or incorrect")
+    print(f"{len(rows)} answers to label in {args.out}: fill your_verdict with correct or incorrect, "
+          f"using the rubric in {rubric}")
     return 0
 
 
@@ -255,18 +285,29 @@ def cmd_rerank_study(args: argparse.Namespace) -> int:
     from .evaluate import run_meta, save
     from .rerank import MODEL_ID, ONNX_SHA256, REVISION, CrossEncoder, study
 
+    if args.limit and args.out == RERANK_DEFAULT_OUT:
+        print("--limit makes a partial run: give it its own --out so results/rerank.json stays whole",
+              file=sys.stderr)
+        return 1
     data_dir = Path(args.data_dir)
     evaluation = json.loads(Path(args.eval).read_text())
-    config = args.config or evaluation["headline"]
+    configs = args.config or list(dict.fromkeys(
+        [evaluation["headline"], "bm25/company_year+quarter+drop+route", "bm25/all-pages"]))
     questions = [q for q in load_questions(data_dir) if q.qid in evaluation["questions"]]
+    if args.limit:
+        questions = questions[: args.limit]
     pages = load_pages(data_dir)
-    encoder = CrossEncoder(Path(args.model_dir), threads=args.threads)
-    res = study(evaluation, questions, lambda d, p: pages[d][p], encoder.score, config)
+    encoder = CrossEncoder(Path(args.model_dir), threads=args.threads, windows=args.windows)
+    res = study(evaluation, questions, lambda d, p: pages[d][p], encoder.score, configs, args.windows)
     meta = run_meta(args.command_line, model=MODEL_ID, revision=REVISION, onnx_sha256=ONNX_SHA256,
-                    tokenizer_sha256=encoder.tokenizer_sha256, threads=args.threads)
+                    tokenizer_sha256=encoder.tokenizer_sha256, threads=args.threads,
+                    limit=args.limit or None)
     save({"meta": meta, **res}, Path(args.out))
     for r in res["table"]:
         print(f"{r['split']:<5} {r['config']:<56} hit@10 {r['hit@10']:.2f}  mrr@10 {r['mrr@10']:.3f}")
+    if res["seconds_per_pair"]:
+        print(f"{res['pairs_scored']} (question, page) pairs scored in {res['scoring_seconds']:.0f} s: "
+              f"{1000 * res['seconds_per_pair']:.0f} ms per pair")
     return 0
 
 
@@ -391,20 +432,24 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--data-dir", default="data")
     p.add_argument("--eval", default="results/eval.json", help="retrieval results to take pages from")
     p.add_argument("--config", default=None, help="retrieval system (default: the headline)")
+    p.add_argument("--naive-config", default="bm25/all-pages", help="the no-filter baseline's pages")
+    p.add_argument("--settings", default="gold,retrieved,naive,closed_book",
+                   help="comma-separated: gold, retrieved, naive, closed_book")
+    p.add_argument("--limit", type=int, default=0, help="only the first N questions, for a smoke run")
     p.add_argument("--split", default="configs/split.json")
     p.add_argument("--on", default="test", choices=("dev", "test"))
     p.add_argument("--generator", default="gpt-6-luna")
     p.add_argument("--judge", default="gpt-6.1-sol")
-    p.add_argument("--cap", type=float, default=25.0, help="USD, over everything in the recording")
-    p.add_argument("--record", default="results/generation/calls.jsonl")
+    p.add_argument("--cap", type=float, default=3.0, help="USD, over everything in the recording")
+    p.add_argument("--record", default=GENERATE_DEFAULTS["record"])
     p.add_argument("--replay", action="store_true", help="use recorded replies only; no API key needed")
-    p.add_argument("--out", default="results/generation.json")
+    p.add_argument("--out", default=GENERATE_DEFAULTS["out"])
     p.set_defaults(func=cmd_generate)
 
     p = sub.add_parser("label-judge", help="sample judged answers for a person to label")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--results", default="results/generation.json")
-    p.add_argument("--n", type=int, default=40)
+    p.add_argument("--n", type=int, default=60)
     p.add_argument("--out", default="results/generation/labels.csv")
     p.set_defaults(func=cmd_label_judge)
 
@@ -420,10 +465,15 @@ def main(argv: list[str] | None = None) -> int:
     p = sub.add_parser("rerank-study", help="rerank a system's top 30 with the cross-encoder")
     p.add_argument("--data-dir", default="data")
     p.add_argument("--eval", default="results/eval.json")
-    p.add_argument("--config", default=None, help="retrieval system (default: the headline)")
+    p.add_argument("--config", action="append", default=None,
+                   help="retrieval system to rerank, repeatable (default: the headline, its BM25 twin "
+                        "and BM25 over all pages)")
     p.add_argument("--model-dir", default="models/bge-reranker-base")
     p.add_argument("--threads", type=int, default=4)
-    p.add_argument("--out", default="results/rerank.json")
+    p.add_argument("--windows", type=int, default=1, choices=(1, 2, 3),
+                   help="512-token windows per page; a page scores as its best")
+    p.add_argument("--limit", type=int, default=0, help="only the first N questions, for a smoke run")
+    p.add_argument("--out", default=RERANK_DEFAULT_OUT)
     p.set_defaults(func=cmd_rerank_study)
 
     p = sub.add_parser("loadtest", help="closed-loop load test against a running service")
