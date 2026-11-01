@@ -15,7 +15,7 @@ MiniLM embeddings and a BM25 + MiniLM hybrid end up in the same place once the f
 | MiniLM + filter + routing | 0.43 | 0.71 (0.62 to 0.80) | 0.527 | 10.5 / 25.1 |
 | Hybrid + filter + routing, name dropped | 0.45 | 0.73 (0.64 to 0.82) | 0.542 | 12.6 / 30.5 |
 
-The last row is the reported system because it won on the 50 dev questions (0.78 against 0.66 for the same pipeline on BM25 alone). On test the two tie: 0.73 against 0.75, a difference of -0.02 (95% CI -0.08 to +0.03). On these questions the embeddings don't buy anything BM25 doesn't, and BM25 costs a fifth of the latency.
+Two systems appear in this repo, so to be exact about which is which. The last row, the hybrid, is what the miss analysis and the generation study below call the reported system, because it won on the 50 dev questions (0.78 against 0.66 for the same pipeline on BM25 alone). On test the two tie: 0.73 against 0.75, a difference of -0.02 (95% CI -0.08 to +0.03). The embeddings don't buy anything BM25 doesn't, and BM25 costs a fifth of the latency, so the search service runs BM25 with the company's name left out of the query (0.75), not the hybrid. The 0.14 to 0.71 headline is the step-by-step gain from the filter and routing before the name is dropped.
 
 Paired on the same questions with 10,000 bootstrap resamples, the filter adds 0.29 to BM25 alone (0.20 to 0.38) and routing adds 0.28 on top of the filter (0.19 to 0.37). Dropping the name adds 0.04 (-0.02 to +0.10), which is within noise. Latency is in-process wall time for one query at a time on one thread of a 2.1 GHz Xeon, MiniLM query encoding included; [results/RESULTS.md](results/RESULTS.md) has every configuration, the dev split and the ablations.
 
