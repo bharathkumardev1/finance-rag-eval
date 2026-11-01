@@ -68,7 +68,7 @@ finrag rerank-study --limit 3 --out /tmp/rerank-smoke.json   # tokenizer and tim
 finrag rerank-study                                          # headline, BM25 with the filter, BM25 over all pages
 pip install -c constraints.txt -e ".[generate]"                  # the OpenAI client; the key goes in OPENAI_API_KEY
 finrag generate --on dev --limit 3 --record /tmp/smoke.jsonl --out /tmp/smoke.json
-finrag generate                                              # four settings on the test split; $3 cap over the whole recording
+finrag generate                                              # four settings on the test split; the default cap is $3 over the whole recording, the recorded run used --cap 1.50
 finrag label-judge && finrag judge-agreement
 finrag report                                                # adds both to RESULTS.md
 ```
@@ -88,6 +88,7 @@ On every push, CI runs the tests on Python 3.11 and 3.13 (the MiniLM test agains
 - The judge check is 60 verdicts from one grader, so its agreement interval is wide. Some FinanceBench references are debatable (a Pfizer spin-off that had already closed, a JPMorgan figure that is tangible book value), so accuracy here means agreement with the reference.
 - Statement pages are recognized from their titles, so a filing that lays them out differently falls back to plain BM25.
 - The reranker and generation studies were recorded at commit `cf57ef1`, before their code was committed, so their stamps in `results/` read dirty. `finrag generate --replay` at `d8ddc39` reproduces every row, summary and cost in `results/generation.json` from the recording (only the call counts and the cap differ, because a replay makes no calls). The reranker study was not rerun at that commit.
+- The commit IDs recorded in `results/*.json`, `results/RESULTS.md` and `configs/gate.json` were edited by hand to the signed commit IDs after the history was re-signed on 28 October (`c8d3e7f`). They were not written by the tool at those commits.
 
 ## License
 
