@@ -86,9 +86,13 @@ On every push, CI runs the tests on Python 3.11 and 3.13 (the MiniLM test agains
 - Hit@10 asks whether the right page is retrieved, not whether a model answers correctly from it; that's what the generation study is for.
 - The reranker's window is 512 tokens, so a long page is scored on its first part unless `--windows` is raised.
 - The judge check is 60 verdicts from one grader, so its agreement interval is wide. Some FinanceBench references are debatable (a Pfizer spin-off that had already closed, a JPMorgan figure that is tangible book value), so accuracy here means agreement with the reference.
+- The index holds only the 360 filings behind the 150 questions, so every question's company is in the corpus. Retrieval over an open collection of filings would be harder, and the Hit@10 numbers here don't transfer to it.
+- The statement routing matches statement names, and many questions about reported figures state the statement outright. I haven't separated questions that name the statement from ones that only imply it, so the routing gain on that question type may be larger than it would be on implied cues.
+- I compared many configurations on 50 dev and 100 test questions and applied no correction for multiple comparisons. The shipped BM25 system was chosen after I had seen the test results, where it tied the hybrid.
 - Statement pages are recognized from their titles, so a filing that lays them out differently falls back to plain BM25.
 - The reranker and generation studies were recorded at commit `cf57ef1`, before their code was committed, so their stamps in `results/` read dirty. `finrag generate --replay` at `d8ddc39` reproduces every row, summary and cost in `results/generation.json` from the recording (only the call counts and the cap differ, because a replay makes no calls). The reranker study was not rerun at that commit.
 - The commit IDs recorded in `results/*.json`, `results/RESULTS.md` and `configs/gate.json` were edited by hand to the signed commit IDs after the history was re-signed on 28 October (`c8d3e7f`). They were not written by the tool at those commits.
+- The re-signing on 28 October replaced the history, and this repository has no public backup tag of the earlier history. Dates on commits here are as recorded in the commits and are not attested by a third party.
 
 ## License
 
