@@ -2,6 +2,8 @@
 
 Which page of an SEC filing answers an analyst's question, and how often can a retriever put it in the top 10? On FinanceBench's 150 public questions over 360 filings (53,399 pages), BM25 across every page finds it for 14 of the 100 test questions. Reading the company and period from the question and searching only those filings takes that to 43. Sending questions about a balance sheet, income statement or cash flow statement to those pages takes it to 71, and leaving the company's name out of the query to 75, at 2.4 ms a query on one thread.
 
+**Demo:** the [filing search](https://bharathkumardev1.github.io/projects/finance-rag-eval/) runs this BM25 pipeline in your browser, with the filter and routing switches, over the 84 filings the questions cite.
+
 MiniLM embeddings and a BM25 + MiniLM hybrid end up in the same place once the filter and routing are in, at four to five times the latency:
 
 | Test, 100 questions | Hit@1 | Hit@10 (95% CI) | MRR@10 | p50 / p95 ms |
