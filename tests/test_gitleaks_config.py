@@ -8,8 +8,11 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_the_exception_needs_rule_path_and_a_bare_hex_value():
-    allow = tomllib.loads((ROOT / ".gitleaks.toml").read_text())["allowlists"][0]
-    assert allow["condition"] == "AND" and allow["targetRules"] == ["generic-api-key"]
+    config = tomllib.loads((ROOT / ".gitleaks.toml").read_text())
+    assert "allowlists" not in config  # nothing global: the exception belongs to one rule
+    (rule,) = [r for r in config["rules"] if r["id"] == "generic-api-key"]
+    (allow,) = rule["allowlists"]
+    assert allow["condition"] == "AND"
     path = re.compile(allow["paths"][0])
     assert path.search("results/generation/calls.jsonl") and path.search("results/rerank.json")
     assert path.search("results/rerank-windows3.json") and not path.search("results/rerank-notes.json")
@@ -26,4 +29,4 @@ def test_ci_scans_with_that_config():
 def test_ci_pins_a_gitleaks_that_understands_the_allowlist():
     ci = (ROOT / ".github" / "workflows" / "ci.yml").read_text()
     pinned = re.search(r"GITLEAKS_VERSION: (\d+)\.(\d+)\.(\d+)", ci)
-    assert pinned and tuple(map(int, pinned.groups())) >= (8, 25, 0)  # AND allowlists need 8.25
+    assert pinned and tuple(map(int, pinned.groups())) >= (8, 25, 0)  # rule allowlists with AND need 8.25
