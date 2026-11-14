@@ -92,7 +92,7 @@ On every push, CI runs the tests on Python 3.11 and 3.13 (the MiniLM test agains
 - The statement routing matches statement names, and many questions about reported figures state the statement outright. I haven't separated questions that name the statement from ones that only imply it, so the routing gain on that question type may be larger than it would be on implied cues.
 - I compared many configurations on 50 dev and 100 test questions and applied no correction for multiple comparisons. The shipped BM25 system was chosen after I had seen the test results, where it tied the hybrid.
 - Statement pages are recognized from their titles, so a filing that lays them out differently falls back to plain BM25.
-- Result stamps: the reranker and generation studies were recorded before their code was committed, and after I re-signed this repository's history on 28 October 2026 I changed the commit IDs in `results/` and `configs/gate.json` by hand to the new ones. `finrag generate --replay` reproduces `results/generation.json` from the recording.
+- Result stamps: the reranker and generation studies were recorded before their code was committed, so `rerank.json`, `rerank-windows3.json` and `generation.json` say `git_dirty: true` (the other result files say false). After I re-signed this repository's history on 28 October 2026 I changed the commit IDs in `results/` and `configs/gate.json` by hand to the new ones. `finrag generate --replay` reproduces `results/generation.json` from the recording.
 
 ## License
 
